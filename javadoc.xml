@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="." destdir="doc/javadoc" doctitle="Android DTN Javadoc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="android.geosvr.dtn.servlib.bundling,android.geosvr.dtn.systemlib.util,android.geosvr.dtn.servlib.reg,android.geosvr.dtn.servlib.contacts,android.geosvr.dtn,android.geosvr.dtn.systemlib.energy,android.geosvr.dtn.servlib.naming,android.geosvr.dtn.servlib.config,android.geosvr.dtn.applib,android.geosvr.dtn.servlib.conv_layers,android.geosvr.dtn.servlib.common,android.geosvr.dtn.applib.types,android.geosvr.dtn.servlib.bundling.exception,android.geosvr.dtn.servlib.bundling.event,android.geosvr.dtn.apps,android.geosvr.dtn.servlib.storage,android.geosvr.dtn.servlib.contacts.exception,android.geosvr.dtn.servlib.routing,android.geosvr.dtn.servlib.discovery,android.geosvr.dtn.systemlib.thread,android.geosvr.dtn.systemlib.storage" source="1.6" sourcepath="gen;src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>

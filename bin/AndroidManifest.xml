@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="android.geosvr.dtn" android:versionCode="1"
+	android:versionName="4.0">
+	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11"  />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.UPDATE_DEVICE_STATS"></uses-permission>
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+	
+	<application android:icon="@drawable/launcher"
+		android:debuggable="true" android:label="Bytewalla DTN v 4.0" android:theme="@style/MyTheme">
+
+		<activity android:name=".DTNManager" android:label="Bytewalla">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".DTNConfigMenu" android:label="Router Configuration">
+		</activity>
+		<activity android:name=".DTNConfigEditor" android:label="DTNConfigEditor">
+
+		</activity>
+
+		<activity android:name=".apps.DTNSend" android:label="DTNSend">
+
+		</activity>
+
+		<activity android:name=".apps.DTNReceive" android:label="DTNReceive">
+
+		</activity>
+		<activity android:name=".apps.DTNApps" android:label="DTNApps">
+
+		</activity>
+		<service android:name="DTNService" android:label="DTNService"></service>
+
+		<service android:name=".applications.ProcessPayload"
+			android:label="ProcessPayload">
+			<intent-filter>
+				<action
+					android:name="android.geosvr.dtn.action.ProcessPayload" />
+			</intent-filter>
+		</service>
+
+		<receiver android:name=".applications.PayloadReceiver">
+			<intent-filter>
+				<category android:name="android.intent.category.LAUNCHER" />
+				<action android:name="android.geosvr.dtn.action.SEND_BUNDLE" />
+			</intent-filter>
+		</receiver>
+
+	</application>
+
+
+</manifest> 
