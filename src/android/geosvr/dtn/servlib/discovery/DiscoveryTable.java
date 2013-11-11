@@ -66,7 +66,7 @@ public class DiscoveryTable {
 		Iterator<DiscoveryEntry> i = discovery_entries.iterator();
 	
 		while (i.hasNext()) {
-
+			//读的是tns:Discovery
 			DiscoveryEntry element = i.next();
 			String name_id = element.id();
 			Log.d(TAG, name_id);
@@ -74,10 +74,9 @@ public class DiscoveryTable {
 			Log.d(TAG, afamily);
 			int port = element.port();
 			Log.d(TAG, "" + port);
+			//将这项配置加入
 			add(name_id, afamily, (short) port);
-
 		}
-
 	}
 	
 	public void start(){
@@ -87,7 +86,7 @@ public class DiscoveryTable {
 			Iterator<AnnounceEntry> it = announce_entries.iterator();
 
 			while (it.hasNext()) {
-
+				//又读一次配置，但是读的是tns:Announce
 				AnnounceEntry element = it.next();
 				String AnnounceID = element.interface_id();
 				Log.d(TAG, AnnounceID);
@@ -98,6 +97,8 @@ public class DiscoveryTable {
 				int code;
 				if (ClType.compareTo("tcp") == 0) {
 					code = 1;
+				} else if(ClType.compareTo("udp") == 0){
+					code = 2; //udp
 				} else {
 					code = 0;
 				}
@@ -117,6 +118,7 @@ public class DiscoveryTable {
 				if (!disc.announce(AnnounceID, code, ClType, interval)) {
 					Log.d(TAG, "Error creting the Announce" + AnnounceID);
 				}
+				//Discovery的start函数是一个抽象函数，重定向到了IPDiscovery（在init中由工厂创建的实例）
 				disc.start();
 			}
 		} catch (Exception e) {
@@ -127,17 +129,18 @@ public class DiscoveryTable {
 
 	/**
 	 * Add a new discovery instance to the table
+	 * @name: Discovery id (like ipdisc0)
 	 */
 	public boolean add(String name, String addr_family, short port) {
 
 		Iterator<Discovery> iter = dlist_.iterator();
-
+		//检查重复
 		Discovery disc = find(name, iter);
 		if (disc != null) {
 			Log.e(TAG, "agent exists with that name");
 			return false;
 		}
-
+		//工厂返回addr_family对应实例
 		disc = Discovery.create_discovery(name, addr_family, port);
 
 		if (disc == null) {

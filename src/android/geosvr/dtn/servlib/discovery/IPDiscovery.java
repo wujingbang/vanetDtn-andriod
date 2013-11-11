@@ -95,7 +95,7 @@ public class IPDiscovery extends Discovery implements Runnable {
 	 * Enumerate which type of CL is advertised
 	 */
 	public enum cl_type_t {
-		UNDEFINED(0), TCPCL(1); // TCP Convergence Layer
+		UNDEFINED(0), TCPCL(1), UDPCL(2); // TCP/UDP Convergence Layer
 
 		private static final Map<Integer, cl_type_t> lookup = new HashMap<Integer, cl_type_t>();
 
@@ -123,6 +123,8 @@ public class IPDiscovery extends Discovery implements Runnable {
 		switch (t) {
 		case TCPCL:
 			return "tcp";
+		case UDPCL:
+			return "udp";
 		case UNDEFINED:
 			return "undefined";
 		default:
@@ -134,6 +136,8 @@ public class IPDiscovery extends Discovery implements Runnable {
 	public static cl_type_t str_to_type(String cltype) {
 		if (cltype.compareTo("tcp") == 0)
 			return cl_type_t.TCPCL;
+		if (cltype.compareTo("udp") == 0)
+			return cl_type_t.UDPCL;
 		else
 			return cl_type_t.UNDEFINED;
 	}

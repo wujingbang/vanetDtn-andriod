@@ -27,6 +27,7 @@ import java.util.Calendar;
 import android.geosvr.dtn.servlib.bundling.BundleDaemon;
 import android.geosvr.dtn.servlib.conv_layers.ConvergenceLayer;
 import android.geosvr.dtn.servlib.conv_layers.TCPConvergenceLayer;
+import android.geosvr.dtn.servlib.conv_layers.UDPConvergenceLayer;
 import android.geosvr.dtn.servlib.naming.EndpointID;
 import android.geosvr.dtn.systemlib.util.IByteBuffer;
 import android.util.Log;
@@ -61,7 +62,6 @@ public class IPAnnounce extends Announce{
 	    	        return null;
 
 	    	    DiscoveryHeader hdr = new DiscoveryHeader();
-	    	    
 	    	    hdr.set_cl_type((byte)IPDiscovery.str_to_type(type()).getCode());
 	    	    hdr.set_interval((byte)(interval_ / 100));
 	    	    hdr.set_length((short)length);
@@ -96,7 +96,24 @@ public class IPAnnounce extends Announce{
 			}
 	    	cl_port_ = TCPConvergenceLayer.TCPCL_DEFAULT_PORT;
 	    }
-
+	    /**
+	     * Constructor
+	     * @author wujingbang
+	     */
+	    public IPAnnounce(String cltype){
+	    	super();
+	    	try {
+				cl_addr_ = InetAddress.getByName("0.0.0.0");
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	if (cltype.equals("tcp"))
+	    		cl_port_ = TCPConvergenceLayer.TCPCL_DEFAULT_PORT;
+	    	else if(cltype.equals("udp"))
+	    		cl_port_ = UDPConvergenceLayer.UDPCL_DEFAULT_PORT;
+	    
+	    }
 	    /**
 	     * Deserialize parameters for configuration
 	     */
@@ -110,7 +127,7 @@ public class IPAnnounce extends Announce{
 	    	    type_ =ClType;
 
 	    	    // validate convergence layer details
-	    	    if (type_.compareTo("tcp")!=0)	    	        
+	    	    if (type_.compareTo("tcp")!=0 && type_.compareTo("udp")!=0)	    	        
 	    	    {
 	    	        Log.e(TAG,"cl type not supported");
 	    	        return false;

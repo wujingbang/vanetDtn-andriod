@@ -200,10 +200,12 @@ public abstract class ConvergenceLayer {
 	/**
 	 * Boot-time initialization and registration of statically defined
 	 * convergence layers.
+	 * 由TCP改为UDP
 	 */
 	public static void init_clayers() {
 
-		add_clayer(new TCPConvergenceLayer("tcp"));
+//		add_clayer(new TCPConvergenceLayer("tcp"));
+		add_clayer(new UDPConvergenceLayer("udp"));
 	}
 
 	public static void add_clayer(ConvergenceLayer cl) {

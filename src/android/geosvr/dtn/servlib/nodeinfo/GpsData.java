@@ -61,10 +61,10 @@ public class GpsData extends Service implements Runnable {
 	
 	@Override
 	public void run() {
-		try{
-			//从GPS取得各种信息，计算效用值等。
-			
-		}
+//		try{
+//			//从GPS取得各种信息，计算效用值等。
+//			
+//		}
 		
 	}
 	
@@ -75,8 +75,8 @@ public class GpsData extends Service implements Runnable {
 	}
 	
 	void decay(){
-		setUtilValue_x(getUtilValue_x()*CON_DERATE);
-		setUtilValue_y(getUtilValue_y()*CON_DERATE);
+//		setUtilValue_x(getUtilValue_x()*CON_DERATE);
+//		setUtilValue_y(getUtilValue_y()*CON_DERATE);
 	}
 
 	/*
@@ -85,32 +85,32 @@ public class GpsData extends Service implements Runnable {
 	void utility_resolove(){
 
 		//获取节点速度和方向矢量；同时更新本节点的速度和位置
-		Node *thisnode; //
-		thisnode = Node::get_node_by_address(index);//index);
-		speed = ((MobileNode *)thisnode)->speed();
-		//方向矢量
-		((MobileNode *)thisnode)->getVelo(&orientX, &orientY, &orientZ);
-		//地址
-		((MobileNode *)thisnode)->getLoc(&locX, &locY, &locZ);
-		double incr_x, incr_y;
-		if(speed == 0){
-			incr_x = 0.0;
-			incr_y = 0.0;
-		}else{
-			incr_x = speed * SPEED_PARA * orientX;//Y/sqrt(pow(orientX,2)+pow(orientY,2)));
-			incr_y = speed * SPEED_PARA * orientY;///sqrt(pow(orientX,2)+pow(orientY,2)));
-		}
-		//迅速降低反方向的值
-		if(getUtilValue_x() * incr_x < 0)
-			incr_x *= 2;
-		if(getUtilValue_y() * incr_y < 0)
-			incr_y *= 2;
-
-		setUtilValue_x(getUtilValue_x() + incr_x);
-		setUtilValue_y(getUtilValue_y() + incr_y);
-
-		//decrease
-		decay();
+//		Node *thisnode; //
+//		thisnode = Node::get_node_by_address(index);//index);
+//		speed = ((MobileNode *)thisnode)->speed();
+//		//方向矢量
+//		((MobileNode *)thisnode)->getVelo(&orientX, &orientY, &orientZ);
+//		//地址
+//		((MobileNode *)thisnode)->getLoc(&locX, &locY, &locZ);
+//		double incr_x, incr_y;
+//		if(speed == 0){
+//			incr_x = 0.0;
+//			incr_y = 0.0;
+//		}else{
+//			incr_x = speed * SPEED_PARA * orientX;//Y/sqrt(pow(orientX,2)+pow(orientY,2)));
+//			incr_y = speed * SPEED_PARA * orientY;///sqrt(pow(orientX,2)+pow(orientY,2)));
+//		}
+//		//迅速降低反方向的值
+//		if(getUtilValue_x() * incr_x < 0)
+//			incr_x *= 2;
+//		if(getUtilValue_y() * incr_y < 0)
+//			incr_y *= 2;
+//
+//		setUtilValue_x(getUtilValue_x() + incr_x);
+//		setUtilValue_y(getUtilValue_y() + incr_y);
+//
+//		//decrease
+//		decay();
 	}
 
 	/*
@@ -123,11 +123,11 @@ public class GpsData extends Service implements Runnable {
 	}
 
 	double inter_angle_cos(double dst_locX, double dst_locY, double node_locX, double node_locY){
-		long double a = pow(dst_locX - node_locX, 2) + pow(dst_locY - node_locY, 2);
-		long double b = pow(dst_locX,2)+pow(dst_locY,2);
-		long double c = pow(node_locX,2)+pow(node_locY,2);
-
-		return ((b+c-a)/(2*sqrt(b)*sqrt(c)));
+//		long double a = pow(dst_locX - node_locX, 2) + pow(dst_locY - node_locY, 2);
+//		long double b = pow(dst_locX,2)+pow(dst_locY,2);
+//		long double c = pow(node_locX,2)+pow(node_locY,2);
+//
+//		return ((b+c-a)/(2*sqrt(b)*sqrt(c)));
 
 	}
 

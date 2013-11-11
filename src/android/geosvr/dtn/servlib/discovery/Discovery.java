@@ -105,6 +105,7 @@ public abstract class Discovery {
 	/**
 	 * Factory method for instantiating objects from the appropriate derived
 	 * class
+	 * 工厂设计模式
 	 */
 	public static Discovery create_discovery(String name, String afname,
 			short port) {
@@ -164,7 +165,7 @@ public abstract class Discovery {
 	/**
 	 * Register an Announce to advertise a local convergence layer and to
 	 * respond to advertisements from neighbors
-	 */
+	 *///!disc.announce(AnnounceID, code, ClType, interval)
 	public boolean announce(String name, int argc, String ClType, int interval) {
 
 		if (list_.indexOf(name) != -1) {
@@ -178,6 +179,7 @@ public abstract class Discovery {
 		}
 
 		String cltype = ClType;
+		//ConvergenceLayer 在init时，add了一个UDP。
 		ConvergenceLayer cl = ConvergenceLayer.find_clayer(cltype);
 		if (cl == null) {
 			Log.e(TAG, "invalid convergence layer type");
@@ -310,6 +312,8 @@ public abstract class Discovery {
 
 	}
 
+	//wujingbang
+	private String tlprotocol_; //传输层是tcp还是udp？
 	private String name_; // /< name of discovery agent
 	private String af_; // /< address family
 	protected String to_addr_; // /< outbound address of advertisements sent

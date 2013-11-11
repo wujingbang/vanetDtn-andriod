@@ -95,15 +95,17 @@ public abstract class Announce {
 
 	/**
 	 * Factory method for creating instances of derived classes
-	 */
+	 *///Announce.create_announce(name, cl, argc, ClType, interval);
 	public static Announce create_announce(String name, ConvergenceLayer cl,
 			int argc, String ClType, int interval) {
 
 		String clname = cl.name();
 		assert (cl != null);
 		Announce announce = null;
-		if ((clname.compareTo("tcp") == 0)) {
-			announce = new IPAnnounce();
+		if (clname.compareTo("tcp") == 0) {
+			announce = new IPAnnounce("tcp");
+		} else if(clname.compareTo("udp") == 0){
+			announce = new IPAnnounce("udp");
 		} else {
 			announce = null;
 
