@@ -23,10 +23,17 @@ package android.geosvr.dtn.servlib.conv_layers;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.SocketException;
+import java.util.Enumeration;
 
+import android.content.Context;
+import android.geosvr.dtn.DTNService;
 import android.geosvr.dtn.servlib.contacts.Interface;
 import android.geosvr.dtn.servlib.contacts.Link;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 /**
@@ -75,11 +82,56 @@ public class UDPConvergenceLayer extends StreamConvergenceLayer implements Seria
 	 * Get the IP address that the DHCP server assigns to the mobile phone
 	 * @return The current IP address
 	 */
-	public static InetAddress getting_my_ip() {
-		return TCPConvergenceLayer.getting_my_ip();
+	public InetAddress getting_my_ip() {
+		return getLocalIpAddress();
 	}
 	
+	/**
+	 * 这种方法会把所有的IP地址查出来，再根据接口挑选。
+	 */
+	public static InetAddress getLocalIpAddress() {
+	     try {
+	         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+	             NetworkInterface intf = en.nextElement();
+	             for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+	            	 enumIpAddr.nextElement();
+	            	 if (intf.getName().equals("adhoc0"))
+	            	 {
+	            		 //取第二个值
+	            		 InetAddress inetAddress = enumIpAddr.nextElement();
+	            		 if (!inetAddress.isLoopbackAddress()) {
+		                     return inetAddress;
+		                 }
+	            	 } 
+	             }
+	         }
+	     } catch (SocketException ex) {
+	         Log.e("testAndroid1", ex.toString());
+	     }
+	     return null;
+	} 
+	
+	/*
+	 * get IP addr
+	 * 
+	 */
+	public static String get_my_ip(){
+		WifiManager wifiMan = (WifiManager) DTNService.context().getSystemService(Context.WIFI_SERVICE);
+		WifiInfo info = wifiMan.getConnectionInfo();
+		String mac = info.getMacAddress();// 获得本机的MAC地址
+		String ssid = info.getSSID();// 获得本机所链接的WIFI名称
 
+		int ipAddress = info.getIpAddress();
+		String ipString = "";// 本机在WIFI状态下路由分配给的IP地址
+
+		// 获得IP地址的方法一：
+		if (ipAddress != 0) {
+		       ipString = ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "." 
+				+ (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));
+		}
+		return ipString;
+	}
+	
 	/**
 	 * Bring up an interface.
 	 */

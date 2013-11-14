@@ -114,16 +114,8 @@ public class UDPListener extends CLInfo implements Runnable {
 	 * Main loop
 	 */
 	public void run() {
-
+/*
 		while (listening_) {
-			try {
-				Log.d(TAG, "start accepting connection");
-//				socket = server_socket_.accept();
-			} catch (Exception e) {
-				Log.d(TAG, "IOException in accept");
-				continue;
-			}
-			Log.d(TAG, "Connection Accepted");
 
 			UDPConnection udpconnection;
 
@@ -139,6 +131,6 @@ public class UDPListener extends CLInfo implements Runnable {
 			}
 
 		}
-
+*/
 	}
 }

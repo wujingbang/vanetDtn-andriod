@@ -65,7 +65,7 @@ public class GpsData extends Service implements Runnable {
 //			//从GPS取得各种信息，计算效用值等。
 //			
 //		}
-		
+		return;
 	}
 	
 	@Override
@@ -119,7 +119,8 @@ public class GpsData extends Service implements Runnable {
 	 *	3. 返回合成后的值用于对比
 	 */
 	double utility_combin(double inter_angle_cos, double utility_x, double utility_y){
-		return sqrt(pow(utility_x, 2) + pow(utility_y, 2)) * inter_angle_cos;
+//		return sqrt(pow(utility_x, 2) + pow(utility_y, 2)) * inter_angle_cos;
+		return 0.0;
 	}
 
 	double inter_angle_cos(double dst_locX, double dst_locY, double node_locX, double node_locY){
@@ -128,7 +129,7 @@ public class GpsData extends Service implements Runnable {
 //		long double c = pow(node_locX,2)+pow(node_locY,2);
 //
 //		return ((b+c-a)/(2*sqrt(b)*sqrt(c)));
-
+		return 0.0;
 	}
 
 	

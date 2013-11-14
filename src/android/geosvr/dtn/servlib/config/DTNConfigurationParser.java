@@ -214,6 +214,11 @@ public class DTNConfigurationParser {
 					{
 						ie.set_conv_layer_type(conv_layer_type_t.TCP);
 					}
+					//wujingbang
+					if (conv_layer_type.getValue().equals("udp"))
+					{
+						ie.set_conv_layer_type(conv_layer_type_t.UDP);
+					}
 					Attr id = e.getAttributeNode("id");
 					ie.set_id(id.getValue());
 					
@@ -470,6 +475,9 @@ public class DTNConfigurationParser {
 					if (conv_layer_type.getValue().equals("tcp"))
 					{
 						ae.set_conv_layer_type(conv_layer_type_t.TCP);
+					}else if (conv_layer_type.getValue().equals("udp"))
+					{
+						ae.set_conv_layer_type(conv_layer_type_t.UDP);
 					}
 					else
 					{

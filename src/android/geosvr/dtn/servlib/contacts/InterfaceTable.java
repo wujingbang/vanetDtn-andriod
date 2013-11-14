@@ -82,14 +82,14 @@ public class InterfaceTable {
 				local_port = TCPConvergenceLayer.TCPCL_DEFAULT_PORT;
 			}
 
-			ConvergenceLayer cl = ConvergenceLayer
-					.find_clayer(conv_layer_type_);
-			if (cl != null) {
+			ConvergenceLayer cl = ConvergenceLayer.find_clayer(conv_layer_type_);
+			if (cl == null) {
 				Log.d(TAG, "can't find convergence layer for" + id);
 
 			}
 			cl.set_local_port(local_port);
-
+			
+			//在add中会启动汇聚层
 			if (!InterfaceTable.getInstance().add(id, cl, conv_layer_type_)) {
 				Log.d(TAG, "error adding interface %s" + id);
 			}

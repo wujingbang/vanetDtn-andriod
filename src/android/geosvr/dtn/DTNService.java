@@ -199,7 +199,7 @@ public class DTNService extends android.app.Service {
     		DTNConfiguration.default_dtn_config().routes_setting().set_local_eid(getDefaultEID());
         	//config_ = DTNConfigurationParser.parse_config_file(this.getAssets().open(getResources().getString(R.string.DTNConfigFilePath)));
     		config_ = DTNConfigurationParser.parse_config_file(openFileInput(getResources().getString(R.string.DTNConfigFilePath)), myPrefs);
-    		ConvergenceLayer.init_clayers();
+    		ConvergenceLayer.init_clayers(config_);
         	DiscoveryTable.getInstance().init(config_);
             ContactManager.getInstance().init(config_);
         	InterfaceTable.init(config_);

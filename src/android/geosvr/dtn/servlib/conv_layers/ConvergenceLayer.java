@@ -25,11 +25,16 @@ import java.util.Iterator;
 import android.geosvr.dtn.servlib.bundling.Bundle;
 import android.geosvr.dtn.servlib.bundling.BundleDaemon;
 import android.geosvr.dtn.servlib.bundling.event.CLAParamsSetEvent;
+import android.geosvr.dtn.servlib.config.DTNConfiguration;
+import android.geosvr.dtn.servlib.config.InvalidDTNConfigurationException;
+import android.geosvr.dtn.servlib.config.DiscoveriesSetting.DiscoveryEntry;
+import android.geosvr.dtn.servlib.config.InterfacesSetting.InterfaceEntry;
 import android.geosvr.dtn.servlib.contacts.AttributeNameVector;
 import android.geosvr.dtn.servlib.contacts.AttributeVector;
 import android.geosvr.dtn.servlib.contacts.Contact;
 import android.geosvr.dtn.servlib.contacts.Interface;
 import android.geosvr.dtn.servlib.contacts.Link;
+import android.geosvr.dtn.systemlib.util.List;
 import android.util.Log;
 
 /**
@@ -200,12 +205,28 @@ public abstract class ConvergenceLayer {
 	/**
 	 * Boot-time initialization and registration of statically defined
 	 * convergence layers.
-	 * 由TCP改为UDP
+	 * @wujingbang:由TCP改为UDP,加入逻辑判断
 	 */
-	public static void init_clayers() {
+	public static void init_clayers(DTNConfiguration config)
+	{
+		List<InterfaceEntry> EntriesList = config.interfaces_setting()
+				.interface_entries();
+		Iterator<InterfaceEntry> i = EntriesList.iterator();
+		Interface.set_iface_counter(0);
+		//只有一个条目，所以只会加一个覆盖层。
+		while (i.hasNext()) {
 
-//		add_clayer(new TCPConvergenceLayer("tcp"));
-		add_clayer(new UDPConvergenceLayer("udp"));
+			InterfaceEntry element = i.next();
+
+			String conv_layer_type_ = element.conv_layer_type().getCaption();
+			if (conv_layer_type_.equals("tcp"))
+				add_clayer(new TCPConvergenceLayer("tcp"));
+			else if (conv_layer_type_.equals("udp"))
+				add_clayer(new UDPConvergenceLayer("udp"));
+			
+		}
+//		
+		
 	}
 
 	public static void add_clayer(ConvergenceLayer cl) {
@@ -224,11 +245,10 @@ public abstract class ConvergenceLayer {
 
 		while (iter.hasNext()) {
 			ConvergenceLayer element = iter.next();
-			if (proto.compareTo(element.name()) == 0) {
+			if (proto.equals(element.name())) {
 				return element;
 			}
 		}
-
 		return null;
 	}
 

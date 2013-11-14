@@ -300,7 +300,7 @@ public class IPDiscovery extends Discovery implements Runnable {
 
 							DatagramPacket pack = new DatagramPacket(data,
 									data.length, InetAddress
-											.getByName("255.255.255.255"),
+											.getByName("192.168.1.255"),
 									port_);
 							socket_.send(pack);
 							min_diff = announce.interval();

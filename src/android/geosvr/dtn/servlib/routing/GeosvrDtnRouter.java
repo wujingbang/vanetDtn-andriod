@@ -123,7 +123,8 @@ public class GeosvrDtnRouter extends BundleRouter {
 	 *            (i.e. the number of matching route entries.)" [DTN2]
 	 */
 	protected int route_bundle(Bundle bundle) {
-
+		return 0;
+/*
 		RouteEntryVec matches = new RouteEntryVec();
 
 		Log.d(TAG, String.format("route_bundle: checking bundle %d", bundle
@@ -188,6 +189,7 @@ public class GeosvrDtnRouter extends BundleRouter {
 				"route_bundle bundle id %d: forwarded on %d links", bundle
 						.bundleid(), count));
 		return count;
+*/
 	}
 
 	/**

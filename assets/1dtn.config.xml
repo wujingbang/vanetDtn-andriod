@@ -18,7 +18,7 @@
     <!--  Interfaces Section -->
     <tns:InterfacesSetting>
         <!--  Setup your listening interfaces here -->
-        <tns:Interface id="tcp0" conv_layer_type="tcp"
+        <tns:Interface id="udp0" conv_layer_type="udp"
             local_port="4556" />
     </tns:InterfacesSetting>
 
