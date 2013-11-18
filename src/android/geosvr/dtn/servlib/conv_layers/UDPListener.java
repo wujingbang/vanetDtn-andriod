@@ -114,14 +114,14 @@ public class UDPListener extends CLInfo implements Runnable {
 	 * Main loop
 	 */
 	public void run() {
-/*
+
 		while (listening_) {
 
 			UDPConnection udpconnection;
 
 			try {
 				UDPLinkParams tlp = cl_.new UDPLinkParams(true);
-				tlp.remote_addr_ = socket.getInetAddress();
+				//tlp.remote_addr_ = socket.getInetAddress();
 				udpconnection = new UDPConnection(cl_, tlp);
 				udpconnection.set_socket(socket);
 				udpconnection.start();
@@ -131,6 +131,6 @@ public class UDPListener extends CLInfo implements Runnable {
 			}
 
 		}
-*/
+
 	}
 }

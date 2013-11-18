@@ -50,6 +50,7 @@ import android.geosvr.dtn.servlib.conv_layers.StreamConvergenceLayer.data_segmen
 import android.geosvr.dtn.servlib.conv_layers.StreamConvergenceLayer.msg_type_t;
 import android.geosvr.dtn.servlib.conv_layers.StreamConvergenceLayer.shutdown_flags_t;
 import android.geosvr.dtn.servlib.conv_layers.StreamConvergenceLayer.shutdown_reason_t;
+import android.geosvr.dtn.servlib.conv_layers.TCPConvergenceLayer.TCPLinkParams;
 import android.geosvr.dtn.servlib.conv_layers.UDPConvergenceLayer.UDPLinkParams;
 import android.geosvr.dtn.servlib.naming.EndpointID;
 import android.geosvr.dtn.systemlib.util.BufferHelper;
@@ -2000,6 +2001,78 @@ public class UDPConnection extends CLConnection {
 		StreamLinkParams ret = (StreamLinkParams) params_;
 		assert (ret != null) : "Connection : stream_lparams, ret is null";
 		return ret;
+	}
+	
+	public void run(){
+
+//		// There are 2 cases when we get here
+//		// 1. The TCPServer creates the socket and gives the socket here
+//		// 2. The Contact manager opencontact() to the available link
+//
+//		TCPLinkParams params = (TCPLinkParams) (params_);
+//		assert (params != null) : "CLConnection : run, params are null";
+
+//		poll_timeout_ = params.data_timeout();
+//
+//		if (params.keepalive_interval() != 0
+//				&& (params.keepalive_interval() * 1000) < params.data_timeout()) {
+//			poll_timeout_ = 2 * params.keepalive_interval() * 1000;
+//		}
+//		if (contact_broken_) {
+//			Log.d(TAG, "contact_broken set during initialization");
+//			return;
+//		}
+
+//		if (active_connector_) {
+//			Log.d(TAG, "trying to connect");
+//			try {
+//				connect();
+//			} catch (ConnectionException e) {
+//				String text = String.format(
+//						"connection attempt to %s:%s failed...",
+//						params.remote_addr_, params.remote_port_);
+//				Log.i(TAG, text);
+//				break_contact(ContactEvent.reason_t.BROKEN);
+//				return;
+//			}
+//		}
+
+		while (true) {
+//			if (contact_broken_) {
+//				Log.d(TAG, "contact_broken set, exiting main loop");
+//				return;
+//			}
+
+//			Log.d(TAG, "CLConnection is still running in the main loop, cmdqueue_ size is " + cmdqueue_.size());
+			// "check the command queue coming in from the bundle daemon
+			// if any arrive, we continue to the top of the loop to check
+			// contact_broken and then process any other commands before
+			// checking for data to/from the remote side" [DTN2].
+//			if (cmdqueue_.size() != 0) {
+//				process_command();
+//				continue;
+//			}
+
+			int timeout = 10;
+
+			if (contact_up_) {
+				// "send any data there is to send. if something was sent
+				// out and there's still more to go, we'll call poll() with a
+				// zero timeout so we can read any data there is to
+				// consume, then return to send another chunk" [DTN2].
+				boolean more_to_send = send_pending_data();
+				timeout = more_to_send ? 0 : poll_timeout_;
+			}
+
+			// "check again here for contact broken since we don't want to
+			// poll if the socket's been closed" [DTN2]
+			if (contact_broken_) {
+				Log.d(TAG, "contact_broken set, exiting main loop");
+				return;
+			}
+
+			handle_poll_activity(timeout);
+		}
 	}
 
 }

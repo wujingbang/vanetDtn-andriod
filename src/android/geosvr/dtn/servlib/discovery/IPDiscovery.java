@@ -340,7 +340,7 @@ public class IPDiscovery extends Discovery implements Runnable {
 				byte[] b = packet.getData();
 				ByteBuffer bb = ByteBuffer.wrap(b);
 
-				hdr = new DiscoveryHeader();
+//				hdr = new DiscoveryHeader();
 				hdr = new DiscoveryHeader();
 				hdr.set_cl_type(bb.get());
 

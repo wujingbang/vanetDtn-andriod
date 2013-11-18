@@ -258,16 +258,27 @@ public abstract class Discovery {
 			Bundle bundle = new Bundle(location_t.MEMORY);
 			bundle.set_dest(remote_eid);
 			bundle.set_source(BundleDaemon.getInstance().local_eid());
-			link.queue().insert_random(bundle);
 			
-			if(discoveries.get(remote_eid.str()).equals(cl_addr)){
+			bundle.get_lock().lock();
+			link.queue().insert_random(bundle);
+			bundle.get_lock().unlock();
+			
+			String s = discoveries.get(remote_eid.str());
+				
+			
+			if(discoveries.containsKey(remote_eid.str())) {
+				if(discoveries.get(remote_eid.str()).equals(cl_addr)){
+				}
+				else {
+					discoveries.remove(remote_eid.str());
+					discoveries.put(remote_eid.str(), cl_addr);
+					DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
+				}
 			}
 			else {
-				discoveries.remove(remote_eid.str());
 				discoveries.put(remote_eid.str(), cl_addr);
 				DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
 			}
-			
 			BundleDaemon BD = BundleDaemon.getInstance();
 			// request to set link available
 			BD.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,

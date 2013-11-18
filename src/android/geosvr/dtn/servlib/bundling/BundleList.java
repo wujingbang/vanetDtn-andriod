@@ -332,6 +332,9 @@ public class BundleList implements Serializable {
 	public void insert_random(Bundle bundle) {
 
 		lock_.lock();
+		int s = 222;
+		if(!lock_.isHeldByCurrentThread()) 
+			s = 1;
 		try
 		{
 			int random_position = (int) (Math.random() * this.size());
@@ -633,8 +636,10 @@ public class BundleList implements Serializable {
 	 * @throws InterruptedException 
 	 */
 	private void add_bundle(final Bundle b, final int pos) throws BundleListLockNotHoldByCurrentThread, BundleLockNotHeldByCurrentThread, InterruptedException {
-		if(!lock_.isHeldByCurrentThread()) throw new BundleListLockNotHoldByCurrentThread();
-	    if(!b.get_lock().isHeldByCurrentThread()) throw new BundleLockNotHeldByCurrentThread();
+		if(!lock_.isHeldByCurrentThread()) 
+			throw new BundleListLockNotHoldByCurrentThread();
+	    if(!b.get_lock().isHeldByCurrentThread()) 
+	    	throw new BundleLockNotHeldByCurrentThread();
 	    
 	    if (b.is_queued_on(this)) {
 	        Log.e(TAG, String.format("ERROR in add bundle: " +
