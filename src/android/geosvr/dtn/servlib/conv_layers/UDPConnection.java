@@ -21,6 +21,7 @@
 package android.geosvr.dtn.servlib.conv_layers;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -52,6 +53,7 @@ import android.geosvr.dtn.servlib.conv_layers.StreamConvergenceLayer.shutdown_fl
 import android.geosvr.dtn.servlib.conv_layers.StreamConvergenceLayer.shutdown_reason_t;
 import android.geosvr.dtn.servlib.conv_layers.TCPConvergenceLayer.TCPLinkParams;
 import android.geosvr.dtn.servlib.conv_layers.UDPConvergenceLayer.UDPLinkParams;
+import android.geosvr.dtn.servlib.discovery.Discovery;
 import android.geosvr.dtn.servlib.naming.EndpointID;
 import android.geosvr.dtn.systemlib.util.BufferHelper;
 import android.geosvr.dtn.systemlib.util.IByteBuffer;
@@ -63,13 +65,18 @@ import android.util.Log;
  * @author Mahesh Bogadi Shankar Prasad (mabsp@kth.se)
  */
 
-public class UDPConnection extends CLConnection {
+public class UDPConnection extends CLConnection {// implements Runnable{
 
 	/**
 	 * Unique identifier according to Java Serializable specification
 	 */
 	private static final long serialVersionUID = -4367955899900761305L;
 
+	/**
+	 * Internal thread
+	 */
+	private Thread thread_;
+	
 	/**
 	 * TAG for Android Logging mechanism
 	 */
@@ -131,7 +138,7 @@ public class UDPConnection extends CLConnection {
 			boolean active_connector) throws OutOfMemoryError {
 
 		super(cl, params, active_connector);
-
+//		thread_ = new Thread(this);
 		current_inflight_ = null;
 		send_segment_todo_ = 0;
 		recv_segment_todo_ = 0;
@@ -148,9 +155,9 @@ public class UDPConnection extends CLConnection {
 	 */
 	UDPConnection(UDPConvergenceLayer cl, UDPLinkParams params)
 			throws OutOfMemoryError {
-
+		
 		super(cl, params, true);
-
+//		thread_ = new Thread(this);
 		this.params_ = params;
 		String nexthop = String.format("%s:%s", (params.remote_addr_),
 				params.remote_port_);
@@ -1890,10 +1897,10 @@ public class UDPConnection extends CLConnection {
 	@Override
 	void handle_poll_activity(int timeout) {
 
-		if (!socket_.isConnected()) {
-			Log.d(TAG, "Socket is not connected");
-			break_contact(ContactEvent.reason_t.BROKEN);
-		}
+//		if (!socket_.isConnected()) {
+//			Log.d(TAG, "Socket is not connected");
+//			break_contact(ContactEvent.reason_t.BROKEN);
+//		}
 
 		// if we have something to send , send it first
 		if (sendbuf_.position() > 0)
@@ -1903,7 +1910,7 @@ public class UDPConnection extends CLConnection {
 		try {
 			byte[] data = new byte[2048];
 			DatagramPacket pack = new DatagramPacket(data, data.length);
-			Log.d("B4", pack.getAddress().toString());
+//			Log.d("B4", pack.getAddress().toString());
 			socket_.receive(pack);
 			num_to_read_ = pack.getLength();
 
@@ -1937,18 +1944,23 @@ public class UDPConnection extends CLConnection {
 				}
 			}
 
-		} catch (IOException e) {
-			Log.e(TAG, "IOException, in reading data from the read_stream_:"
+		} catch (Exception e) {
+			Log.e(TAG, "Time out:"
 					+ e.getMessage());
 		}
+		
+//		catch (IOException e) {
+//			Log.e(TAG, "IOException, in reading data from the read_stream_:"
+//					+ e.getMessage());
+//		}
 
 		// send keep alive message if we should send it
 		if (contact_up_ && !contact_broken_) {
 			check_keepalive();
 		}
 
-		if (!contact_broken_)
-			check_timeout();
+//		if (!contact_broken_)
+//			check_timeout();
 	}
 	void send_data() {
 
@@ -2003,41 +2015,16 @@ public class UDPConnection extends CLConnection {
 		return ret;
 	}
 	
-	public void run(){
+	/**
+	 * Start the UDPConnection Thread.
+	 */
+//	public void start() {
+//		thread_.start();
+//	}
+	
+	public void recive_data(){
 
-//		// There are 2 cases when we get here
-//		// 1. The TCPServer creates the socket and gives the socket here
-//		// 2. The Contact manager opencontact() to the available link
-//
-//		TCPLinkParams params = (TCPLinkParams) (params_);
-//		assert (params != null) : "CLConnection : run, params are null";
-
-//		poll_timeout_ = params.data_timeout();
-//
-//		if (params.keepalive_interval() != 0
-//				&& (params.keepalive_interval() * 1000) < params.data_timeout()) {
-//			poll_timeout_ = 2 * params.keepalive_interval() * 1000;
-//		}
-//		if (contact_broken_) {
-//			Log.d(TAG, "contact_broken set during initialization");
-//			return;
-//		}
-
-//		if (active_connector_) {
-//			Log.d(TAG, "trying to connect");
-//			try {
-//				connect();
-//			} catch (ConnectionException e) {
-//				String text = String.format(
-//						"connection attempt to %s:%s failed...",
-//						params.remote_addr_, params.remote_port_);
-//				Log.i(TAG, text);
-//				break_contact(ContactEvent.reason_t.BROKEN);
-//				return;
-//			}
-//		}
-
-		while (true) {
+		while (!(Discovery.discoveries().isEmpty())) {
 //			if (contact_broken_) {
 //				Log.d(TAG, "contact_broken set, exiting main loop");
 //				return;

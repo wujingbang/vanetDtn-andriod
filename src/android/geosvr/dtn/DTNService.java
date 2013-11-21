@@ -201,11 +201,11 @@ public class DTNService extends android.app.Service {
     		config_ = DTNConfigurationParser.parse_config_file(openFileInput(getResources().getString(R.string.DTNConfigFilePath)), myPrefs);
     		ConvergenceLayer.init_clayers(config_);
         	DiscoveryTable.getInstance().init(config_);
-            ContactManager.getInstance().init(config_);
+//        	ContactManager.getInstance().init(config_);
         	InterfaceTable.init(config_);
         	BundleRouter.init(config_);
-        	ProphetQueuing.init(config_);
-        	EpidemicQueuing.init(config_);
+//        	ProphetQueuing.init(config_);
+//        	EpidemicQueuing.init(config_);
         	BundleDaemon.getInstance().init(config_);
         	init_datastore(config_);
     	}

@@ -216,7 +216,7 @@ public class DiscoveryTable {
 		return disc;
 
 	}
-
+	
 	protected DiscoveryList dlist_;  // / List of Discoveries
 
 }

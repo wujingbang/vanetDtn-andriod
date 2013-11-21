@@ -243,7 +243,8 @@ public abstract class Discovery {
 
 		// Look for match on convergence layer and remote EID
 
-		Link link = cm.find_link_to(remote_eid);
+		//wujingbang: 删除link。。（udp不需要）
+/*		Link link = cm.find_link_to(remote_eid);
 
 		if (link == null) {
 			link = cm.new_opportunistic_link(
@@ -262,7 +263,7 @@ public abstract class Discovery {
 			bundle.get_lock().lock();
 			link.queue().insert_random(bundle);
 			bundle.get_lock().unlock();
-			
+*/			
 			String s = discoveries.get(remote_eid.str());
 				
 			
@@ -279,12 +280,11 @@ public abstract class Discovery {
 				discoveries.put(remote_eid.str(), cl_addr);
 				DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
 			}
-			BundleDaemon BD = BundleDaemon.getInstance();
+//			BundleDaemon BD = BundleDaemon.getInstance();
 			// request to set link available
-			BD.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-					ContactEvent.reason_t.DISCOVERY));
-		}
-		else {
+//			BD.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE, ContactEvent.reason_t.DISCOVERY));
+//		}
+/*		else {
 			assert (link != null);
 			if (!link.isNotUnavailable()) {
 				link.lock().lock();
@@ -293,10 +293,10 @@ public abstract class Discovery {
 				
 				BundleDaemon BD = BundleDaemon.getInstance();
 				// request to set link available
-				BD.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-						ContactEvent.reason_t.DISCOVERY));
+//				BD.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE, ContactEvent.reason_t.DISCOVERY));
 			}
 		}
+		*/
 	}
 
 	/**
