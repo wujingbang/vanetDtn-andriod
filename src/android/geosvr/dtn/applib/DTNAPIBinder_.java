@@ -79,15 +79,15 @@ import android.util.Log;
 
 
 /**
- *  An DTNAPI implementation using Android Binder
+ *  An DTNAPI_ implementation using Android Binder
  *  @author Rerngvit Yanggratoke (rerngvit@kth.se) 
  */
-public class DTNAPIBinder extends Binder implements DTNAPI {
+public class DTNAPIBinder_ extends Binder implements DTNAPI_ {
 
 	/**
 	 * TAG String for Android logging system
 	 */
-	private static String TAG = "DTNAPIBinder";
+	private static String TAG = "DTNAPIBinder_";
 
 	/**
 	 *  List for holding DTN Handles registred with this binder
@@ -107,7 +107,7 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	/**
 	 * Constructor by initializing all the Data Structures inside
 	 */
-	public DTNAPIBinder() {
+	public DTNAPIBinder_() {
 		super();
 		handles_ = new List<DTNHandle>();
 
@@ -116,10 +116,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_build_local_eid
+	 * An implementation of the DTNAPI_'s dtn_build_local_eid
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_build_local_eid
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_build_local_eid
 	 * (android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNEndpointID,
 	 * android.geosvr.dtn.applib.types.DTNServiceTag)
@@ -135,7 +135,7 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 		if (eid.append_service_tag(service) == false) {
 			Log
 					.e(TAG,
-							"DTNAPIBinder:dtn_build_local_eid error appending service tag");
+							"DTNAPIBinder_:dtn_build_local_eid error appending service tag");
 			return dtn_api_status_report_code.DTN_EINTERNAL;
 		}
 
@@ -159,8 +159,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_open
-	 * @see android.geosvr.dtn.applib.DTNAPI#dtn_open
+	 * An implementation of the DTNAPI_'s dtn_open
+	 * @see android.geosvr.dtn.applib.DTNAPI_#dtn_open
 	 */
 	
 	public dtn_api_status_report_code dtn_open(DTNHandle handle) {
@@ -179,8 +179,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_close
-	 * @see android.geosvr.dtn.applib.DTNAPI#dtn_close
+	 * An implementation of the DTNAPI_'s dtn_close
+	 * @see android.geosvr.dtn.applib.DTNAPI_#dtn_close
 	 */
 	
 	public dtn_api_status_report_code dtn_close(DTNHandle handle) {
@@ -202,10 +202,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_find_registration
+	 * An implementation of the DTNAPI_'s dtn_find_registration
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_find_registration
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_find_registration
 	 * (android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNEndpointID,
 	 * android.geosvr.dtn.applib.types.DTNRegistrationID)
@@ -239,10 +239,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 
 	/**
 	 * 
-	 * An implementation of the DTNAPI's dtn_recv
+	 * An implementation of the DTNAPI_'s dtn_recv
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_recv(android.geosvr.dtn.applib.types.DTNHandle,
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_recv(android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNBundleSpec,
 	 * android.geosvr.dtn.applib.DTNAPICode.
 	 * dtn_bundle_payload_location_t,
@@ -390,10 +390,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_register
+	 * An implementation of the DTNAPI_'s dtn_register
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_register(android.geosvr.dtn.applib.types.DTNHandle,
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_register(android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNRegistrationInfo,
 	 * android.geosvr.dtn.applib.types.DTNRegistrationID)
 	 */
@@ -454,10 +454,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_send
+	 * An implementation of the DTNAPI_'s dtn_send
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_send(android.geosvr.dtn.applib.types.DTNHandle,
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_send(android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNRegistrationID,
 	 * android.geosvr.dtn.applib.types.DTNBundleSpec,
 	 * android.geosvr.dtn.applib.types.DTNBundlePayload,
@@ -755,10 +755,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_send
+	 * An implementation of the DTNAPI_'s dtn_send
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_send(android.geosvr.dtn.applib.types.DTNHandle,
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_send(android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNRegistrationID,
 	 * android.geosvr.dtn.applib.types.DTNBundleSpec,
 	 * android.geosvr.dtn.applib.types.DTNBundlePayload,
@@ -778,10 +778,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_send
+	 * An implementation of the DTNAPI_'s dtn_send
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_send(android.geosvr.dtn.applib.types.DTNHandle,
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_send(android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNRegistrationID,
 	 * android.geosvr.dtn.applib.types.DTNBundleSpec,
 	 * android.geosvr.dtn.applib.types.DTNBundlePayload,
@@ -1099,10 +1099,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_unregister
+	 * An implementation of the DTNAPI_'s dtn_unregister
 	 * 
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_unregister(android.geosvr.dtn.applib.types.DTNHandle,
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_unregister(android.geosvr.dtn.applib.types.DTNHandle,
 	 * android.geosvr.dtn.applib.types.DTNRegistrationID)
 	 */
 	
@@ -1201,9 +1201,9 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_unregister
+	 * An implementation of the DTNAPI_'s dtn_unregister
 	 * @see
-	 * android.geosvr.dtn.applib.DTNAPI#dtn_bind
+	 * android.geosvr.dtn.applib.DTNAPI_#dtn_bind
 	 */
 	
 	public dtn_api_status_report_code dtn_bind(DTNHandle handle, int regid) {
@@ -1259,9 +1259,9 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	}
 
 	/**
-	 * An implementation of the DTNAPI's dtn_unbind
+	 * An implementation of the DTNAPI_'s dtn_unbind
 	 * 
-	 * @see android.geosvr.dtn.applib.DTNAPI#dtn_unbind
+	 * @see android.geosvr.dtn.applib.DTNAPI_#dtn_unbind
 	 */
 
 	public dtn_api_status_report_code dtn_unbind(DTNHandle handle, int regid) {

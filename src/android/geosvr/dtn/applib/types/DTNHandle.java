@@ -31,7 +31,7 @@ import android.geosvr.dtn.systemlib.thread.Lock;
 public class DTNHandle  {
 	
 	/**
-	 *  lock for controling bound registration ID List in DTNAPIBinder implmenetation
+	 *  lock for controling bound registration ID List in DTNAPIBinder_ implmenetation
 	 */
   private Lock lock_;
   private boolean openned_;

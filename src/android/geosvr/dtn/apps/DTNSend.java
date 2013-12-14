@@ -20,7 +20,7 @@
 package android.geosvr.dtn.apps;
 
 import java.io.UnsupportedEncodingException;
-
+import android.geosvr.dtn.applib.DTNAPICode;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -28,8 +28,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.geosvr.dtn.DTNService;
 import android.geosvr.dtn.R;
-import android.geosvr.dtn.applib.DTNAPIBinder;
+import android.geosvr.dtn.applib.DTNAPIBinder_;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_api_status_report_code;
+import android.geosvr.dtn.applib.DTNAPICode.dtn_bundle_delivery_opts_t;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_bundle_payload_location_t;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_bundle_priority_t;
 import android.geosvr.dtn.applib.types.DTNBundleID;
@@ -80,9 +81,9 @@ public class DTNSend extends Activity  {
 	private TextView MessageTextView;
 	
 	/**
-	 * DTNAPIBinder object
+	 * DTNAPIBinder_ object
 	 */
-	private DTNAPIBinder dtn_api_binder_;
+	private DTNAPIBinder_ dtn_api_binder_;
 
 	
 	//  Default DTN send parameters 
@@ -94,7 +95,7 @@ public class DTNSend extends Activity  {
 	/**
 	 * Set delivery options to don't flag at all
 	 */
-	private static final int DELIVERY_OPTIONS = 0;
+	private static final int DELIVERY_OPTIONS = 1;//dtn_bundle_delivery_opts_t.DOPTS_CUSTODY;
 	
 	/**
 	 * Set priority to normal sending
@@ -119,7 +120,7 @@ public class DTNSend extends Activity  {
 		}
 	
 	/**
-	 * The onDestroy function override form Android Activity. This will free the DTNAPIBinder resource
+	 * The onDestroy function override form Android Activity. This will free the DTNAPIBinder_ resource
 	 * by unbinding the service
 	 */
 	
@@ -239,7 +240,7 @@ public class DTNSend extends Activity  {
 			
 			public void onServiceConnected(ComponentName arg0, IBinder ibinder) {
 				Log.i(TAG, "DTN Service is bound");
-				dtn_api_binder_ = (DTNAPIBinder) ibinder;
+				dtn_api_binder_ = (DTNAPIBinder_) ibinder;
 			}
 
 
@@ -283,34 +284,34 @@ public class DTNSend extends Activity  {
 		if (open_status != dtn_api_status_report_code.DTN_SUCCESS) throw new DTNOpenFailException();
 		try
 		{
-		DTNBundleSpec spec = new DTNBundleSpec();
-		
-		// set destination from the user input
-		spec.set_dest(new DTNEndpointID(dest_eid));
-		
-		// set the source EID from the bundle Daemon
-		spec.set_source(new DTNEndpointID(BundleDaemon.getInstance().local_eid().toString()));
+			DTNBundleSpec spec = new DTNBundleSpec();
 			
-		// Set expiration in seconds, default to 1 hour
-		spec.set_expiration(EXPIRATION_TIME);
-		// no option processing for now
-		spec.set_dopts(DELIVERY_OPTIONS);
-		// Set prority
-		spec.set_priority(PRIORITY);
-		
-		// Data structure to get result from the IBinder
-		DTNBundleID dtn_bundle_id = new DTNBundleID();
-		
-		dtn_api_status_report_code api_send_result =  dtn_api_binder_.dtn_send(dtn_handle, 
-				spec, 
-				dtn_payload, 
-				dtn_bundle_id);
-		
-		// If the API fail to execute throw the exception so user interface can catch and notify users
-		if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS)
-		{
-			throw new DTNAPIFailException();
-		}
+			// set destination from the user input
+			spec.set_dest(new DTNEndpointID(dest_eid));
+			
+			// set the source EID from the bundle Daemon
+			spec.set_source(new DTNEndpointID(BundleDaemon.getInstance().local_eid().toString()));
+				
+			// Set expiration in seconds, default to 1 hour
+			spec.set_expiration(EXPIRATION_TIME);
+			// no option processing for now
+			spec.set_dopts(DELIVERY_OPTIONS);
+			// Set prority
+			spec.set_priority(PRIORITY);
+			
+			// Data structure to get result from the IBinder
+			DTNBundleID dtn_bundle_id = new DTNBundleID();
+			
+			dtn_api_status_report_code api_send_result =  dtn_api_binder_.dtn_send(dtn_handle, 
+					spec, 
+					dtn_payload, 
+					dtn_bundle_id);
+			
+			// If the API fail to execute throw the exception so user interface can catch and notify users
+			if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS)
+			{
+				throw new DTNAPIFailException();
+			}
 		
 		}
 		finally

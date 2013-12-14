@@ -34,7 +34,7 @@ import android.geosvr.dtn.systemlib.util.List;
  *  an API interface for BP application to communicate with the DTNService
  *  @author Rerngvit Yanggratoke (rerngvit@kth.se) 
  */
-public interface DTNAPI {
+public interface DTNAPI_ {
 
 	/**
 	 * "biggest in-memory bundle is ~50K" [DTN2]

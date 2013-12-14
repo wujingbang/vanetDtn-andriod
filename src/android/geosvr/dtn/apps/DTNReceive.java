@@ -33,7 +33,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.geosvr.dtn.DTNService;
 import android.geosvr.dtn.R;
-import android.geosvr.dtn.applib.DTNAPIBinder;
+import android.geosvr.dtn.applib.DTNAPIBinder_;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_api_status_report_code;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_bundle_payload_location_t;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_reg_flags_t;
@@ -83,9 +83,9 @@ public class DTNReceive extends Activity {
 	private TextView resultTextView;
 	
 	/**
-	 * The DTNAPIBinder for calling API in DTNService
+	 * The DTNAPIBinder_ for calling API in DTNService
 	 */
-	private DTNAPIBinder dtn_api_binder_;
+	private DTNAPIBinder_ dtn_api_binder_;
 	
 	/**
 	 * The DTNAPIService connection
@@ -105,7 +105,7 @@ public class DTNReceive extends Activity {
 	}
 
 	/**
-	 * The onDestroy function override form Android Activity. This will free the DTNAPIBinder resource by unbinding the service
+	 * The onDestroy function override form Android Activity. This will free the DTNAPIBinder_ resource by unbinding the service
 	 */
 	
 	@Override
@@ -115,7 +115,7 @@ public class DTNReceive extends Activity {
 	}
 
 	/**
-	 * Initialize the User Interface and bind the DTNAPI to the service
+	 * Initialize the User Interface and bind the DTNAPI_ to the service
 	 */
 	private void init() {
 		init_UIs();
@@ -195,7 +195,7 @@ public class DTNReceive extends Activity {
 			
 			public void onServiceConnected(ComponentName arg0, IBinder ibinder) {
 				Log.i(TAG, "DTN Service is bound");
-				dtn_api_binder_ = (DTNAPIBinder) ibinder;
+				dtn_api_binder_ = (DTNAPIBinder_) ibinder;
 			}
 
 			

@@ -21,7 +21,7 @@ package android.geosvr.dtn.apps;
 
 /**
  * Class to represent DTNAPIFailException. 
- * This exception occurs when DTNAPI is unable to successfully execute the operation it is asked to
+ * This exception occurs when DTNAPI_ is unable to successfully execute the operation it is asked to
  * @author Rerngvit Yanggratoke (rerngvit@kth.se) 
  */
 public class DTNAPIFailException extends Exception {

@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.geosvr.dtn.R;
-import android.geosvr.dtn.applib.DTNAPIBinder;
+import android.geosvr.dtn.applib.DTNAPIBinder_;
 import android.geosvr.dtn.servlib.bundling.BundleDaemon;
 import android.geosvr.dtn.servlib.bundling.event.ShutdownRequest;
 import android.geosvr.dtn.servlib.common.ServlibEventData;
@@ -325,7 +325,7 @@ public class DTNService extends android.app.Service {
     	BundleDaemon.getInstance().set_app_shutdown(proc, data);
     }
 
-    private DTNAPIBinder dtn_api_binder_ = new DTNAPIBinder();
+    private DTNAPIBinder_ dtn_api_binder_ = new DTNAPIBinder_();
 
 
     /**

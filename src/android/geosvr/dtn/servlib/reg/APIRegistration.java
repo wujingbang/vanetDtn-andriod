@@ -121,7 +121,7 @@ public class APIRegistration extends Registration{
     /**
      * This will block and wait
      * other wise, put timeout in seconds 
-     * This is for used in DTNAPI to get Bundle result from registration
+     * This is for used in DTNAPI_ to get Bundle result from registration
      * @param timeout Wait for the time before timeout, if timeout equal -1 it means wait indefinite
      * @return Next Bundle from the waiting list.
      * @exception Throws  InterruptedException

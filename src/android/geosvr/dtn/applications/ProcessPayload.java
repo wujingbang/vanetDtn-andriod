@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.geosvr.dtn.DTNService;
-import android.geosvr.dtn.applib.DTNAPIBinder;
+import android.geosvr.dtn.applib.DTNAPIBinder_;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_api_status_report_code;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_bundle_payload_location_t;
 import android.geosvr.dtn.applib.DTNAPICode.dtn_bundle_priority_t;
@@ -44,7 +44,7 @@ public class ProcessPayload extends Service {
 
 	protected static final String TAG = "PayloadReceiver";
 	
-	protected DTNAPIBinder dtn_api_binder_;
+	protected DTNAPIBinder_ dtn_api_binder_;
 
 	private ServiceConnection conn_;
 	
@@ -101,7 +101,7 @@ public class ProcessPayload extends Service {
 			
 			public void onServiceConnected(ComponentName arg0, IBinder ibinder) {
 				Log.i(TAG, "DTN Service is bound");
-				dtn_api_binder_ = (DTNAPIBinder) ibinder;
+				dtn_api_binder_ = (DTNAPIBinder_) ibinder;
 				
 				//Log.v("PayloadReceiver", "payload2: "+payload);
 				
