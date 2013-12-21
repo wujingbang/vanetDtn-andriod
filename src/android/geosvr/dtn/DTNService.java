@@ -224,9 +224,7 @@ public class DTNService extends android.app.Service {
     }
 
     private String getDefaultEID() {
-    	String localEid = "dtn://" 
-    		+ ((WifiManager)context().getSystemService(Context.WIFI_SERVICE)).getConnectionInfo().getMacAddress().replace(":", "") 
-    		+ ".bytewalla.com";
+    	String localEid = "dtn://" + ConvergenceLayer.getLocalIpAddress().toString();
     	//localEid = "dtn://joe.bytewalla.com";
     	return localEid;
 	}

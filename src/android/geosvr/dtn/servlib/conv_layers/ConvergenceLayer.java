@@ -20,6 +20,10 @@
 
 package android.geosvr.dtn.servlib.conv_layers;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.Iterator;
 
 import android.geosvr.dtn.servlib.bundling.Bundle;
@@ -204,8 +208,8 @@ public abstract class ConvergenceLayer {
 	 */
 	public static void init_clayers() {
 
-//		add_clayer(new TCPConvergenceLayer("tcp"));
-		add_clayer(new UDPConvergenceLayer("udp"));
+		add_clayer(new TCPConvergenceLayer("tcp"));
+//		add_clayer(new UDPConvergenceLayer("udp"));
 	}
 
 	public static void add_clayer(ConvergenceLayer cl) {
@@ -271,5 +275,39 @@ public abstract class ConvergenceLayer {
 	 * The unique name of this convergence layer.
 	 */
 	protected String name_;
+
+
+    /**
+     * Get the IP address that the DHCP server assigns to the mobile phone
+     * @return The current IP address
+     */
+    public InetAddress getting_my_ip() {
+            return getLocalIpAddress();
+    }
+    
+    /**
+     * 这种方法会把所有的IP地址查出来，再根据接口挑选。
+     */
+    public static InetAddress getLocalIpAddress() {
+         try {
+             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                 NetworkInterface intf = en.nextElement();
+                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                         enumIpAddr.nextElement();
+                         if (intf.getName().equals("adhoc0"))
+                         {
+                                 //取第二个值
+                                 InetAddress inetAddress = enumIpAddr.nextElement();
+                                 if (!inetAddress.isLoopbackAddress()) {
+                                 return inetAddress;
+                             }
+                         } 
+                 }
+             }
+         } catch (SocketException ex) {
+             Log.e("testAndroid1", ex.toString());
+         }
+         return null;
+    } 
 
 }
