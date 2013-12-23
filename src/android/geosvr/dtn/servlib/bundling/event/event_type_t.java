@@ -31,9 +31,8 @@ import java.util.Map;
 public enum event_type_t {
 	BUNDLE_RECEIVED("BUNDLE_RECEIVED", 0x1), // /< New bundle arrival
 	
-	BUNDLE_SEND_REQUEST("BUNDLE_SEND_REQUEST"),// wjb
-	BUNDLE_SEND_RESULT
-	
+//	BUNDLE_SEND_REQUEST("BUNDLE_SEND_REQUEST"),// wjb
+//	BUNDLE_SEND_RESULT
 	BUNDLE_TRANSMITTED("BUNDLE_TRANSMITTED"), // /< Bundle or fragment
 												// successfully sent
 	BUNDLE_DELIVERED("BUNDLE_DELIVERED"), // /< Bundle locally delivered

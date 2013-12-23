@@ -71,14 +71,14 @@ public class UDPConvergenceLayer extends StreamConvergenceLayer implements Seria
 		cl_version_ = 3;
 	}
 
-	/**
-	 * Get the IP address that the DHCP server assigns to the mobile phone
-	 * @return The current IP address
-	 */
-	public static InetAddress getting_my_ip() {
-		return TCPConvergenceLayer.getting_my_ip();
-	}
-	
+//	/**
+//	 * Get the IP address that the DHCP server assigns to the mobile phone
+//	 * @return The current IP address
+//	 */
+//	public static InetAddress getting_my_ip() {
+//		return TCPConvergenceLayer.getting_my_ip();
+//	}
+//	
 
 	/**
 	 * Bring up an interface.

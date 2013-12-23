@@ -224,7 +224,8 @@ public class DTNService extends android.app.Service {
     }
 
     private String getDefaultEID() {
-    	String localEid = "dtn://" + ConvergenceLayer.getLocalIpAddress().toString();
+    	//getLocalIpAddress().toString()返回的是/192.168.x.x
+    	String localEid = "dtn:/" + ConvergenceLayer.getLocalIpAddress().toString() + ".wu.com";
     	//localEid = "dtn://joe.bytewalla.com";
     	return localEid;
 	}

@@ -123,71 +123,72 @@ public class GeosvrDtnRouter extends BundleRouter {
 	 *            (i.e. the number of matching route entries.)" [DTN2]
 	 */
 	protected int route_bundle(Bundle bundle) {
-
-		RouteEntryVec matches = new RouteEntryVec();
-
-		Log.d(TAG, String.format("route_bundle: checking bundle %d", bundle
-				.bundleid()));
-
-		// "check to see if forwarding is suppressed to all nodes" [DTN2]
-		if (bundle.fwdlog().get_count(EndpointIDPattern.WILDCARD_EID(),
-				ForwardingInfo.state_t.SUPPRESSED.getCode(),
-				ForwardingInfo.ANY_ACTION) > 0) {
-			Log.i(TAG, String.format("route_bundle: "
-					+ "ignoring bundle %d since forwarding is suppressed",
-					bundle.bundleid()));
-			return 0;
-		}
-		
-		//数据包目的地广播给邻居节点
-
-		Link null_link = null;
-		route_table_.get_matching(bundle.dest(), null_link, matches);
-
-		// "sort the matching routes by priority, allowing subclasses to
-		// override the way in which the sorting occurs" [DTN2]
-		sort_routes(matches);
-
-		Log.d(TAG, String.format(
-				"route_bundle bundle id %d: checking %d route entry matches",
-				bundle.bundleid(), matches.size()));
-
-		int count = 0;
-		Iterator<RouteEntry> itr = matches.iterator();
-		while (itr.hasNext()) {
-			RouteEntry route = itr.next();
-			Log.d(TAG, String.format("checking route entry %s link %s (%s)",
-					route.toString(), route.link().name(), route.link()));
-
-			if (!should_fwd(bundle, route)) {
-				continue;
-			}
-
-			if (deferred_list(route.link()).list().contains(bundle)) {
-				Log.d(TAG, String.format("route_bundle bundle %d: "
-						+ "ignoring link %s since already deferred", bundle
-						.bundleid(), route.link().name()));
-				continue;
-			}
-
-			// "because there may be bundles that already have deferred
-			// transmission on the link, we first call check_next_hop to
-			// get them into the queue before trying to route the new
-			// arrival, otherwise it might leapfrog the other deferred
-			// bundles" [DTN2]
-			check_next_hop(route.link());
-
-			if (!fwd_to_nexthop(bundle, route)) {
-				continue;
-			}
-
-			++count;
-		}
-
-		Log.d(TAG, String.format(
-				"route_bundle bundle id %d: forwarded on %d links", bundle
-						.bundleid(), count));
-		return count;
+		return 0 ;
+//
+//		RouteEntryVec matches = new RouteEntryVec();
+//
+//		Log.d(TAG, String.format("route_bundle: checking bundle %d", bundle
+//				.bundleid()));
+//
+//		// "check to see if forwarding is suppressed to all nodes" [DTN2]
+//		if (bundle.fwdlog().get_count(EndpointIDPattern.WILDCARD_EID(),
+//				ForwardingInfo.state_t.SUPPRESSED.getCode(),
+//				ForwardingInfo.ANY_ACTION) > 0) {
+//			Log.i(TAG, String.format("route_bundle: "
+//					+ "ignoring bundle %d since forwarding is suppressed",
+//					bundle.bundleid()));
+//			return 0;
+//		}
+//		
+//		//数据包目的地广播给邻居节点
+//
+//		Link null_link = null;
+//		route_table_.get_matching(bundle.dest(), null_link, matches);
+//
+//		// "sort the matching routes by priority, allowing subclasses to
+//		// override the way in which the sorting occurs" [DTN2]
+//		sort_routes(matches);
+//
+//		Log.d(TAG, String.format(
+//				"route_bundle bundle id %d: checking %d route entry matches",
+//				bundle.bundleid(), matches.size()));
+//
+//		int count = 0;
+//		Iterator<RouteEntry> itr = matches.iterator();
+//		while (itr.hasNext()) {
+//			RouteEntry route = itr.next();
+//			Log.d(TAG, String.format("checking route entry %s link %s (%s)",
+//					route.toString(), route.link().name(), route.link()));
+//
+//			if (!should_fwd(bundle, route)) {
+//				continue;
+//			}
+//
+//			if (deferred_list(route.link()).list().contains(bundle)) {
+//				Log.d(TAG, String.format("route_bundle bundle %d: "
+//						+ "ignoring link %s since already deferred", bundle
+//						.bundleid(), route.link().name()));
+//				continue;
+//			}
+//
+//			// "because there may be bundles that already have deferred
+//			// transmission on the link, we first call check_next_hop to
+//			// get them into the queue before trying to route the new
+//			// arrival, otherwise it might leapfrog the other deferred
+//			// bundles" [DTN2]
+//			check_next_hop(route.link());
+//
+//			if (!fwd_to_nexthop(bundle, route)) {
+//				continue;
+//			}
+//
+//			++count;
+//		}
+//
+//		Log.d(TAG, String.format(
+//				"route_bundle bundle id %d: forwarded on %d links", bundle
+//						.bundleid(), count));
+//		return count;
 	}
 
 	/**

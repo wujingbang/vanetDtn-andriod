@@ -106,8 +106,6 @@ public abstract class BundleEventHandler {
 	        handle_bundle_received((BundleReceivedEvent)e);
 	        break;
 	        
-		case BUNDLE
-
 	    case BUNDLE_TRANSMITTED:
 	        handle_bundle_transmitted((BundleTransmittedEvent)e);
 	        break;

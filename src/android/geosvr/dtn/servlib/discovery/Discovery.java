@@ -254,19 +254,38 @@ public abstract class Discovery {
 				Log.d(TAG, "failed to create opportunistic link");
 				return;
 			}
-			
+
+/*
 			Bundle bundle = new Bundle(location_t.MEMORY);
 			bundle.set_dest(remote_eid);
 			bundle.set_source(BundleDaemon.getInstance().local_eid());
+			bundle.get_lock().lock();
 			link.queue().insert_random(bundle);
+			bundle.get_lock().unlock();
+*/
 			
-			if(discoveries.get(remote_eid.str()).equals(cl_addr)){
-			}
-			else {
-				discoveries.remove(remote_eid.str());
-				discoveries.put(remote_eid.str(), cl_addr);
-				DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
-			}
+//			if(discoveries.get(remote_eid.str()).equals(cl_addr)){
+//			}
+//			else {
+//				discoveries.remove(remote_eid.str());
+//				discoveries.put(remote_eid.str(), cl_addr);
+//				DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
+//			}
+
+            if(discoveries.containsKey(remote_eid.str())) {
+                    if(discoveries.get(remote_eid.str()).equals(cl_addr)){
+                    }
+                    else {
+                            discoveries.remove(remote_eid.str());
+                            discoveries.put(remote_eid.str(), cl_addr);
+                            DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
+                    }
+            }
+            else {
+                    discoveries.put(remote_eid.str(), cl_addr);
+                    DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
+            }
+			
 			
 			BundleDaemon BD = BundleDaemon.getInstance();
 			// request to set link available

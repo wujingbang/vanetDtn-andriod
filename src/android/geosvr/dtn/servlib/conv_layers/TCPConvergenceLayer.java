@@ -80,37 +80,37 @@ public class TCPConvergenceLayer extends StreamConvergenceLayer implements Seria
 	 * Get the IP address that the DHCP server assigns to the mobile phone
 	 * @return The current IP address
 	 */
-	public static InetAddress getting_my_ip() {
-		/**
-		 * WifiManager
-		 */
-		WifiManager mWifi = (WifiManager) DTNService.context()
-				.getSystemService(Context.WIFI_SERVICE);
-
-		InetAddress local_addr_ = null;
-		DhcpInfo dhcp = mWifi.getDhcpInfo();
-		if (dhcp == null) {
-			Log.d(TAG, "Could not get dhcp info");
-			return null;
-		}
-
-		short[] quads = new short[4];
-		byte[] quads2 = new byte[4];
-		for (int k = 0; k < 4; k++) {
-			quads[k] = (byte) ((dhcp.ipAddress >> k * 8) & 0xFF);
-			quads2[k] = (byte) quads[k];
-		}
-		try {
-			local_addr_ = InetAddress.getByAddress(quads2);
-
-		} catch (UnknownHostException e) {
-
-			Log.d(TAG, "error getting_my_ip");
-		}
-
-		return local_addr_;
-	}
-	
+//	public static InetAddress getting_my_ip() {
+//		/**
+//		 * WifiManager
+//		 */
+//		WifiManager mWifi = (WifiManager) DTNService.context()
+//				.getSystemService(Context.WIFI_SERVICE);
+//
+//		InetAddress local_addr_ = null;
+//		DhcpInfo dhcp = mWifi.getDhcpInfo();
+//		if (dhcp == null) {
+//			Log.d(TAG, "Could not get dhcp info");
+//			return null;
+//		}
+//
+//		short[] quads = new short[4];
+//		byte[] quads2 = new byte[4];
+//		for (int k = 0; k < 4; k++) {
+//			quads[k] = (byte) ((dhcp.ipAddress >> k * 8) & 0xFF);
+//			quads2[k] = (byte) quads[k];
+//		}
+//		try {
+//			local_addr_ = InetAddress.getByAddress(quads2);
+//
+//		} catch (UnknownHostException e) {
+//
+//			Log.d(TAG, "error getting_my_ip");
+//		}
+//
+//		return local_addr_;
+//	}
+//	
 
 	/**
 	 * Bring up an interface.
