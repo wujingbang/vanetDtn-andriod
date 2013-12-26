@@ -42,8 +42,8 @@
             conv_layer_type="tcp"></tns:Announce>
          -->
         <tns:Discovery id="ipdisc0" address_family="ip" port="9556"></tns:Discovery>
-        <tns:Announce interface_id="udp0" discovery_id="ipdisc0"
-            conv_layer_type="udp"></tns:Announce>
+        <tns:Announce interface_id="tcp0" discovery_id="ipdisc0"
+            conv_layer_type="tcp"></tns:Announce>
     </tns:DiscoveriesSetting>
 
 </tns:DTNConfiguration>
