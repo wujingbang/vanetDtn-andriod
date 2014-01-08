@@ -234,7 +234,7 @@ public abstract class Discovery {
 		BundleDaemon Daemon = BundleDaemon.getInstance();
 
 		ContactManager cm = Daemon.contactmgr();
-
+		
 //		ConvergenceLayer cl = ConvergenceLayer.find_clayer(cl_type);
 //		if (cl == null) {
 //			Log.e(TAG, "unknown convergence layer type");
@@ -242,7 +242,7 @@ public abstract class Discovery {
 //		}
 
 		// Look for match on convergence layer and remote EID
-
+		cm.get_lock().lock();
 		Link link = cm.find_link_to(remote_eid);
 
 		if (link == null) {
@@ -286,11 +286,12 @@ public abstract class Discovery {
                     DTNManager.getInstance().notify_user("New peer discovered", remote_eid.str());
             }
 			
-			
+
 			BundleDaemon BD = BundleDaemon.getInstance();
 			// request to set link available
 			BD.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
 					ContactEvent.reason_t.DISCOVERY));
+
 		}
 		else {
 			assert (link != null);
@@ -298,13 +299,14 @@ public abstract class Discovery {
 				link.lock().lock();
 				link.set_nexthop(cl_addr);
 				link.lock().unlock();
-				
+
 				BundleDaemon BD = BundleDaemon.getInstance();
 				// request to set link available
 				BD.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
 						ContactEvent.reason_t.DISCOVERY));
 			}
 		}
+		cm.get_lock().unlock();
 	}
 
 	/**

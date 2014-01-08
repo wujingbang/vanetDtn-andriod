@@ -360,7 +360,8 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 		// constructor
 		BundleDaemon Daemon = BundleDaemon.getInstance();
 		ContactManager cm = Daemon.contactmgr();
-
+		//防止出现这里和Discovery重复
+		cm.get_lock().lock();
 		boolean new_link = false;
 		Link link = cm.find_link_to(peer_eid);
 
@@ -378,6 +379,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 			new_link = true;
 			Log.d(TAG, "created new opportunistic link " + link);
 		}
+		cm.get_lock().unlock();
 
 		assert (link != null);
 

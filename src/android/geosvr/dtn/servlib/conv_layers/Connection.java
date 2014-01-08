@@ -782,7 +782,7 @@ public abstract class Connection extends CLConnection {
 			if (incoming.acked_length() < ack_len) {
 				incoming.set_acked_length(ack_len);
 			}
-
+			//发送确认消息
 			if (generated_ack) {
 				send_data();
 				note_data_sent();
@@ -803,7 +803,7 @@ public abstract class Connection extends CLConnection {
 					incoming.total_length(), incoming.bundle().bundleid());
 			Log.d(TAG, text);
 
-			
+			//已接收到一个bundle并且确认，则通知daemon接收到了bundle。
 			BundleDaemon.getInstance().post(new BundleReceivedEvent(incoming.bundle(), event_source_t.EVENTSRC_PEER, incoming.total_length(), contact_
 							.link().remote_eid(), contact_.link()));
 			

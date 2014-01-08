@@ -40,6 +40,7 @@ import android.geosvr.dtn.servlib.config.ReadingConfigurationFileException;
 import android.geosvr.dtn.servlib.contacts.ContactManager;
 import android.geosvr.dtn.servlib.contacts.InterfaceTable;
 import android.geosvr.dtn.servlib.conv_layers.ConvergenceLayer;
+import android.geosvr.dtn.servlib.conv_layers.Netw_layerInteractor;
 import android.geosvr.dtn.servlib.conv_layers.TestDataLogger;
 import android.geosvr.dtn.servlib.discovery.DiscoveryTable;
 import android.geosvr.dtn.servlib.reg.RegistrationTable;
@@ -55,6 +56,7 @@ import android.geosvr.dtn.systemlib.energy.BatteryStatsReceiver;
 import android.geosvr.dtn.systemlib.thread.Lock;
 import android.geosvr.dtn.systemlib.thread.MsgBlockingQueue;
 import android.geosvr.dtn.systemlib.thread.VirtualTimerTask;
+import android.geosvr.dtn.systemlib.util.IpHelper;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.util.Log;
@@ -208,6 +210,9 @@ public class DTNService extends android.app.Service {
         	EpidemicQueuing.init(config_);
         	BundleDaemon.getInstance().init(config_);
         	init_datastore(config_);
+        	
+        	Netw_layerInteractor.getInstace().init();
+        	
     	}
     	catch(Exception e){
     		e.printStackTrace();
@@ -225,7 +230,7 @@ public class DTNService extends android.app.Service {
 
     private String getDefaultEID() {
     	//getLocalIpAddress().toString()返回的是/192.168.x.x
-    	String localEid = "dtn:/" + ConvergenceLayer.getLocalIpAddress().toString() + ".wu.com";
+    	String localEid = "dtn:/" + IpHelper.getLocalIpAddress().toString() + ".wu.com";
     	//localEid = "dtn://joe.bytewalla.com";
     	return localEid;
 	}

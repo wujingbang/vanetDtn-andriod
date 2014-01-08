@@ -478,7 +478,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 			router_.handle_event(event);
 			contactmgr_.handle_event(event);
 		}
-
+		//在这处理了后续步骤，例如确认后的缓存bundle的删除。
 		event_handlers_completed(event);
 
 		stats_.events_processed_++;

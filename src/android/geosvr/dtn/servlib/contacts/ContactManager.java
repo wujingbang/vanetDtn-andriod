@@ -434,11 +434,11 @@ public class ContactManager extends BundleEventHandler {
 	 * @return The link if it matches or NULL if there's no match [DTN2]
 	 */
 	public Link find_link_to(EndpointID remote_eid) {
-		lock_.lock();
-		try {
+//		lock_.lock(); //在外层lock了
 
 			Iterator<Link> iter = links_.iterator();
-
+			Link element = null;//new Link();
+			boolean fuck = false;
 			String text = String
 			.format(
 					"find_link_to: remote_eid",	remote_eid);
@@ -449,21 +449,21 @@ public class ContactManager extends BundleEventHandler {
 			assert ((remote_eid != EndpointID.NULL_EID()));
 
 			while (iter.hasNext()) {
-				Link element = iter.next();
+				element = iter.next();
 				
 				if (remote_eid.equals(element.remote_eid())) {
 					Log.d(TAG, "find_link_to: matched link" + element);
-					assert (!element.isdeleted()) : "ContactManager : find_link_to, link is deleted";
-					return element;
+//					assert (!(element.isdeleted())) : "ContactManager : find_link_to, link is deleted";
+					fuck = true;
+					break;
+					//return element;
 				}
 			}
-
-			Log.d(TAG, "find_link_to, no match");
-			return null;
-
-		} finally {
-			lock_.unlock();
-		}
+		if (!fuck)
+			element = null;
+		Log.d(TAG, "find_link_to, no match");
+		return element;
+//		return null;
 	}
 
 	/**
