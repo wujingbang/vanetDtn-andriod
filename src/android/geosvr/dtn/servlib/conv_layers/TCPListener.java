@@ -21,6 +21,7 @@
 package android.geosvr.dtn.servlib.conv_layers;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -64,9 +65,14 @@ public class TCPListener extends CLInfo implements Runnable {
 		cl_ = (TCPConvergenceLayer) convergenceLayer;
 
 		try {
-
-			server_socket_ = new ServerSocket(port);
-
+			server_socket_ = new ServerSocket();
+			server_socket_.setReuseAddress(true);
+			
+			server_socket_.setReceiveBufferSize(131072);
+			server_socket_.bind(new InetSocketAddress(port));
+			int sizeee = server_socket_.getReceiveBufferSize();
+		
+//			System.out.println("sss");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			Log.d(TAG, "IOException " + e.getMessage());
@@ -120,6 +126,9 @@ public class TCPListener extends CLInfo implements Runnable {
 			try {
 				Log.d(TAG, "start accepting connection");
 				socket = server_socket_.accept();
+				int sizeee = socket.getSendBufferSize();
+				socket.setSendBufferSize(131072);
+//				System.out.println("sss");
 			} catch (IOException e) {
 				Log.d(TAG, "IOException in accept");
 				continue;

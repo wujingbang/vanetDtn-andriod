@@ -12,7 +12,7 @@ android:orientation="vertical" android:layout_width="fill_parent" android:layout
 		
    <EditText 
     android:layout_column="1" 
-   android:text="dtn://mahesh.dtn/test" android:id="@+id/DTNApps_DTNSend_DestEIDEditText" 
+   android:text="dtn://192.168.1.7.wu.com/test" android:id="@+id/DTNApps_DTNSend_DestEIDEditText" 
    android:layout_width="fill_parent" android:layout_height="wrap_content"
   ></EditText>
 

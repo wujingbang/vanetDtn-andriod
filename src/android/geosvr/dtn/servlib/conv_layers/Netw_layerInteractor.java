@@ -6,8 +6,26 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Iterator;
 
+
+import android.geosvr.dtn.DTNManager;
+import android.geosvr.dtn.servlib.bundling.BundleDaemon;
+import android.geosvr.dtn.servlib.bundling.ForwardingInfo;
+import android.geosvr.dtn.servlib.bundling.event.ContactEvent;
+import android.geosvr.dtn.servlib.bundling.event.LinkStateChangeRequest;
+import android.geosvr.dtn.servlib.contacts.ContactManager;
+import android.geosvr.dtn.servlib.contacts.Link;
+import android.geosvr.dtn.servlib.contacts.Link.state_t;
+import android.geosvr.dtn.servlib.discovery.IPDiscovery;
+import android.geosvr.dtn.servlib.discovery.IPDiscovery.cl_type_t;
+import android.geosvr.dtn.servlib.naming.EndpointID;
+import android.geosvr.dtn.servlib.naming.EndpointIDPattern;
+import android.geosvr.dtn.servlib.routing.RouteEntry;
+import android.geosvr.dtn.servlib.routing.RouteEntryVec;
 import android.geosvr.dtn.systemlib.util.IpHelper;
+import android.util.Log;
+
 
 
 public class Netw_layerInteractor implements Runnable {
@@ -75,9 +93,9 @@ public class Netw_layerInteractor implements Runnable {
 
 	}
 	
+
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		register2netw_layer();//注册
 		while (true) {
 			try {
@@ -95,6 +113,12 @@ public class Netw_layerInteractor implements Runnable {
 
 				String dstipStr = IpHelper.ipbyte2ipstr(dstip);
 				String lastAvailStr = IpHelper.ipbyte2ipstr(avail);
+				String dstId = IpHelper.ipstr2Idstr(dstipStr);
+				String lastAvailId = IpHelper.ipstr2Idstr(lastAvailStr);
+				
+				//关闭dstID对应的直接连接。
+				shutdownDirectLink(dstId);
+				add_link(lastAvailStr, lastAvailId);
 
 				
 			} catch (SocketException e) {
@@ -108,6 +132,75 @@ public class Netw_layerInteractor implements Runnable {
 				e.printStackTrace();
 			}
 		} 
+	}
+	
+	/**
+	 * 收到断路信息，关闭对应直接链接
+	 */
+	public void shutdownDirectLink(String dstId) {
+		BundleDaemon Daemon = BundleDaemon.getInstance();
+		RouteEntryVec matches = new RouteEntryVec();
+
+		Link null_link = null;
+		Daemon.router().getRoute_table()
+			.get_matching(new EndpointID(dstId), null_link, matches);
+		
+		Iterator<RouteEntry> itr = matches.iterator();
+		while (itr.hasNext()) {
+			RouteEntry route = itr.next();
+			if (route.IsDirectLink()){
+				route.link().get_lock().lock();
+				route.link().set_state(state_t.UNAVAILABLE);//这里还可以用link().close()，可以试一试
+				route.link().get_lock().unlock();
+			}
+		}
+	}
+	
+	/**
+	 * 收到断路信息，加入到last avail的link
+	 */
+	private void add_link(String lastAvailIpStr, String lastAvailId) {
+		
+		String ipcombostr = "/"+lastAvailIpStr+":"+"4556";
+		EndpointID lastEndid = new EndpointID(lastAvailId);
+		
+		BundleDaemon Daemon = BundleDaemon.getInstance();
+		
+		ContactManager cm = Daemon.contactmgr();
+		cm.get_lock().lock();
+		Link link = cm.find_link_to(lastEndid);
+		
+		if (link == null) {
+			//在这里post了link_created事件，此处写死了tcp
+			link = cm.new_opportunistic_link(
+					(link==null) ? ConvergenceLayer.find_clayer("tcp") : link.clayer(), 
+							ipcombostr, lastEndid);
+			
+			if (link == null) {
+				Log.d(TAG, "failed to create opportunistic link");
+				return;
+			}
+
+			// request to set link available
+			//kick the router!!
+			Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
+					ContactEvent.reason_t.DISCOVERY));
+
+		}
+		else {
+			assert (link != null);
+			if (!link.isNotUnavailable()) {
+				link.lock().lock();
+				link.set_nexthop(ipcombostr);
+				link.lock().unlock();
+
+				// request to set link available
+				Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
+						ContactEvent.reason_t.DISCOVERY));
+			}
+		}
+		cm.get_lock().unlock();
+
 	}
 
 }

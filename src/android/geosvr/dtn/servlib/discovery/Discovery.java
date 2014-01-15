@@ -246,6 +246,7 @@ public abstract class Discovery {
 		Link link = cm.find_link_to(remote_eid);
 
 		if (link == null) {
+			//在这里post了link_created事件
 			link = cm.new_opportunistic_link(
 					(link==null) ? ConvergenceLayer.find_clayer(cl_type) : link.clayer(), 
 							cl_addr, remote_eid);

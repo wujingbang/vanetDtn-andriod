@@ -556,6 +556,15 @@ public abstract class BundleRouter extends BundleEventHandler {
 	 *  "The actions interface, set by the BundleDaemon when the router is initialized." [DTN2]
 	 */
 	protected BundleActions actions_;
+	
+	/**
+	 *  "The routing table used in this router" [DTN2]
+	 */
+	protected RouteTable route_table_;
+	
+	public RouteTable getRoute_table() {
+		return route_table_;
+	}
 
 
 	public ProphetRegistration getProphetRegistration() {

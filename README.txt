@@ -1,18 +1,9 @@
-Bytewalla - Android DTN Reference implementation
 ================================================
 This is a Delay Tolerant Networking implementation on the Android platform.
+This project based on bytawalla which based on DTN2.
 This implementation is written in Java and highly inspired by the design of
 DTN2 software version 2.6 developed in C++ by the DTN research group 
 [http://www.dtnrg.org/wiki/Code].
-
-
-Bytewalla - CSD Fall 2009 Project
-=================================
-This implementation is one of the deliverables of the Bytewalla project. 
-Bytewalla project is a project from Communication System Design(CSD) course in
- Telecommunication Systems Laboratory (TSLab), Royal Institute of Technology, Sweden.
-More information about Bytewalla can be found at [http://www.tslab.ssvl.kth.se/csd/projects/092106/]
-More information about CSD can be found at [http://www.tslab.ssvl.kth.se/csd/]
 
 Standards & Compatiblity
 ========================
@@ -23,7 +14,7 @@ TCP Convergence Layer Protocol draft version 2.
 Official RFC5050 specification can be found at [http://tools.ietf.org/html/rfc5050].
 Official Delay Tolerant Networking TCP Convergence Layer Protocol specification can be found at [http://tools.ietf.org/html/draft-irtf-dtnrg-tcp-clayer-02].
 
-Bytewalla Folder Structure
+Folder Structure
 ==========================
 src/		 - main source folder. All the source code for the Android platform is here.
 assets/      - Android Asset folder [http://developer.android.com/guide/topics/resources/index.html].
@@ -51,11 +42,3 @@ Documentation
 for the integration can be found at [http://www.tslab.ssvl.kth.se/csd/projects/092106/sites/default/files/Bytewalla%20System%20Architecture%20Design%20v1.0%202009.09.15.pdf].
 The network setup documents before the integration can be done can be found at [http://www.tslab.ssvl.kth.se/csd/projects/092106/networkdocs].
 7. Technical demonstration video can be found at [http://www.tslab.ssvl.kth.se/csd/projects/092106/tech_video]
-
-
-Working teams
-=============
-Rerngvit Yanggratoke ( rerngvit@kth.se )
-Sharjeel Ahmed (sharjeel@kth.se)
-Maria Jose Peroza Marval (mjperoza@gmail.com)
-Abdullah Azfar (abdullah_azfar@yahoo.com)

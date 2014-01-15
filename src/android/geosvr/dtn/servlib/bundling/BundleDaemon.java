@@ -808,8 +808,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 							.seconds_from_ref(expiration_calendar),
 					expiration_calendar.get(Calendar.MILLISECOND), when));
 
-			bundle.expiration_timer()
-					.schedule_at(expiration_calendar.getTime());
+//			bundle.expiration_timer().schedule_at(expiration_calendar.getTime());
 
 		} else {
 			Log
@@ -829,7 +828,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 											now_Calendar
 													.get(Calendar.MILLISECOND),
 											now_Calendar.getTime().toString()));
-			bundle.expiration_timer().schedule_at(now_Calendar.getTime());
+//			bundle.expiration_timer().schedule_at(now_Calendar.getTime());
 			ok_to_route = false;
 		}
 

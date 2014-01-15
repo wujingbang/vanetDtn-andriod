@@ -55,4 +55,16 @@ public class IpHelper {
          }
          return null;
     } 
+    
+    /**
+     * String IP 转 EndpointID String
+     * dtn://192.168.1.3.wu.com
+     */
+    public static String ipstr2Idstr(String ipstr) {
+    	String str = new String("dtn://");
+    	str += ipstr;
+    	str += ".wu.com";
+    	return str;
+    }
+
 }

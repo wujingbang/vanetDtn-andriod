@@ -208,7 +208,7 @@ public abstract class Connection extends CLConnection {
 	public Connection(StreamConvergenceLayer cl, StreamLinkParams params,
 			boolean active_connector) throws OutOfMemoryError {
 
-		super(cl, params, active_connector);
+		super(cl, params, active_connector, false);
 
 		current_inflight_ = null;
 		send_segment_todo_ = 0;
@@ -217,7 +217,18 @@ public abstract class Connection extends CLConnection {
 		contact_initiated_ = false;
 
 	}
+	public Connection(StreamConvergenceLayer cl, StreamLinkParams params,
+			boolean active_connector, boolean only_connect) throws OutOfMemoryError {
 
+		super(cl, params, active_connector, only_connect);
+
+		current_inflight_ = null;
+		send_segment_todo_ = 0;
+		recv_segment_todo_ = 0;
+		breaking_contact_ = false;
+		contact_initiated_ = false;
+
+	}
 	@Override
 	public boolean send_pending_data() {
 
@@ -662,7 +673,7 @@ public abstract class Connection extends CLConnection {
 
 		now = System.currentTimeMillis();
 
-		int timeout = 10;
+		int timeout = 30000;//原来是10
 		if (params.keepalive_interval() != 0)
 			timeout = 2 * params.keepalive_interval();
 
@@ -1107,7 +1118,7 @@ public abstract class Connection extends CLConnection {
 	 * Read the contact_initiation, process, and return the number of bytes
 	 * handled
 	 */
-	private void handle_contact_initiation() {
+	protected void handle_contact_initiation() {
 
 		Log.d(TAG, "handle_contact_initiation: called");
 		// the position of the buffer is the num bytes received now

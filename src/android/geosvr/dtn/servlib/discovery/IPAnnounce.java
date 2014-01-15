@@ -27,7 +27,7 @@ import java.util.Calendar;
 import android.geosvr.dtn.servlib.bundling.BundleDaemon;
 import android.geosvr.dtn.servlib.conv_layers.ConvergenceLayer;
 import android.geosvr.dtn.servlib.conv_layers.TCPConvergenceLayer;
-import android.geosvr.dtn.servlib.conv_layers.UDPConvergenceLayer;
+
 import android.geosvr.dtn.servlib.naming.EndpointID;
 import android.geosvr.dtn.systemlib.util.IByteBuffer;
 import android.util.Log;
@@ -110,8 +110,8 @@ public class IPAnnounce extends Announce{
 			}
 	    	if (cltype.equals("tcp"))
 	    		cl_port_ = TCPConvergenceLayer.TCPCL_DEFAULT_PORT;
-	    	else if(cltype.equals("udp"))
-	    		cl_port_ = UDPConvergenceLayer.UDPCL_DEFAULT_PORT;
+//	    	else if(cltype.equals("udp"))
+//	    		cl_port_ = UDPConvergenceLayer.UDPCL_DEFAULT_PORT;
 	    
 	    }
 	    /**

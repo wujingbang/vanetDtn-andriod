@@ -484,8 +484,7 @@ public abstract class TableBasedRouter extends BundleRouter {
 		// the service part" [DTN2]
 		EndpointID eid = link.remote_eid();
 		if (config_.add_nexthop_routes() && !eid.equals(EndpointID.NULL_EID())) {
-			EndpointIDPattern eid_pattern = new EndpointIDPattern(link
-					.remote_eid());
+			EndpointIDPattern eid_pattern = new EndpointIDPattern(link.remote_eid());
 
 			// "attempt to build a route pattern from link's remote_eid" [DTN2]
 			if (!eid_pattern.append_service_wildcard())
@@ -601,10 +600,7 @@ public abstract class TableBasedRouter extends BundleRouter {
 	 */
 	private BundleInfoCache reception_cache_;
 
-	/**
-	 *  "The routing table used in this router" [DTN2]
-	 */
-	protected RouteTable route_table_;
+
 
 
 	/**

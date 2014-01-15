@@ -57,7 +57,7 @@ public class TCPConnection extends Connection {
 	/**
 	 * Socket timeout in seconds both write and read
 	 */
-	private int SOCKET_TIMEOUT = 1;
+	private int SOCKET_TIMEOUT = 10000;
 
 	/**
 	 * Unique identifier according to Java Serializable specification
@@ -99,14 +99,24 @@ public class TCPConnection extends Connection {
 	 */
 	TCPConnection(TCPConvergenceLayer cl, TCPLinkParams params)
 			throws OutOfMemoryError {
-
+		
 		super(cl, params, true);
 
 		String nexthop = String.format("%s:%s", (params.remote_addr_),
 				params.remote_port_);
 		set_nexthop(nexthop.toString());
 	}
+	
 
+	TCPConnection(TCPConvergenceLayer cl, TCPLinkParams params, boolean only_connect)
+			throws OutOfMemoryError {
+
+		super(cl, params, true, only_connect);
+
+		String nexthop = String.format("%s:%s", (params.remote_addr_),
+				params.remote_port_);
+		set_nexthop(nexthop.toString());
+	}
 	/**
 	 * Call to initialize reading and writting network streams
 	 */

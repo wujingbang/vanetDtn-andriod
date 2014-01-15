@@ -224,7 +224,8 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 		// link's configured parameters"[DTN2]
 		CLConnection conn;
 		try {
-			conn = new_connection(link, params);
+			boolean only_connect = true;
+			conn = new_connection(link, params, only_connect);
 		} catch (OutOfMemoryError e) {
 			Log.d(TAG, "Not Enough resources");
 			return false;
@@ -481,5 +482,6 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 	 * Create a new CL-specific connection object.
 	 */
 	public abstract CLConnection new_connection(Link link, LinkParams params);
+	public abstract CLConnection new_connection(Link link, LinkParams params, boolean only_connect);
 
 }

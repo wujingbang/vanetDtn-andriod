@@ -19,6 +19,7 @@
  */
 package android.geosvr.dtn.apps;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 import android.app.Activity;
@@ -270,12 +271,12 @@ public class DTNSend extends Activity  {
 		String dest_eid = DestEIDEditText.getText().toString();
 		
 		// Setting DTNBundle Payload according to the values
-		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_MEM);
-		dtn_payload.set_buf(message_byte_array);
+//		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_MEM);
+//		dtn_payload.set_buf(message_byte_array);
 		
-	//	DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
-		//dtn_payload.set_file(new File("/sdcard/test3MB.zip"));
-	//	dtn_payload.set_file(new File("/sdcard/test.htm"));
+		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
+		dtn_payload.set_file(new File("/sdcard/test_4M.wma"));
+//		dtn_payload.set_file(new File("/sdcard/test.htm"));
 		   
 		// Start the DTN Communication
 		DTNHandle dtn_handle = new DTNHandle();

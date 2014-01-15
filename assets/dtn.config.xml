@@ -11,7 +11,7 @@
         quota is the space you will allow DTN to store bundles in the storage
         type you set, the unit is Megabytes
     -->
-    <tns:StorageSetting type="sdcard" quota="1"
+    <tns:StorageSetting type="sdcard" quota="1000"
         storage_path="dtn" />
 
 

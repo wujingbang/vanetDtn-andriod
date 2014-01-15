@@ -139,7 +139,7 @@ public abstract class VirtualTimerTask implements Serializable {
 		
 		DTNService.timer_tasks_map().put(this, associated_timer_task);
 		
-		DTNService.timer().schedule(associated_timer_task, (schedule_delay_second * 1000));
+		DTNService.timer().schedule(associated_timer_task, (schedule_delay_second * 60000));
 		
 	}
 	

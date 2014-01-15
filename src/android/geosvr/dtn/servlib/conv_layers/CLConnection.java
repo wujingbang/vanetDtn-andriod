@@ -87,12 +87,13 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 	/**
 	 * Constructor.
 	 */
+	private boolean only_connect_;
 	public CLConnection(ConnectionConvergenceLayer cl, LinkParams params,
-			boolean active_connector) throws OutOfMemoryError {
+			boolean active_connector, boolean only_connect) throws OutOfMemoryError {
 
 		thread_ = new Thread(this);
 
-		
+		only_connect_ = only_connect;
 		/*Link generated_link = new Link(cl);
 		contact_ = new Contact(generated_link);
 		generated_link.set_contact(contact_);
@@ -163,6 +164,13 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 			Log.d(TAG, "trying to connect");
 			try {
 				connect();
+//				if (only_connect_) {
+//					ContactManager cm = ContactManager.getInstance();
+//					System.out.println("sss");
+//					cm.links();
+//					return;
+//				}
+					
 			} catch (ConnectionException e) {
 				String text = String.format(
 						"connection attempt to %s:%s failed...",

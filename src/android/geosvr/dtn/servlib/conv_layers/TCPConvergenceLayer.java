@@ -283,7 +283,15 @@ public class TCPConvergenceLayer extends StreamConvergenceLayer implements Seria
 		dest_port_ = link.remote_port();
 		return new TCPConnection(this, params);
 	}
-
+	@Override
+	public TCPConnection new_connection(Link link, LinkParams p, boolean only_connect)throws OutOfMemoryError {
+		
+		TCPLinkParams params = (TCPLinkParams) p;
+		assert (params != null);
+		dest_addr_ = link.dest_ip();
+		dest_port_ = link.remote_port();
+		return new TCPConnection(this, params, only_connect);
+	}
 	
 	
 	TCPListener listen_;  // / Listener (Represents a server socket waiting for a connection) 

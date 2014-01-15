@@ -566,5 +566,15 @@ public class EndpointID implements Serializable {
 	    return valid_;
 	}
 
+    /**
+     * String IP 转 EndpointID
+     * dtn://192.168.1.3.wu.com
+     */
+    public static EndpointID ipstr2endpointID(String ipstr) {
+    	String str = new String("dtn://");
+    	str += ipstr;
+    	str += ".wu.com";
+    	return (new EndpointID(str));
+    }
 
 }

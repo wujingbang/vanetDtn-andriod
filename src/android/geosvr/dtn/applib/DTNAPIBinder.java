@@ -687,7 +687,7 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 
 				b.payload().set_length(dtn_payload.length());
 				// Transfer bytes from in to payload
-				java.nio.ByteBuffer temp_buffer = java.nio.ByteBuffer.allocate(32696);
+				java.nio.ByteBuffer temp_buffer = java.nio.ByteBuffer.allocate(12696);//java.nio.ByteBuffer.allocate(32696);
 				int offset = 0;
 				ReadableByteChannel read_channel = Channels.newChannel(in);
 				while (in.available() > 0) {

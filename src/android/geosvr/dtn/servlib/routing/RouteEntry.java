@@ -301,6 +301,14 @@ public class RouteEntry implements Serializable {
 	}
 
 	/**
+	 * 判断是否一跳链路，是则返回1，非则返回0
+	 */
+	public boolean IsDirectLink() {
+		String s1 = link_.remote_eid().toString();//.com
+		String s2 = source_pattern_.toString();//   .com/*
+		return (s2.indexOf(s1) != -1 ? true : false);
+	}
+	/**
 	 *  The pattern that matches bundles' destination eid
 	 */
 	private EndpointIDPattern dest_pattern_;
@@ -344,5 +352,7 @@ public class RouteEntry implements Serializable {
 	 *  An abstraction to store algorithm specific information
 	 */ 
 	private RouteEntryInfo info_;
+	
+	
 
 };

@@ -38,7 +38,16 @@ public class RouteEntryComparator implements Comparator<RouteEntry>{
 		
 		if ( r1.priority() < r2.priority() ) return -1;
 		if ( r1.priority() > r2.priority() ) return +1;
-		return r1.link().bytes_queued() < r2.link().bytes_queued()? -1 :+1;
+		
+		if ( r1.IsDirectLink() && r2.IsDirectLink() )
+			return r1.link().bytes_queued() < r2.link().bytes_queued()? -1 :+1;
+		else if (r1.IsDirectLink()) {
+			return -1;
+		} else if (r2.IsDirectLink())
+			return +1;
+		else
+			return r1.link().bytes_queued() < r2.link().bytes_queued()? -1 :+1;
+			
 	} 
 
 
