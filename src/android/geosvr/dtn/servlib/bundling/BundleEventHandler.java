@@ -229,7 +229,13 @@ public abstract class BundleEventHandler {
 	        break;
 
 	    case LINK_STATE_CHANGE_REQUEST:
-	        handle_link_state_change_request((LinkStateChangeRequest)e);
+	    	handle_link_state_change_request((LinkStateChangeRequest)e);
+/*		    try {
+				if (e.processed_notifier()!=null)
+					e.processed_notifier().put(1);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}*/
 	        break;
 
 	   

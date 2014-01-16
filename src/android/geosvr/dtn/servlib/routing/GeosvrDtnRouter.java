@@ -571,4 +571,10 @@ public class GeosvrDtnRouter extends BundleRouter {
 
 	}
 
+	@Override
+	public void add_route(RouteEntry entry) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

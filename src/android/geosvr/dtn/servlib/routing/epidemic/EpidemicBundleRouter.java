@@ -589,7 +589,8 @@ public class EpidemicBundleRouter extends TableBasedRouter {
 		bundle.set_replyto(new EndpointID(BundleDaemon.getInstance()
 				.local_eid().str()
 				+ "/epidemic"));
-		bundle.set_singleton_dest(true);
+//		bundle.set_singleton_dest(true);
+		bundle.set_singleton_dest(false);
 		bundle.set_expiration(10000);
 		bundle.set_priority(priority_values_t.COS_EXPEDITED);
 		bundle.payload().set_data(payload);

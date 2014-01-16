@@ -21,6 +21,7 @@ package android.geosvr.dtn.servlib.routing;
 import java.util.Iterator;
 
 import android.geosvr.dtn.servlib.contacts.Link;
+import android.geosvr.dtn.servlib.contacts.Link.state_t;
 import android.geosvr.dtn.servlib.naming.EndpointID;
 import android.geosvr.dtn.servlib.naming.EndpointIDPattern;
 import android.geosvr.dtn.servlib.routing.BundleRouter;
@@ -378,7 +379,7 @@ public class RouteTable{
 	    			else
 	    			{
 	    				if (!entry.dest_pattern().match(eid))
-	    				continue;
+	    					continue;
 	    			}
 	    			
 	    			
@@ -402,7 +403,9 @@ public class RouteTable{
 	    			else if ( next_hop == null || entry.link().equals(next_hop))
 	    			{
 	    				// "Adding entry only when we can know the link" [DTN2]
-	    				if(!entry_vec.contains(entry))
+	    				if(!entry_vec.contains(entry) && 
+	    						(entry.link().state() == state_t.OPEN || 
+	    						entry.link().state() == state_t.AVAILABLE ))
 	    				{
 	    					Log.d(TAG,String.format("match entry %s", entry.toString() ));
 	    					entry_vec.add(entry);

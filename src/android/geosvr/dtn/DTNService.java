@@ -206,8 +206,8 @@ public class DTNService extends android.app.Service {
             ContactManager.getInstance().init(config_);
         	InterfaceTable.init(config_);
         	BundleRouter.init(config_);
-        	ProphetQueuing.init(config_);
-        	EpidemicQueuing.init(config_);
+//        	ProphetQueuing.init(config_);
+//        	EpidemicQueuing.init(config_);
         	BundleDaemon.getInstance().init(config_);
         	init_datastore(config_);
         	

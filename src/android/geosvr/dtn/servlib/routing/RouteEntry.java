@@ -23,6 +23,7 @@ package android.geosvr.dtn.servlib.routing;
 import java.io.Serializable;
 
 import android.geosvr.dtn.servlib.bundling.Bundle;
+import android.geosvr.dtn.servlib.bundling.BundleDaemon;
 import android.geosvr.dtn.servlib.bundling.CustodyTimerSpec;
 import android.geosvr.dtn.servlib.bundling.ForwardingInfo;
 import android.geosvr.dtn.servlib.bundling.ForwardingInfo.action_t;
@@ -304,9 +305,14 @@ public class RouteEntry implements Serializable {
 	 * 判断是否一跳链路，是则返回1，非则返回0
 	 */
 	public boolean IsDirectLink() {
-		String s1 = link_.remote_eid().toString();//.com
-		String s2 = source_pattern_.toString();//   .com/*
-		return (s2.indexOf(s1) != -1 ? true : false);
+//		BundleDaemon Daemon = BundleDaemon.getInstance();
+//		String s1 = link_.remote_eid().toString();//.com
+//		String s2 = Daemon.local_eid().toString();//   .com/*
+//		return (s2.indexOf(s1) != -1 ? true : false);
+		if (route_to_ != null)
+			return false;
+		else
+			return true;
 	}
 	/**
 	 *  The pattern that matches bundles' destination eid

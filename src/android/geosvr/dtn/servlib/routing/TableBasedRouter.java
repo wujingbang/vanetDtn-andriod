@@ -139,7 +139,7 @@ public abstract class TableBasedRouter extends BundleRouter {
 	/**
 	 * "Add a route entry to the routing table." [DTN2]
 	 */
-	void add_route(RouteEntry entry) {
+	public void add_route(RouteEntry entry) {
 
 		route_table_.add_entry(entry);
 		handle_changed_routes();

@@ -982,7 +982,8 @@ public class PrimaryBlockProcessor extends BlockProcessor implements Serializabl
         }
 
         if ((flags & bundle_processing_flag_t.BUNDLE_SINGLETON_DESTINATION.getCode())>0) {
-            bundle.set_singleton_dest(true);
+//            bundle.set_singleton_dest(true);
+        	bundle.set_singleton_dest(false);
         } else {
             bundle.set_singleton_dest(false);
         }

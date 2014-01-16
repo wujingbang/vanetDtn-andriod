@@ -12,6 +12,7 @@ import java.util.Iterator;
 import android.geosvr.dtn.DTNManager;
 import android.geosvr.dtn.servlib.bundling.BundleDaemon;
 import android.geosvr.dtn.servlib.bundling.ForwardingInfo;
+import android.geosvr.dtn.servlib.bundling.event.BundleEvent;
 import android.geosvr.dtn.servlib.bundling.event.ContactEvent;
 import android.geosvr.dtn.servlib.bundling.event.LinkStateChangeRequest;
 import android.geosvr.dtn.servlib.contacts.ContactManager;
@@ -23,6 +24,7 @@ import android.geosvr.dtn.servlib.naming.EndpointID;
 import android.geosvr.dtn.servlib.naming.EndpointIDPattern;
 import android.geosvr.dtn.servlib.routing.RouteEntry;
 import android.geosvr.dtn.servlib.routing.RouteEntryVec;
+import android.geosvr.dtn.systemlib.thread.MsgBlockingQueue;
 import android.geosvr.dtn.systemlib.util.IpHelper;
 import android.util.Log;
 
@@ -118,7 +120,14 @@ public class Netw_layerInteractor implements Runnable {
 				
 				//关闭dstID对应的直接连接。
 				shutdownDirectLink(dstId);
+				
 				add_link(lastAvailStr, lastAvailId);
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				add_routeEntry(dstId, lastAvailId);//必须放最后！我把add_route对外开放了，实际上可以作为事件！
 
 				
 			} catch (SocketException e) {
@@ -135,12 +144,22 @@ public class Netw_layerInteractor implements Runnable {
 	}
 	
 	/**
+	 * 加入一条新的路由项
+	 */
+	private void add_routeEntry(String dstId, String lastAvailId) {
+		BundleDaemon Daemon = BundleDaemon.getInstance();
+		
+		RouteEntry route = new RouteEntry(new EndpointIDPattern(dstId+"/*"), 
+										new EndpointIDPattern(lastAvailId+"/*"));
+		Daemon.router().add_route(route);
+	}
+	/**
 	 * 收到断路信息，关闭对应直接链接
 	 */
-	public void shutdownDirectLink(String dstId) {
+	private void shutdownDirectLink(String dstId) {
 		BundleDaemon Daemon = BundleDaemon.getInstance();
 		RouteEntryVec matches = new RouteEntryVec();
-
+		dstId += "/*";
 		Link null_link = null;
 		Daemon.router().getRoute_table()
 			.get_matching(new EndpointID(dstId), null_link, matches);
@@ -151,6 +170,7 @@ public class Netw_layerInteractor implements Runnable {
 			if (route.IsDirectLink()){
 				route.link().get_lock().lock();
 				route.link().set_state(state_t.UNAVAILABLE);//这里还可以用link().close()，可以试一试
+//				route.link().close();
 				route.link().get_lock().unlock();
 			}
 		}
@@ -180,23 +200,39 @@ public class Netw_layerInteractor implements Runnable {
 				Log.d(TAG, "failed to create opportunistic link");
 				return;
 			}
-
+			link.lock().lock();
+			
+			link.set_state(Link.state_t.AVAILABLE);
+			link.open();
+			link.lock().unlock();
 			// request to set link available
-			//kick the router!!
-			Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-					ContactEvent.reason_t.DISCOVERY));
-
+			//(event, notifier, timeout, at_back)
+//			BundleEvent event = new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
+//					ContactEvent.reason_t.USER);
+//			Daemon.post_and_wait(event,//event.processed_notifier(),
+//					new MsgBlockingQueue<Integer>(5),
+//					-1/*5s*/, false);
+//			Daemon.post_at_head(event);
+//			Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
+//					ContactEvent.reason_t.USER));
 		}
 		else {
 			assert (link != null);
 			if (!link.isNotUnavailable()) {
 				link.lock().lock();
 				link.set_nexthop(ipcombostr);
+//				link.set_state(Link.state_t.AVAILABLE);
 				link.lock().unlock();
 
 				// request to set link available
-				Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-						ContactEvent.reason_t.DISCOVERY));
+//				Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
+//						ContactEvent.reason_t.USER));
+/*				BundleEvent event = new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
+						ContactEvent.reason_t.USER);
+//				Daemon.post_and_wait(event,//event.processed_notifier(),
+//						new MsgBlockingQueue<Integer>(5),
+//						-15s, false);
+				Daemon.post_at_head(event);*/
 			}
 		}
 		cm.get_lock().unlock();

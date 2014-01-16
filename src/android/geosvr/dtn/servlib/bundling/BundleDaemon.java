@@ -113,6 +113,7 @@ import android.geosvr.dtn.servlib.reg.Registration;
 import android.geosvr.dtn.servlib.reg.RegistrationList;
 import android.geosvr.dtn.servlib.reg.RegistrationTable;
 import android.geosvr.dtn.servlib.routing.BundleRouter;
+import android.geosvr.dtn.servlib.routing.RouteEntry;
 import android.geosvr.dtn.servlib.routing.RoutingException;
 import android.geosvr.dtn.servlib.routing.BundleRouter.router_type_t;
 import android.geosvr.dtn.servlib.storage.BundleStore;
@@ -547,7 +548,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 			try {
 				ticket = notifier.take();
 			} catch (InterruptedException e) {
-
+				
 			}
 			return true;
 		} else {

@@ -496,7 +496,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 		// global default
 		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_SINGLETON_DEST
 				.getCode()) > 0) {
-			b.set_singleton_dest(true);
+//			b.set_singleton_dest(true);
+			b.set_singleton_dest(false);
 		} else if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_MULTINODE_DEST
 				.getCode()) > 0) {
 			b.set_singleton_dest(false);
@@ -521,7 +522,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 				return dtn_api_status_report_code.DTN_EINVAL;
 
 			case SINGLETON:
-				b.set_singleton_dest(true);
+//				b.set_singleton_dest(true);
+				b.set_singleton_dest(false);
 				break;
 
 			case MULTINODE:
@@ -840,7 +842,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 		// global default
 		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_SINGLETON_DEST
 				.getCode()) > 0) {
-			b.set_singleton_dest(true);
+//			b.set_singleton_dest(true);
+			b.set_singleton_dest(false);
 		} else if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_MULTINODE_DEST
 				.getCode()) > 0) {
 			b.set_singleton_dest(false);
@@ -865,7 +868,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 				return dtn_api_status_report_code.DTN_EINVAL;
 
 			case SINGLETON:
-				b.set_singleton_dest(true);
+//				b.set_singleton_dest(true);
+				b.set_singleton_dest(false);
 				break;
 
 			case MULTINODE:
