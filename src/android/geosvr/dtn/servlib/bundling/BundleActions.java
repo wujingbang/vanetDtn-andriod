@@ -138,21 +138,23 @@ public class BundleActions {
 				"trying to find xmit blocks for bundle id:%d on link %s",
 				bundle.bundleid(), link.name()));
 
-		if (bundle.xmit_link_block_set().find_blocks(link) != null) {
-			Log
-					.e(
-							TAG,
-							String
-									.format("BundleActions::queue_bundle: "
-											+ "link not ready to handle bundle (block vector already exists), "
-											+ "dropping send request"));
-			return false;
-		}
+		BlockInfoVec blocks = bundle.xmit_link_block_set().find_blocks(link);
+		if ( blocks != null) {
+//			Log
+//					.e(
+//							TAG,
+//							String
+//									.format("BundleActions::queue_bundle: "
+//											+ "link not ready to handle bundle (block vector already exists), "
+//											+ "dropping send request"));
+//			return false;
+		} else {
 
-		Log.d(TAG, String.format(
-				"trying to create xmit blocks for bundle id:%d on link %s",
-				bundle.bundleid(), link.name()));
-		BlockInfoVec blocks = BundleProtocol.prepare_blocks(bundle, link);
+			Log.d(TAG, String.format(
+					"trying to create xmit blocks for bundle id:%d on link %s",
+					bundle.bundleid(), link.name()));
+			blocks = BundleProtocol.prepare_blocks(bundle, link);
+		}
 		int total_len = BundleProtocol.generate_blocks(bundle, blocks, link);
 
 		Log.d(TAG, String.format(
@@ -171,7 +173,7 @@ public class BundleActions {
 		/*
 		 * 拆包
 		 */
-		if ((link.params().mtu() != 0) && (total_len > link.params().mtu())) {
+		if ((link.params().mtu() != 0) && (bundle.payload().length_ > link.params().mtu())) {
 			Log
 					.e(
 							TAG,

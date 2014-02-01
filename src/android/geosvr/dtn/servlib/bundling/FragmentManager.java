@@ -28,7 +28,9 @@ import android.geosvr.dtn.servlib.bundling.BundleProtocol.block_flag_t;
 import android.geosvr.dtn.servlib.bundling.BundleProtocol.bundle_block_type_t;
 import android.geosvr.dtn.servlib.bundling.BundleProtocol.status_report_reason_t;
 import android.geosvr.dtn.servlib.bundling.event.BundleDeleteRequest;
+import android.geosvr.dtn.servlib.bundling.event.BundleReceivedEvent;
 import android.geosvr.dtn.servlib.bundling.event.ReassemblyCompletedEvent;
+import android.geosvr.dtn.servlib.bundling.event.event_source_t;
 import android.geosvr.dtn.servlib.contacts.Link;
 import android.geosvr.dtn.systemlib.util.List;
 import android.util.Log;
@@ -254,51 +256,57 @@ public class FragmentManager{
        BlockInfoVec all_frag_blocks = new BlockInfoVec();
        BlockInfoVec this_frag_blocks = first_frag_blocks;
         
-       ListIterator<BlockInfo> entry = bundle.xmit_link_block_set().find_blocks(link).listIterator();
-        
-        while(entry.hasNext()){
-            BlockInfo block_info = entry.next();
-            
-            if ((block_info.type() == bundle_block_type_t.PRIMARY_BLOCK) ||
-            (block_info.type() == bundle_block_type_t.PAYLOAD_BLOCK)) {
-            	
-                all_frag_blocks.add(block_info);
-                first_frag_blocks.add(block_info);
-                
-            }
-            
-            else if ((block_info.flags() & block_flag_t.BLOCK_FLAG_REPLICATE.getCode())>0){
-            	   all_frag_blocks.add(block_info);
-            }
-             
-            else{
-            	   first_frag_blocks.add(block_info);
-            }
-             
-        }
-        
-        do {
-            fragment = create_fragment(bundle, link, this_frag_blocks, 
-                                       offset, max_length);
-            assert(fragment!=null):
-            	TAG+": proactively_fragment() fragment not valid";
-            
-            state.add_fragment(fragment);
-            offset += fragment.payload().length();
-            todo -= fragment.payload().length();
-            this_frag_blocks = all_frag_blocks;
-            ++count;
-            
-        } while (todo > 0);
-        
-        Log.d(TAG, String.format("proactively fragmenting "
-                +"%s byte payload into %s %s byte fragments",
-                payload_len, count, max_length));
-        
-        String[] hash_key = new String[1];
-        get_hash_key(fragment, hash_key);
-        fragment_table_.put(hash_key[0], state);
+       try {
+			ListIterator<BlockInfo> entry = bundle.xmit_link_block_set()
+					.find_blocks(link).listIterator();
+			while (entry.hasNext()) {
+				BlockInfo block_info = entry.next();
+	
+				if ((block_info.type() == bundle_block_type_t.PRIMARY_BLOCK)
+						|| (block_info.type() == bundle_block_type_t.PAYLOAD_BLOCK)) {
+	
+					all_frag_blocks.add(block_info);
+					first_frag_blocks.add(block_info);
+	
+				}
+	
+				else if ((block_info.flags() & block_flag_t.BLOCK_FLAG_REPLICATE
+						.getCode()) > 0) {
+					all_frag_blocks.add(block_info);
+				}
+	
+				else {
+					first_frag_blocks.add(block_info);
+				}
+	
+			}
+			do {
+				fragment = create_fragment(bundle, link, this_frag_blocks, offset,
+						max_length);
+				assert (fragment != null) : TAG
+						+ ": proactively_fragment() fragment not valid";
+	
+				state.add_fragment(fragment);
+				offset += fragment.payload().length();
+				todo -= fragment.payload().length();
+				this_frag_blocks = all_frag_blocks;
+				++count;
+				
+				
+	
+			} while (todo > 0);
 
+			Log.d(TAG, String.format("proactively fragmenting "
+	                +"%s byte payload into %s %s byte fragments",
+	                payload_len, count, max_length));
+	        
+	        String[] hash_key = new String[1];
+	        get_hash_key(fragment, hash_key);
+	        fragment_table_.put(hash_key[0], state);
+
+	   	} catch (Exception e) {
+			e.printStackTrace();
+		}
         return state;
     }
     
@@ -312,7 +320,7 @@ public class FragmentManager{
         
         get_hash_key(bundle, hash_key);
         
-        FragmentState state = fragment_table_.get(hash_key);
+        FragmentState state = fragment_table_.get(hash_key[0]);
 
         if (state == null){
             return null;
@@ -329,7 +337,7 @@ public class FragmentManager{
         String[] hash_key = new String[1];
         
         get_hash_key(fragment_state.bundle(), hash_key);
-        fragment_table_.remove(hash_key);
+        fragment_table_.remove(hash_key[0]);
     }
 
     
@@ -349,10 +357,12 @@ public class FragmentManager{
         String[] hash_key = new String[1];
         get_hash_key(fragment, hash_key);
         
-        FragmentState iter = fragment_table_.get(hash_key);
+        HashMap<String, FragmentState> temp = fragment_table_;
+        
+        FragmentState iter = fragment_table_.get(hash_key[0]);
 
         Log.d(TAG, String.format("processing bundle fragment id=%s hash=%s %s",
-                  fragment.bundleid(), hash_key,
+                  fragment.bundleid(), hash_key[0],
                   fragment.is_fragment()));
 
         if (iter == null) {
@@ -366,7 +376,7 @@ public class FragmentManager{
         } else {
             state = iter;
             Log.d(TAG, String.format("found reassembly state for key %s (%s fragments)",
-                      hash_key, state.fragment_list().size()));
+                      hash_key[0], state.fragment_list().size()));
         }
 
         // stick the fragment on the reassembly list
@@ -398,14 +408,14 @@ public class FragmentManager{
         
         // check see if we're done
         if (state.check_completed()) {
-            return;
+        	BundleDaemon.getInstance().post_at_head(new ReassemblyCompletedEvent(state.bundle(),
+                    state.fragment_list()));
+			assert(state.fragment_list().size() == 0)
+			:TAG+": process_for_reassembly size not 0"; // moved into the event
+//			fragment_table_.remove(hash_key[0]);
         }
-
-        BundleDaemon.getInstance().post_at_head(new ReassemblyCompletedEvent(state.bundle(),
-                                          state.fragment_list()));
-        assert(state.fragment_list().size() == 0)
-        :TAG+": process_for_reassembly size not 0"; // moved into the event
-        fragment_table_.remove(hash_key);
+        return;
+        
     }
     /**
      * Delete any fragments that are no longer needed given the incoming (non-fragment) bundle.
@@ -419,7 +429,7 @@ public class FragmentManager{
         hash_key[0] = "";
         
         get_hash_key(bundle, hash_key);
-        state = fragment_table_.get(hash_key);
+        state = fragment_table_.get(hash_key[0]);
 
         Log.d(TAG, String.format("checking for obsolete fragments id=%s hash=%s...",
                   bundle.bundleid(), hash_key[0]));
@@ -448,7 +458,7 @@ public class FragmentManager{
         	state.fragment_list().get_lock().unlock();
         }
 
-        fragment_table_.remove(hash_key);
+        fragment_table_.remove(hash_key[0]);
     }
 
     /**
@@ -466,7 +476,7 @@ public class FragmentManager{
         get_hash_key(fragment, hash_key);
         
         
-        state = fragment_table_.get(hash_key);
+        state = fragment_table_.get(hash_key[0]);
 
         // remove the fragment from the reassembly list
         boolean erased = state.erase_fragment(fragment);
@@ -482,7 +492,7 @@ public class FragmentManager{
         
         // delete reassembly state if no fragments now exist
         if (state.num_fragments() == 0) {
-            fragment_table_.remove(hash_key);
+            fragment_table_.remove(hash_key[0]);
         }
     }
     

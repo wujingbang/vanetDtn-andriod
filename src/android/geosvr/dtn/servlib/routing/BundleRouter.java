@@ -477,7 +477,7 @@ public abstract class BundleRouter extends BundleEventHandler {
 		// "if the bundle has a a singleton destination endpoint, then
 		// check if we already forwarded it or are planning to forward it
 		// somewhere else. if so, we shouldn't forward it again" [DTN2]
-/*		if (bundle.singleton_dest()
+		if (bundle.singleton_dest()
 				&& action == ForwardingInfo.action_t.FORWARD_ACTION) {
 			int count = bundle.fwdlog().get_count(
 					ForwardingInfo.state_t.TRANSMITTED.getCode()
@@ -501,7 +501,7 @@ public abstract class BundleRouter extends BundleEventHandler {
 						.bundleid(), link.name(), count));
 			}
 		}
-*/
+
 		// "otherwise log the reason why we should send it" [DTN2]
 		
 		String info_string = info!=null? info.state().toString() : "no info";

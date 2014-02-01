@@ -1012,7 +1012,7 @@ public class Link implements Serializable {
 
 			min_retry_interval_ = 3;
 			max_retry_interval_ = 3;
-			idle_close_time_ = 30;
+			idle_close_time_ = 300;
 
 			potential_downtime_ = 30;
 			prevhop_hdr_ = false;

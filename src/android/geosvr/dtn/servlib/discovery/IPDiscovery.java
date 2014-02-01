@@ -328,7 +328,7 @@ public class IPDiscovery extends Discovery implements Runnable {
 				DatagramPacket packet = new DatagramPacket(Rdata, Rdata.length);
 
 				socket_.receive(packet);
-				Log.d("B4", "Received beacon: "+packet.getAddress());
+//				Log.d("B4", "Received beacon: "+packet.getAddress());
 
 				// String s = new String(packet.getData(), 0,
 				// packet.getLength());
@@ -377,11 +377,11 @@ public class IPDiscovery extends Discovery implements Runnable {
 					handle_neighbor_discovered(Type, nexthop, remote_eid);
 				}
 
-				Log.d("B4", "beacon: "+remote_eid);
+//				Log.d("B4", "beacon: "+remote_eid);
 
 			} catch (Exception e) {
-				 Log.i(TAG, "Fail receiving the UDP datagram " +
-				 e.getMessage());
+//				 Log.i(TAG, "Fail receiving the UDP datagram " +
+//				 e.getMessage());
 			}
 
 		}

@@ -89,6 +89,7 @@ import android.geosvr.dtn.servlib.bundling.event.RouteReportEvent;
 import android.geosvr.dtn.servlib.bundling.event.SetLinkDefaultsRequest;
 import android.geosvr.dtn.servlib.bundling.event.ShutdownRequest;
 import android.geosvr.dtn.servlib.bundling.event.StatusRequest;
+import android.geosvr.dtn.servlib.bundling.event.ContactEvent.reason_t;
 import android.geosvr.dtn.servlib.bundling.exception.BundleListLockNotHoldByCurrentThread;
 import android.geosvr.dtn.servlib.config.DTNConfiguration;
 import android.geosvr.dtn.servlib.config.RoutesSetting;
@@ -1239,17 +1240,21 @@ public abstract class TableBasedRouter extends BundleRouter {
 
 	}
 
-	
 	@Override
-	protected void handle_link_state_change_request(LinkStateChangeRequest req) {
-		//NOT IMPLEMENTED IN THIS ROUTER
-
+	protected void handle_link_state_change_request(
+			LinkStateChangeRequest request) {
+	
 	}
 
 	
 	@Override
 	protected void handle_link_unavailable(LinkUnavailableEvent event) {
-		//NOT IMPLEMENTED IN THIS ROUTER
+		Link link = event.link();
+		if (link == null) {
+			Log.w(TAG, "LINK_STATE_CHANGE_REQUEST received invalid link");
+			return;
+		}
+		route_table_.del_entries_for_nexthop(link);	
 
 	}
 

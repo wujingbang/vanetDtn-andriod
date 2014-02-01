@@ -14,10 +14,10 @@
    <string name="DTNAPITempFilePrefix">api_tmp</string>
  
    <!-- Flag whether to enable proactive fragmentation [Beta]-->  
-   <string name="DTNEnableProactiveFragmentation">false</string>
+   <string name="DTNEnableProactiveFragmentation">true</string>
    
    <!-- The proactive fragmentation MTU, unit is in bytes -->
-   <string name="DTNFragmentationMTU">5000</string>
+   <string name="DTNFragmentationMTU">2010000</string>
    
    <!-- Flag whether to enable DTNManager debugging panel. The panel in this release include 
   reset storage button and battery status button    -->

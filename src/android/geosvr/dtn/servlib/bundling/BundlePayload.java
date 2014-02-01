@@ -312,7 +312,9 @@ public class BundlePayload implements Serializable {
 			assert (length_ >= dst_offset + len) : "BundlePayload:write_data, length_ is not longer than dest offset + length ";
 			assert (src.length() >= src_offset + len) : "BundlePayload:write_data, src.length is not longer than dest offset + length ";
 
-			IByteBuffer buf = new SerializableByteBuffer(1024);
+			int mtu = Integer.parseInt(DTNService.context().getResources()
+					.getString(R.string.DTNFragmentationMTU));
+			IByteBuffer buf = new SerializableByteBuffer(mtu + 300);
 
 			src.read_data(src_offset, len, buf);
 

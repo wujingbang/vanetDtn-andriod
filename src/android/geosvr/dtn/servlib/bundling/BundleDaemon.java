@@ -2536,7 +2536,8 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 						fragment,
 						BundleProtocol.status_report_reason_t.REASON_NO_ADDTL_INFO);
 			}
-		} catch (BundleListLockNotHoldByCurrentThread e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			Log
 					.e(
 							TAG,

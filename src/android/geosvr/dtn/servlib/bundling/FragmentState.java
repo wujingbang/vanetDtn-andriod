@@ -84,7 +84,7 @@ public class FragmentState{
 	final public boolean check_completed(){
     	
         fragments_.get_lock().lock();
-
+        boolean flag = false;
         try{
         	Bundle fragment;
             ListIterator<Bundle> iter;
@@ -100,7 +100,7 @@ public class FragmentState{
 	        int fragn = fragments_.size();
 	        
 	        
-	        for (iter = fragments_.begin(); !iter.equals(fragments_.end()) ; ++fragi)
+	        for (iter = fragments_.begin(); iter.hasNext() ; ++fragi)
 	        {
 	        	
 	            fragment = iter.next();
@@ -183,7 +183,8 @@ public class FragmentState{
 	        
             if (done_up_to == total_len) {
                 Log.d(TAG, "check_completed reassembly complete!");
-                return true;
+//                return true;
+                flag = true;
             } else {
                 Log.d(TAG, String.format("check_completed reassembly not done (got %d/%d)",
                           done_up_to, total_len));
@@ -191,11 +192,11 @@ public class FragmentState{
             }
             
             
-        } catch (BundleListLockNotHoldByCurrentThread e) {
+        } catch (Exception e) {
 			e.printStackTrace();
 		}finally{
         	fragments_.get_lock().unlock();
-            return false;
+            return flag;
         }
 
 

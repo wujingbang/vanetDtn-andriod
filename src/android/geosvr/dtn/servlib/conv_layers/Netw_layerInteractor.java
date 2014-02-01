@@ -7,14 +7,18 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 
 import android.geosvr.dtn.DTNManager;
+import android.geosvr.dtn.servlib.bundling.Bundle;
 import android.geosvr.dtn.servlib.bundling.BundleDaemon;
+import android.geosvr.dtn.servlib.bundling.BundleList;
 import android.geosvr.dtn.servlib.bundling.ForwardingInfo;
 import android.geosvr.dtn.servlib.bundling.event.BundleEvent;
 import android.geosvr.dtn.servlib.bundling.event.ContactEvent;
 import android.geosvr.dtn.servlib.bundling.event.LinkStateChangeRequest;
+import android.geosvr.dtn.servlib.bundling.exception.BundleListLockNotHoldByCurrentThread;
 import android.geosvr.dtn.servlib.contacts.ContactManager;
 import android.geosvr.dtn.servlib.contacts.Link;
 import android.geosvr.dtn.servlib.contacts.Link.state_t;
@@ -121,6 +125,8 @@ public class Netw_layerInteractor implements Runnable {
 				//关闭dstID对应的直接连接。
 				shutdownDirectLink(dstId);
 				
+				flash_pendingBundleState(dstId);
+				
 				add_link(lastAvailStr, lastAvailId);
 				try {
 					Thread.sleep(1000);
@@ -151,6 +157,7 @@ public class Netw_layerInteractor implements Runnable {
 		
 		RouteEntry route = new RouteEntry(new EndpointIDPattern(dstId+"/*"), 
 										new EndpointIDPattern(lastAvailId+"/*"));
+		route.set_action(ForwardingInfo.action_t.FORWARD_ACTION);
 		Daemon.router().add_route(route);
 	}
 	/**
@@ -169,6 +176,10 @@ public class Netw_layerInteractor implements Runnable {
 			RouteEntry route = itr.next();
 			if (route.IsDirectLink()){
 				route.link().get_lock().lock();
+				//清空link队列
+				route.link().queue().clear();
+				route.link().inflight().clear();
+				
 				route.link().set_state(state_t.UNAVAILABLE);//这里还可以用link().close()，可以试一试
 //				route.link().close();
 				route.link().get_lock().unlock();
@@ -176,6 +187,33 @@ public class Netw_layerInteractor implements Runnable {
 		}
 	}
 	
+	/**
+	 * 清空pending_list中断路对应link队列的queue状态
+	 */
+	private void flash_pendingBundleState(String dstId) {
+		BundleList pending = BundleDaemon.getInstance().pending_bundles();
+		
+		pending.get_lock().lock();
+		try {
+			ListIterator<Bundle> iter = pending.begin();
+			while (iter.hasNext()) {
+				Bundle bundle = iter.next();
+				int count = bundle.fwdlog().get_count(
+						new EndpointIDPattern(dstId+"/*"), 
+						ForwardingInfo.state_t.QUEUED.getCode(),
+						1);
+				if (count > 0) {
+					bundle.fwdlog().clear();
+				}
+			}
+
+		} catch (BundleListLockNotHoldByCurrentThread e) {
+			Log.e(TAG, "TableBasedRouter: reroute_all_bundles " + e.toString());
+		} finally {
+			pending.get_lock().unlock();
+		}
+	}
+
 	/**
 	 * 收到断路信息，加入到last avail的link
 	 */
