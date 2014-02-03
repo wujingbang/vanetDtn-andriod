@@ -51,7 +51,7 @@ public class OndemandLink extends Link {
 		set_state(Link.state_t.AVAILABLE);
 
 		// override the default for the idle close time
-		params_.set_idle_close_time(30000);
+//		params_.set_idle_close_time(30000);
 	}
 
 	/**

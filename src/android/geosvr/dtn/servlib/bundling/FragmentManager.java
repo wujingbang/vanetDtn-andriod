@@ -194,6 +194,7 @@ public class FragmentManager{
 
         // copy the metadata into the new fragment (which can be further fragmented)
         bundle.copy_metadata(fragment);
+        /////////////////////////////////////////////////////////
         fragment.set_is_fragment(true);
         fragment.set_do_not_fragment(false);
         
@@ -217,7 +218,8 @@ public class FragmentManager{
         
         while(entry.hasNext()){
         	block_i = entry.next();
-
+        	if(block_i.owner_type_ == BundleProtocol.bundle_block_type_t.PAYLOAD_BLOCK)
+        		block_i.set_data_length(to_copy);//尝试一
         	xmit_blocks.add(block_i);
         	
         }

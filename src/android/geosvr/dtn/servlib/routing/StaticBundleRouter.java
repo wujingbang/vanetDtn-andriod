@@ -19,11 +19,47 @@
  */
 package android.geosvr.dtn.servlib.routing;
 
+import android.geosvr.dtn.servlib.bundling.event.BundleEvent;
+
 
 /**
  * This is a non-abstract version of TableBasedRouter. 
  * @author Rerngvit Yanggratoke (rerngvit@kth.se)
  */
-public class StaticBundleRouter  extends TableBasedRouter{
+public class StaticBundleRouter extends TableBasedRouter implements Runnable{
 	
+	private BundleEvent event_;
+	/**
+	 * Thread for running this daemon
+	 */
+	private Thread thread_;
+	/**
+	 * Singleton implementation instance
+	 */
+	private static StaticBundleRouter instance_ = null;
+	/**
+	 * 单例
+	 */
+	public static StaticBundleRouter getInstance() {
+		if (instance_ == null) {
+			instance_ = new StaticBundleRouter();
+		}
+		return instance_;
+	}
+	
+	/**
+	 *  Start a new thread
+	 */
+	@Override
+	public void thread_handle_event(BundleEvent event) {
+		event_ = event;
+		thread_ = new Thread(this);
+		thread_.start();
+
+	}
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		super.handle_event(event_);
+	}
 }

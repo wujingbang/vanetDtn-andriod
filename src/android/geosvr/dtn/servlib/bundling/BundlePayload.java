@@ -316,11 +316,16 @@ public class BundlePayload implements Serializable {
 					.getString(R.string.DTNFragmentationMTU));
 			IByteBuffer buf = new SerializableByteBuffer(mtu + 300);
 
-			src.read_data(src_offset, len, buf);
+			if ( src.read_data(src_offset, len, buf) == false ) {
+				System.out.println("sss");
+			}
 
 			internal_write(buf, dst_offset, len);
 
-		} finally {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
 			lock_.unlock();
 		}
 

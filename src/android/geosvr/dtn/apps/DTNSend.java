@@ -275,7 +275,8 @@ public class DTNSend extends Activity  {
 //		dtn_payload.set_buf(message_byte_array);
 		
 		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
-		dtn_payload.set_file(new File("/sdcard/test_4M.wma"));
+//		dtn_payload.set_file(new File("/sdcard/test_4M.wma"));
+		dtn_payload.set_file(new File("/sdcard/test_0.5M.mp3"));
 //		dtn_payload.set_file(new File("/sdcard/test.htm"));
 		   
 		// Start the DTN Communication
@@ -299,18 +300,16 @@ public class DTNSend extends Activity  {
 		// Set prority
 		spec.set_priority(PRIORITY);
 		
-		// Data structure to get result from the IBinder
-		DTNBundleID dtn_bundle_id = new DTNBundleID();
-		
-		dtn_api_status_report_code api_send_result =  dtn_api_binder_.dtn_send(dtn_handle, 
-				spec, 
-				dtn_payload, 
-				dtn_bundle_id);
-		
-		// If the API fail to execute throw the exception so user interface can catch and notify users
-		if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS)
-		{
-			throw new DTNAPIFailException();
+		dtn_api_status_report_code api_send_result ;
+		for (int i = 0; i < 10; i++) {
+			// Data structure to get result from the IBinder
+			DTNBundleID dtn_bundle_id = new DTNBundleID();
+			api_send_result = dtn_api_binder_
+					.dtn_send(dtn_handle, spec, dtn_payload, dtn_bundle_id);
+			// If the API fail to execute throw the exception so user interface can catch and notify users
+			if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS) {
+				throw new DTNAPIFailException();
+			}
 		}
 		
 		}

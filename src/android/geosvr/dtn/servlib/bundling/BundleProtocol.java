@@ -443,7 +443,7 @@ public class BundleProtocol {
 		    while (len != 0) {
 		        Log.d(TAG, String.format("consume: %d bytes left to process", len));
 		        BlockInfo info = recv_blocks.back();
-
+		        
 		        // "if the last received block is complete, create a new one
 		        // and push it onto the vector. at this stage we consume all
 		        // blocks, even if there's no BlockProcessor that understands

@@ -34,6 +34,7 @@ import android.geosvr.dtn.servlib.bundling.SDNV;
 import android.geosvr.dtn.servlib.bundling.Bundle.priority_values_t;
 import android.geosvr.dtn.servlib.bundling.BundlePayload.location_t;
 import android.geosvr.dtn.servlib.bundling.event.BundleDeleteRequest;
+import android.geosvr.dtn.servlib.bundling.event.BundleEvent;
 import android.geosvr.dtn.servlib.bundling.event.ContactUpEvent;
 import android.geosvr.dtn.servlib.naming.EndpointID;
 import android.geosvr.dtn.servlib.naming.EndpointIDPattern;
@@ -769,6 +770,12 @@ public class ProphetBundleRouter extends TableBasedRouter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void thread_handle_event(BundleEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

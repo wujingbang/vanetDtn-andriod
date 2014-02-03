@@ -1764,17 +1764,17 @@ public abstract class Connection extends CLConnection {
 
 		// "validate that the total length as conveyed by the convergence
 		// layer matches the length according to the bundle protocol"[DTN2]
-		if (incoming.total_length() != formatted_len) {
-			String text3 = String
-					.format(
-							"protocol error: CL total length %s doesn't match bundle protocol total %s",
-							incoming.total_length(), formatted_len);
-			Log.e(TAG, text3);
-
-			incoming.rcvd_data().clear();
-			break_contact(ContactEvent.reason_t.CL_ERROR);
-			return;
-		}
+//		if (incoming.total_length() != formatted_len) {
+//			String text3 = String
+//					.format(
+//							"protocol error: CL total length %s doesn't match bundle protocol total %s",
+//							incoming.total_length(), formatted_len);
+//			Log.e(TAG, text3);
+//
+//			incoming.rcvd_data().clear();
+//			break_contact(ContactEvent.reason_t.CL_ERROR);
+//			return;
+//		}
 
 		handle_bundle_end_download(incoming);
 

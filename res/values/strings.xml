@@ -14,7 +14,7 @@
    <string name="DTNAPITempFilePrefix">api_tmp</string>
  
    <!-- Flag whether to enable proactive fragmentation [Beta]-->  
-   <string name="DTNEnableProactiveFragmentation">true</string>
+   <string name="DTNEnableProactiveFragmentation">false</string>
    
    <!-- The proactive fragmentation MTU, unit is in bytes -->
    <string name="DTNFragmentationMTU">2010000</string>

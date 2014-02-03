@@ -31,6 +31,7 @@ import android.geosvr.dtn.servlib.bundling.BundleEventHandler;
 import android.geosvr.dtn.servlib.bundling.BundleList;
 import android.geosvr.dtn.servlib.bundling.BundleProtocol;
 import android.geosvr.dtn.servlib.bundling.ForwardingInfo;
+import android.geosvr.dtn.servlib.bundling.event.BundleEvent;
 import android.geosvr.dtn.servlib.config.DTNConfiguration;
 import android.geosvr.dtn.servlib.contacts.Link;
 import android.geosvr.dtn.servlib.naming.EndpointID;
@@ -55,6 +56,11 @@ public abstract class BundleRouter extends BundleEventHandler {
 	 * The String TAG to support Android Logging mechanism
 	 */
 	private static String TAG = "BundleRouter";
+	
+	/**
+	 * 
+	 */
+	public abstract void thread_handle_event(BundleEvent event);
 
 	/**
 	 * Router Type implemented. In this implementation, it supports only Static Bundle routing
@@ -115,7 +121,7 @@ public abstract class BundleRouter extends BundleEventHandler {
 		dtn_config_ = dtn;		
 	}
 	
-	
+
 
 	/**
 	 * Method to create a Bundle Router. The type of BundleRouter created depends on the config

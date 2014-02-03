@@ -476,7 +476,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 		if (!event.daemon_only()) { 
 			// "dispatch the event to the router and also
 			// the contact manager" [DTN2]
-			router_.handle_event(event);
+			router_.thread_handle_event(event);
 			contactmgr_.handle_event(event);
 		}
 		//在这处理了后续步骤，例如确认后的缓存bundle的删除。
@@ -498,7 +498,13 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 	 */
 	public void init(DTNConfiguration config) {
 		local_eid_ = new EndpointID(config.routes_setting().local_eid());
-
+		try {
+			// Create router according to config in the configuration process
+			router_ = BundleRouter.create_router();
+		} catch (RoutingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -641,8 +647,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 	public void run() {
 
 		try {
-			// Create router according to config in the configuration process
-			router_ = BundleRouter.create_router();
+
 
 			load_registrations();
 			load_bundles();
@@ -666,7 +671,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 			}
 
 			Log.d(TAG, "BundleDaemon: at the end of run() of Daemon");
-		} catch (RoutingException e1) {
+		} catch (Exception e1) {
 			Log.e(TAG, "BundleDeamon:run(), UnknownRouterType ");
 		}
 	}

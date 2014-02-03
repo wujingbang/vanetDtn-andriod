@@ -31,6 +31,7 @@ import android.geosvr.dtn.servlib.bundling.exception.BundleListLockNotHoldByCurr
 import android.geosvr.dtn.servlib.contacts.Link;
 import android.geosvr.dtn.servlib.storage.BundleStore;
 import android.util.Log;
+import android.widget.SlidingDrawer;
 
 /**
  * Helper class for Bundle daemon and router to execute particular actions relating to Bundle link management, storage and transmission.
@@ -162,13 +163,18 @@ public class BundleActions {
 						.bundleid(), link.type_str(), link.name(), link
 						.nexthop(), total_len));
 
-		ForwardingInfo.state_t state = bundle.fwdlog().get_latest_entry(link);
-		if (state == ForwardingInfo.state_t.QUEUED) {
-			Log.e(TAG, String.format("queue bundle id %d on %s link %s (%s): "
-					+ "already queued or in flight", bundle.bundleid(), link
-					.type_str(), link.name(), link.nexthop()));
+//		ForwardingInfo.state_t state = bundle.fwdlog().get_latest_entry(link);
+//		if (state == ForwardingInfo.state_t.QUEUED) {
+//			Log.e(TAG, String.format("queue bundle id %d on %s link %s (%s): "
+//					+ "already queued or in flight", bundle.bundleid(), link
+//					.type_str(), link.name(), link.nexthop()));
+//			return false;
+//		}
+		boolean[] found = {false};
+		if (bundle.fwdlog().get_latest_entry(ForwardingInfo.state_t.QUEUED, found) != null) {
 			return false;
 		}
+		
 		
 		/*
 		 * 拆包
@@ -197,16 +203,27 @@ public class BundleActions {
 				fragment_list.get_lock().lock();
 				try {
 					Iterator<Bundle> itr = fragment_list.begin();
-
+					//追求完美可以将QUEUED改为分片标识。
+					bundle.fwdlog().add_entry(link, action, ForwardingInfo.state_t.QUEUED,
+							custody_timer_spec);
 					while (itr.hasNext()) {
 						Bundle fragment = itr.next();
 						BundleDaemon.getInstance().post_at_head(
 								new BundleReceivedEvent(fragment,
 										event_source_t.EVENTSRC_FRAGMENTATION));
+						
+						Thread.sleep(99999999);
+						Thread.sleep(99999999);
+						Thread.sleep(99999999);
+						Thread.sleep(99999999);
+						Thread.sleep(99999999);
+						Thread.sleep(99999999);
+						Thread.sleep(99999999);
+						Thread.sleep(99999999);
 					}
 
 					return false;
-				} catch (BundleListLockNotHoldByCurrentThread e) {
+				} catch (Exception e) {
 					Log
 							.e(TAG,
 									"Bundle Action queue bundle, fragments bundle list not locked");

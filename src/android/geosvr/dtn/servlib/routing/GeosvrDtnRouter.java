@@ -577,4 +577,10 @@ public class GeosvrDtnRouter extends BundleRouter {
 		
 	}
 
+	@Override
+	public void thread_handle_event(BundleEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
