@@ -66,6 +66,11 @@ public class DTNSend extends Activity  {
 	private Button SendButton;
 	
 	/**
+	 * SendButton reference object
+	 */
+	private Button SendBigButton;
+	
+	/**
 	 * CloseButton reference object
 	 */
 	private Button closeButton;
@@ -171,7 +176,39 @@ public class DTNSend extends Activity  {
 		    DestEIDEditText = (EditText) this.findViewById(R.id.DTNApps_DTNSend_DestEIDEditText);
 			MessageTextView = (TextView) this.findViewById(R.id.DTNApps_DTNSend_MessageTextView);
 			SendButton = (Button)this.findViewById(R.id.DTNApps_DTNSend_SendButton);
+			SendBigButton = (Button)this.findViewById(R.id.DTNApps_DTNSend_BigFileButton);
 			
+			SendBigButton.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					try {
+						// Validate the user input first whether the EID is valid EID
+						checkInputEID();
+						
+						// If the validator pass, send the message
+						sendBigFile();
+						
+						new AlertDialog.Builder(DTNSend.this).setMessage(
+								"Sent DTN message to DTN Service successfully ")
+								.setPositiveButton("OK", null).show();
+						
+						
+					} catch (InvalidEndpointIDException e) {
+						new AlertDialog.Builder(DTNSend.this).setMessage(
+								"Dest EID is invalid. Please input valid EID for example dtn://endpoint.com")
+								.setPositiveButton("OK", null).show();
+						
+						
+						
+					} catch (Exception e) {
+						new AlertDialog.Builder(DTNSend.this).setMessage(
+						"Internal error with " + e.getMessage())
+						.setPositiveButton("OK", null).show();
+						
+					}
+					
+					
+				}
+			});
 			SendButton.setOnClickListener(new OnClickListener() {
 				
 				
@@ -285,41 +322,102 @@ public class DTNSend extends Activity  {
 		if (open_status != dtn_api_status_report_code.DTN_SUCCESS) throw new DTNOpenFailException();
 		try
 		{
-		DTNBundleSpec spec = new DTNBundleSpec();
-		
-		// set destination from the user input
-		spec.set_dest(new DTNEndpointID(dest_eid));
-		
-		// set the source EID from the bundle Daemon
-		spec.set_source(new DTNEndpointID(BundleDaemon.getInstance().local_eid().toString()));
+			DTNBundleSpec spec = new DTNBundleSpec();
 			
-		// Set expiration in seconds, default to 1 hour
-		spec.set_expiration(EXPIRATION_TIME);
-		// no option processing for now
-		spec.set_dopts(DELIVERY_OPTIONS);
-		// Set prority
-		spec.set_priority(PRIORITY);
-		
-		dtn_api_status_report_code api_send_result ;
-		for (int i = 0; i < 10; i++) {
-			// Data structure to get result from the IBinder
-			DTNBundleID dtn_bundle_id = new DTNBundleID();
+			// set destination from the user input
+			spec.set_dest(new DTNEndpointID(dest_eid));
+			
+			// set the source EID from the bundle Daemon
+			spec.set_source(new DTNEndpointID(BundleDaemon.getInstance().local_eid().toString()));
+				
+			// Set expiration in seconds, default to 1 hour
+			spec.set_expiration(EXPIRATION_TIME);
+			// no option processing for now
+			spec.set_dopts(DELIVERY_OPTIONS);
+			// Set prority
+			spec.set_priority(PRIORITY);
+			
+			dtn_api_status_report_code api_send_result ;
+	//		for (int i = 0; i < 10; i++) {
+	//			// Data structure to get result from the IBinder
+	//			DTNBundleID dtn_bundle_id = new DTNBundleID();
+	//			api_send_result = dtn_api_binder_
+	//					.dtn_send(dtn_handle, spec, dtn_payload, dtn_bundle_id);
+	//			// If the API fail to execute throw the exception so user interface can catch and notify users
+	//			if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS) {
+	//				throw new DTNAPIFailException();
+	//			}
+	//		}
 			api_send_result = dtn_api_binder_
-					.dtn_send(dtn_handle, spec, dtn_payload, dtn_bundle_id);
+						.dtn_multiple_send(dtn_handle, spec, dtn_payload, 108);
 			// If the API fail to execute throw the exception so user interface can catch and notify users
 			if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS) {
 				throw new DTNAPIFailException();
 			}
-		}
 		
 		}
 		finally
 		{
 			dtn_api_binder_.dtn_close(dtn_handle);
 		}
+	}
 	
+	private void sendBigFile()  throws UnsupportedEncodingException, DTNOpenFailException, DTNAPIFailException
+	{
+		// Getting values from user interface
+		String message = MessageTextView.getText().toString();
+		byte[] message_byte_array = message.getBytes("US-ASCII");
 		
+		String dest_eid = DestEIDEditText.getText().toString();
 		
+		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
+		dtn_payload.set_file(new File("/sdcard/test_20M.wma"));
+		   
+		// Start the DTN Communication
+		DTNHandle dtn_handle = new DTNHandle();
+		dtn_api_status_report_code open_status = dtn_api_binder_.dtn_open(dtn_handle);
+		if (open_status != dtn_api_status_report_code.DTN_SUCCESS) throw new DTNOpenFailException();
+		try
+		{
+			DTNBundleSpec spec = new DTNBundleSpec();
+			
+			// set destination from the user input
+			spec.set_dest(new DTNEndpointID(dest_eid));
+			
+			// set the source EID from the bundle Daemon
+			spec.set_source(new DTNEndpointID(BundleDaemon.getInstance().local_eid().toString()));
+				
+			// Set expiration in seconds, default to 1 hour
+			spec.set_expiration(EXPIRATION_TIME);
+			// no option processing for now
+			spec.set_dopts(DELIVERY_OPTIONS);
+			// Set prority
+			spec.set_priority(PRIORITY);
+			
+			dtn_api_status_report_code api_send_result ;
+	//		for (int i = 0; i < 10; i++) {
+	//			// Data structure to get result from the IBinder
+	//			DTNBundleID dtn_bundle_id = new DTNBundleID();
+	//			api_send_result = dtn_api_binder_
+	//					.dtn_send(dtn_handle, spec, dtn_payload, dtn_bundle_id);
+	//			// If the API fail to execute throw the exception so user interface can catch and notify users
+	//			if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS) {
+	//				throw new DTNAPIFailException();
+	//			}
+	//		}
+			DTNBundleID dtn_bundle_id = new DTNBundleID();
+			api_send_result = dtn_api_binder_
+						.dtn_send(dtn_handle, spec, dtn_payload, dtn_bundle_id);
+			// If the API fail to execute throw the exception so user interface can catch and notify users
+			if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS) {
+				throw new DTNAPIFailException();
+			}
+		
+		}
+		finally
+		{
+			dtn_api_binder_.dtn_close(dtn_handle);
+		}
 	}
 	
 	/**

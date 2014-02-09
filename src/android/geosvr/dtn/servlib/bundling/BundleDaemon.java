@@ -476,7 +476,21 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 		if (!event.daemon_only()) { 
 			// "dispatch the event to the router and also
 			// the contact manager" [DTN2]
-			router_.thread_handle_event(event);
+//			if (event.type() == event_type_t.BUNDLE_RECEIVED && DTNService.context().getResources().getString(
+//					R.string.DTNEnableProactiveFragmentation).equals("true")) {
+//				int mtu = Integer.parseInt(DTNService.context().getResources()
+//						.getString(R.string.DTNFragmentationMTU));
+//				BundleReceivedEvent e = (BundleReceivedEvent)event;
+//				if (e.bundle().payload().length() > mtu)
+//					router_.thread_handle_event(event); 
+//				else
+//					router_.handle_event(event);
+//				//	
+//			} else {
+//				router_.handle_event(event);
+//			}
+			router_.thread_handle_event(event); 
+//			router_.handle_event(event);
 			contactmgr_.handle_event(event);
 		}
 		//在这处理了后续步骤，例如确认后的缓存bundle的删除。

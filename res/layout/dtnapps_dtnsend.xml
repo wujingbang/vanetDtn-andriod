@@ -19,21 +19,25 @@ android:orientation="vertical" android:layout_width="fill_parent" android:layout
 
 
 <LinearLayout 
-xmlns:android="http://schemas.android.com/apk/res/android" 
 android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
 <Button android:layout_width="wrap_content" android:layout_height="wrap_content" 
-android:id="@+id/DTNApps_DTNSend_SendButton"
- 
-android:text="Send"   
+		android:id="@+id/DTNApps_DTNSend_SendButton"
+		 
+		android:text="Send"   
   />
-  
+
+<Button
+    android:id="@+id/DTNApps_DTNSend_BigFileButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="SendBig" />
   
 <Button android:layout_width="wrap_content" android:layout_height="wrap_content" 
 android:id="@+id/DTNApps_DTNSend_CloseButton"
 android:text="Close"   
 android:layout_marginLeft="10dp"
 
-  />  
+  />
   
 </LinearLayout>
 

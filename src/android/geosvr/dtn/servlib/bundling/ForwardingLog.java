@@ -248,8 +248,10 @@ public class ForwardingLog extends ArrayList<ForwardingInfo> implements Serializ
     	    for (int i = 0; i<log_.size(); i++)
     	    {
     	    	info = log_.get(i);
-    	        if ((info.remote_eid() == EndpointIDPattern.WILDCARD_EID() ||
-    	                info.remote_eid().equals(eid))  && (info.state().getCode() & states)!=0 
+    	    	int subFlag1 = info.remote_eid().toString().indexOf(eid.toString());
+    	    	int subFlag2 = eid.toString().indexOf(info.remote_eid().toString());
+    	        if ((info.remote_eid() == EndpointIDPattern.WILDCARD_EID() || subFlag1>=0 ||subFlag2>=0)  
+    	        		&& (info.state().getCode() & states)!=0 
     	        		&& (info.action().getCode() & actions)!=0){
     	        	count++;
     	        }

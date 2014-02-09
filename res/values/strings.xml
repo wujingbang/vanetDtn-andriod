@@ -24,7 +24,7 @@
    <string name="DTNManagerShowDebugPanel">true</string>
    
    <!-- Flag whether to enable test data logging. SDCard is required for this feature -->
-   <string name="DTNTestDataLogging_ONSDCard">false</string>
+   <string name="DTNTestDataLogging_ONSDCard">true</string>
    
    <!-- The folder name for the test data logging. The test data folder will be in the root folder of SDCard -->
    <string name="DTNTestDataPrefix">dtn_test_data</string>

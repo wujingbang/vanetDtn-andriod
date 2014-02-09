@@ -125,7 +125,7 @@ public class Netw_layerInteractor implements Runnable {
 				//关闭dstID对应的直接连接。
 				shutdownDirectLink(dstId);
 				
-				flash_pendingBundleState(dstId);
+//				flash_pendingBundleState(dstId);
 				
 				add_link(lastAvailStr, lastAvailId);
 				try {
@@ -177,7 +177,9 @@ public class Netw_layerInteractor implements Runnable {
 			if (route.IsDirectLink()){
 				route.link().get_lock().lock();
 				//清空link队列
+				flash_queueBundleState(route.link().queue());
 				route.link().queue().clear();
+				flash_queueBundleState(route.link().inflight());
 				route.link().inflight().clear();
 				
 				route.link().set_state(state_t.UNAVAILABLE);//这里还可以用link().close()，可以试一试
@@ -187,6 +189,29 @@ public class Netw_layerInteractor implements Runnable {
 		}
 	}
 	
+	/**
+	 * 清空bundleList中断路对应link队列的queue状态
+	 */
+	private void flash_queueBundleState(BundleList bundleList) {
+		bundleList.get_lock().lock();
+		try {
+			ListIterator<Bundle> iter = bundleList.begin();
+			while (iter.hasNext()) {
+				Bundle bundle = iter.next();
+				int count = bundle.fwdlog().get_count(
+						ForwardingInfo.state_t.QUEUED.getCode(),
+						1);
+				if (count > 0) {
+					bundle.fwdlog().clear();
+				}
+			}
+
+		} catch (BundleListLockNotHoldByCurrentThread e) {
+			Log.e(TAG, "TableBasedRouter: reroute_all_bundles " + e.toString());
+		} finally {
+			bundleList.get_lock().unlock();
+		}
+	}
 	/**
 	 * 清空pending_list中断路对应link队列的queue状态
 	 */
@@ -199,7 +224,7 @@ public class Netw_layerInteractor implements Runnable {
 			while (iter.hasNext()) {
 				Bundle bundle = iter.next();
 				int count = bundle.fwdlog().get_count(
-						new EndpointIDPattern(dstId+"/*"), 
+						new EndpointIDPattern(dstId), 
 						ForwardingInfo.state_t.QUEUED.getCode(),
 						1);
 				if (count > 0) {

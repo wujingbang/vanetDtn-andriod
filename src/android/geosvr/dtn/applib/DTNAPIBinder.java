@@ -766,7 +766,6 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 	 * android.geosvr.dtn.applib.types.DTNBundlePayload,
 	 * android.geosvr.dtn.applib.types.DTNBundleID)
 	 */
-	
 	public dtn_api_status_report_code dtn_send(DTNHandle handle,
 			DTNBundleSpec spec, DTNBundlePayload dtn_payload,
 			DTNBundleID dtn_bundle_id) {
@@ -778,6 +777,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 		
 		return dtn_send_final(handle, spec, dtn_payload, dtn_bundle_id, b);
 	}
+	
+
 
 	/**
 	 * An implementation of the DTNAPI's dtn_send
@@ -1100,6 +1101,308 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 
 		
 		return dtn_api_status_report_code.DTN_SUCCESS;
+	}
+
+	
+	///////////////////////////////////////////////////////////////////////////
+	public dtn_api_status_report_code dtn_multiple_send(DTNHandle handle,
+			DTNBundleSpec spec, DTNBundlePayload dtn_payload,
+			int count) {
+		if (!is_handle_valid(handle))
+			return dtn_api_status_report_code.DTN_EHANDLE_INVALID;
+		DTNBundleID[] dtn_bundle_id = new DTNBundleID[count];
+		Bundle[] b = new Bundle[count];
+		for (int i=0; i<count; i++) {
+			dtn_bundle_id[i] = new DTNBundleID();
+			b[i] = new Bundle(location_t.DISK);
+			b[i] = dtn_send_multiple_final(handle, spec, dtn_payload, dtn_bundle_id[i], b[i]);
+		}
+		
+		for (int i = 0; i < count; i++) {
+			BundleDaemon.getInstance().post(
+					new BundleReceivedEvent(b[i], event_source_t.EVENTSRC_APP));
+		}
+		return dtn_api_status_report_code.DTN_SUCCESS;
+	}
+	private Bundle dtn_send_multiple_final(DTNHandle handle,
+			DTNBundleSpec spec, DTNBundlePayload dtn_payload,
+			DTNBundleID dtn_bundle_id, Bundle b) {
+		// assign the addressing fields...
+		// source and destination are always specified
+		b.source().assign(spec.source().toString());
+		b.dest().assign(spec.dest().toString());
+
+		// replyto defaults to null
+		if (spec.replyto() == null) {
+			b.replyto().assign(EndpointID.NULL_EID());
+		} else {
+			b.replyto().assign(spec.replyto().toString());
+		}
+		// custodian is always null
+		b.custodian().assign(EndpointID.NULL_EID());
+
+		// set the is_singleton bit, first checking if the application
+		// specified a value, then seeing if the scheme is known and can
+		// therefore determine for itself, and finally, checking the
+		// global default
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_SINGLETON_DEST
+				.getCode()) > 0) {
+//			b.set_singleton_dest(true);
+			b.set_singleton_dest(false);
+		} else if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_MULTINODE_DEST
+				.getCode()) > 0) {
+			b.set_singleton_dest(false);
+		} else {
+			EndpointID.singleton_info_t info;
+
+			if (b.dest().known_scheme()) {
+				info = b.dest().is_singleton();
+
+				// all schemes must make a decision one way or the other
+				assert (info != EndpointID.singleton_info_t.UNKNOWN);
+			} else {
+				info = EndpointID.is_singleton_default_;
+			}
+
+			switch (info) {
+			case UNKNOWN:
+				Log.e(TAG, String.format(
+						"bundle destination %s in unknown scheme and "
+								+ "app did not assert singleton/multipoint", b
+								.dest()));
+//				return dtn_api_status_report_code.DTN_EINVAL;
+
+			case SINGLETON:
+//				b.set_singleton_dest(true);
+				b.set_singleton_dest(false);
+				break;
+
+			case MULTINODE:
+				b.set_singleton_dest(false);
+				break;
+			}
+		}
+
+		// check the priority code
+//		switch (spec.priority()) {
+//		case COS_BULK:
+//		case COS_NORMAL:
+//		case COS_EXPEDITED:
+//			break;
+//		default:
+//			Log.e(TAG, String.format("invalid priority level %s", spec
+//					.priority().toString()));
+//			return dtn_api_status_report_code.DTN_EINVAL;
+//		}
+//		;
+
+		// The bundle's source EID must be either dtn:none or an EID
+		// registered at this node so check that now.
+		RegistrationTable reg_table = BundleDaemon.getInstance().reg_table();
+		RegistrationList unused = new RegistrationList();
+		if (b.source().equals(EndpointID.NULL_EID())) {
+			// Bundles with a null source EID are not allowed to request reports
+			// or
+			// custody transfer, and must not be fragmented.
+			if (spec.dopts() > 0) {
+				Log.e(TAG,
+						"bundle with null source EID requested reports and/or "
+								+ "custody transfer");
+				return null;
+			}
+
+			b.set_do_not_fragment(true);
+		}
+		else if (reg_table.get_matching(b.source(), unused) != 0) {
+			// Local registration -- don't do anything
+		} else if (b.source().subsume(BundleDaemon.getInstance().local_eid())) {
+			// Allow source EIDs that subsume the local eid
+		} else {
+			Log
+					.e(
+							TAG,
+							String
+									.format(
+											"this node is not a member of the bundle's source EID (%s)",
+											b.source().toString()));
+			return null;
+		}
+
+		// delivery options
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_CUSTODY.getCode()) > 0)
+			b.set_custody_requested(true);
+
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_DELIVERY_RCPT
+				.getCode()) > 0)
+			b.set_delivery_rcpt(true);
+
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_RECEIVE_RCPT
+				.getCode()) > 0)
+			b.set_receive_rcpt(true);
+
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_FORWARD_RCPT
+				.getCode()) > 0)
+			b.set_forward_rcpt(true);
+
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_CUSTODY_RCPT
+				.getCode()) > 0)
+			b.set_custody_rcpt(true);
+
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_DELETE_RCPT
+				.getCode()) > 0)
+			b.set_deletion_rcpt(true);
+
+		if ((spec.dopts() & dtn_bundle_delivery_opts_t.DOPTS_DO_NOT_FRAGMENT
+				.getCode()) > 0)
+			b.set_do_not_fragment(true);
+
+		// expiration time
+		b.set_expiration(spec.expiration());
+
+		// validate the bundle metadata
+		StringBuffer error_string_buf = new StringBuffer();
+		if (!b.validate(error_string_buf)) {
+			Log.e(TAG, String.format("bundle validation failed: %s",
+					error_string_buf.toString()));
+			return null;
+		}
+
+		// set up the payload, including calculating its length, but don't
+		// copy it in yet
+		int payload_len = -1;
+
+		switch (dtn_payload.location()) {
+		case DTN_PAYLOAD_MEM:
+			payload_len = dtn_payload.buf().length;
+			break;
+
+		case DTN_PAYLOAD_FILE:
+
+			Log.d(TAG, String.format(
+					"dtn_send, getting payload from file name %s", dtn_payload
+							.file().getAbsoluteFile()));
+
+			File payload_file = dtn_payload.file();
+			
+			
+			if (!payload_file.exists()) {
+				Log.e(TAG, String.format("payload file %s does not exist!",
+						dtn_payload.file().getAbsoluteFile()));
+				return null;
+			}
+
+			payload_len = (int) payload_file.length();
+			break;
+
+		default:
+			Log.e(TAG, String.format("payload.location of %d unknown",
+					dtn_payload.location().toString()));
+			return null;
+		}
+
+		// Set an allocate dat for Bundle to be store
+		b.payload().set_length(payload_len);
+
+		// before filling in the payload, we first probe the router to
+		// determine if there's sufficient storage for the bundle
+		boolean result[] = new boolean[1];
+
+		MsgBlockingQueue<Integer> notifier_ = new MsgBlockingQueue<Integer>(1);
+		BundleProtocol.status_report_reason_t reason[] = new BundleProtocol.status_report_reason_t[1];
+		BundleDaemon.getInstance().post_and_wait(
+				new BundleAcceptRequest(b, event_source_t.EVENTSRC_APP, result,
+						reason), notifier_, -1, true);
+
+		if (!result[0]) {
+			Log.i(TAG, String.format("DTN_SEND bundle not accepted: reason %s",
+					reason[0].toString()));
+
+			switch (reason[0]) {
+			case REASON_DEPLETED_STORAGE:
+				return null;
+			default:
+				return null;
+			}
+		}
+
+		switch (dtn_payload.location()) {
+		case DTN_PAYLOAD_MEM:
+
+			// Set the payload according to byte array inside dtn_payload
+			b.payload().set_data(dtn_payload.buf());
+			break;
+
+		case DTN_PAYLOAD_FILE:
+
+			FileInputStream in = null;
+			try {
+				in = new FileInputStream(dtn_payload.file());
+
+				b.payload().set_length(dtn_payload.length());
+				// Transfer bytes from in to payload
+				java.nio.ByteBuffer temp_buffer = java.nio.ByteBuffer.allocate(32696);
+				int offset = 0;
+				ReadableByteChannel read_channel = Channels.newChannel(in);
+				while (in.available() > 0) {
+					
+					
+					read_channel.read(temp_buffer);
+					int read_len = temp_buffer.position();
+					temp_buffer.rewind();
+					
+					IByteBuffer serializable_temp_buffer = new SerializableByteBuffer(read_len);
+					BufferHelper.copy_data(serializable_temp_buffer, 0, temp_buffer, 0, read_len);
+					b.payload().write_data(serializable_temp_buffer, offset, read_len);
+					offset += read_len;
+				}
+				
+				
+			} catch (FileNotFoundException e) {
+				Log.e(TAG, String.format("payload file %s can't be opened: %s",
+						dtn_payload.file().getAbsoluteFile(), e.getMessage()));
+			} catch (SecurityException e) {
+				Log.e(TAG, e.getMessage());
+			} catch (IOException e) {
+				Log.e(TAG, e.getMessage());
+			} 
+			catch (Exception e)
+			{
+				Log.e(TAG, e.getMessage());
+			}
+			finally {
+				try {
+					in.close();
+				} catch (IOException e) {
+					Log.e(TAG, e.getMessage());
+				}
+
+			}
+
+			break;
+
+		}
+
+		// Before deliver the bundle fill in data in dtn_bundle_id
+		DTNBundleTimestamp dtn_bundle_creation_tiemstamp = new DTNBundleTimestamp();
+		dtn_bundle_creation_tiemstamp.set_secs(b.creation_ts().seconds());
+		dtn_bundle_creation_tiemstamp.set_seqno(b.creation_ts().seqno());
+		dtn_bundle_id.set_creation_ts(dtn_bundle_creation_tiemstamp);
+		dtn_bundle_id.set_frag_offset(0);
+		dtn_bundle_id.set_orig_length(0);
+
+		Log
+				.i(
+						TAG,
+						String
+								.format(
+										"DTN_SEND bundle %d, with payload type %s, payload length %d bytes",
+										b.bundleid(), b.payload().location()
+												.toString(), b.payload()
+												.length()));
+
+		// deliver the bundle
+		
+		return b;
 	}
 
 	/**

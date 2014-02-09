@@ -76,6 +76,7 @@ public class DTNService extends android.app.Service {
 	private static BatteryObserver battery_observer_ = null;
 	
 	private static boolean test_data_logging_ = false;
+	private static boolean test_on_ = false;
 	public  static BatteryStat battery_stat()
 	{
 		return battery_stat_;
@@ -193,6 +194,9 @@ public class DTNService extends android.app.Service {
 		{
     		test_data_logging_ = true;
     		TestDataLogger.getInstance().init();
+//    		test_on_ = true;
+    		
+    		
 		}
     	
     	lock_ = new Lock();
