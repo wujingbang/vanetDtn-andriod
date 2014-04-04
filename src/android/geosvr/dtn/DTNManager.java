@@ -64,6 +64,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
+ * 初始化界面
  * Android Activity to configure, manage, and monitor DTNServer. The display of this activity is bound to the DTNManager app
  * @author Rerngvit Yanggratoke (rerngvit@kth.se)
  * @see DTNService 
