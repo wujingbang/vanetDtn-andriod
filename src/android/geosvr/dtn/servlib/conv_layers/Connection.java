@@ -664,7 +664,7 @@ public abstract class Connection extends CLConnection {
 	 * Terminate the contact if we have not received 2*keepalive in seconds
 	 */
 	protected void check_timeout() {
-
+/*
 		long now;
 		long elapsed_received;
 
@@ -690,11 +690,11 @@ public abstract class Connection extends CLConnection {
 
 			break_contact(reason_t.IDLE);
 		}
-
+*/
 	}
 
 	protected void check_keepalive() {
-
+/*
 		long now;
 		long elapsed, elapsed2;
 
@@ -718,7 +718,7 @@ public abstract class Connection extends CLConnection {
 				send_keepalive();
 			}
 		}
-
+*/
 	}
 
 	/**

@@ -262,7 +262,8 @@ public class IPDiscovery extends Discovery implements Runnable {
 		Log.d(TAG, "discovery thread running");
 		IByteBuffer buf = new SerializableByteBuffer(1024);
 
-		while (true) {
+		int iii = 10;
+		while (iii--!=0) {
 			if (shutdown_)
 				break;
 

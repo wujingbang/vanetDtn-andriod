@@ -217,7 +217,7 @@ public class LinkParams extends CLInfo {
 
 		reactive_frag_enabled_ = false;
 		negative_ack_enabled_ = false;
-		segment_ack_enabled_ = true;
+		segment_ack_enabled_ = false;
 
 		sendbuf_len_ = CLConnection.DEFAULT_SEND_RECEIVE_BUFFER_SIZE;
 		recvbuf_len_ = CLConnection.DEFAULT_SEND_RECEIVE_BUFFER_SIZE;

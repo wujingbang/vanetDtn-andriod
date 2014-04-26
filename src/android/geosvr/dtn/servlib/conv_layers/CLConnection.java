@@ -69,7 +69,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 	 * Default size for the block buffer
 	 */
 	// public static int DEFAULT_BLOCK_BUFFER_SIZE = 4096;
-	public static int DEFAULT_BLOCK_BUFFER_SIZE = 16384;
+	public static int DEFAULT_BLOCK_BUFFER_SIZE = 1638400;
 	// public static int DEFAULT_BLOCK_BUFFER_SIZE = 32768;
 
 	/**
@@ -77,12 +77,12 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 	 */
 	// public static int DEFAULT_SEGMENT_LENGTH = 1024;
 	// public static int DEFAULT_SEGMENT_LENGTH = 4096;
-	public static int DEFAULT_SEGMENT_LENGTH = 16384;
+	public static int DEFAULT_SEGMENT_LENGTH = 1638400;
 
 	/**
 	 * Default size for the receiving and sending buffer
 	 */
-	public static int DEFAULT_SEND_RECEIVE_BUFFER_SIZE = 32768;
+	public static int DEFAULT_SEND_RECEIVE_BUFFER_SIZE = 3276800;
 
 	/**
 	 * Constructor.
