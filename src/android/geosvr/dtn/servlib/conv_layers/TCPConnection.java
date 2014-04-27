@@ -203,7 +203,8 @@ public class TCPConnection extends Connection {
 	/**
 	 * Sending and receiving data by the socket
 	 */
-	
+//	java.nio.ByteBuffer temp_java_nio_buf = java.nio.ByteBuffer
+//			.allocate(7000);
 	@Override
 	void handle_poll_activity(int timeout) {
 
@@ -218,32 +219,36 @@ public class TCPConnection extends Connection {
 
 		// poll to receive and process data
 		try {
-
+			
 			num_to_read_ = read_stream_.available();
+			
+			
 			// check that there's something to read
 			if (num_to_read_ > 0) {
 
 
 				Log.d(TAG, "before reading position is " + recvbuf_.position());
 
-				java.nio.ByteBuffer temp_java_nio_buf = java.nio.ByteBuffer
-						.allocate(recvbuf_.remaining());
-				read_channel_.read(temp_java_nio_buf);
-
-				BufferHelper.copy_data(recvbuf_, recvbuf_.position(),
-						temp_java_nio_buf, 0, temp_java_nio_buf.position());
-
-				recvbuf_.position(recvbuf_.position()
-						+ temp_java_nio_buf.position());
+//				java.nio.ByteBuffer temp_java_nio_buf = java.nio.ByteBuffer
+//						.allocate(recvbuf_.remaining());
+//				read_channel_.read(temp_java_nio_buf);
+//				BufferHelper.copy_data(recvbuf_, recvbuf_.position(),
+//						temp_java_nio_buf, 0, temp_java_nio_buf.position());
+//				recvbuf_.position(recvbuf_.position()
+//						+ temp_java_nio_buf.position());
+				
+				recvbuf_.readFromStream(read_stream_);
+				
 
 				if (DTNService.is_test_data_logging())
 					TestDataLogger.getInstance().set_downloaded_size(
 							TestDataLogger.getInstance().downloaded_size()
-									+ temp_java_nio_buf.position()
+									//+ temp_java_nio_buf.position()
+									+recvbuf_.position()
 
 					);
 
-				
+
 				Log.d(TAG, "buffer position now is " + recvbuf_.position());
 
 				process_data();
@@ -325,29 +330,12 @@ public class TCPConnection extends Connection {
 					+ " bytes to the stream");
 			java.nio.ByteBuffer temp = java.nio.ByteBuffer
 					.allocate(last_position);
-			BufferHelper.copy_data(temp, 0, sendbuf_, 0, last_position);
+//			BufferHelper.copy_data(temp, 0, sendbuf_, 0, last_position);
 
-			WriteSocketTimeoutTimer write_socket_timeout_timer = new WriteSocketTimeoutTimer(
-					write_channel_);
 
-			Log.d(TAG, "scheduling write_timeout_task in " + SOCKET_TIMEOUT
-					+ " seconds");
-			try{
-			// add the timer to keep looking for Socket timeout
-			write_socket_timeout_timer.schedule_in(SOCKET_TIMEOUT);
-
-			}
-			catch
-			(IllegalStateException e){
-				Log.e(TAG, "write socket timer stop when it shouldn't be stopped");
-			}
-			write_channel_.write(temp);
-
-			// cancel the timer if it's come here, this means the writting is
-			// successful
-			write_socket_timeout_timer.cancel();
-			write_socket_timeout_timer = null;
-
+//			write_channel_.write(temp);
+			sendbuf_.writeWithStream(write_stream_, 0, last_position);
+			
 		
 
 			// move the remaining data back to beginning for next writting

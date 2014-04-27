@@ -184,7 +184,7 @@ public abstract class TableBasedRouter extends BundleRouter {
 
 		// "if the link is open and has space in the queue, then queue the
 		// bundle for transmission there" [DTN2]
-		if (link.isopen() && !link.queue_is_full()) {
+		if (link.isopen() ){//&& !link.queue_is_full()) {
 			Log.d(TAG, String.format("queuing %d on %s", bundle.bundleid(), link.name()));
 			actions_.queue_bundle(bundle, link, route.action(), route
 					.custody_spec());

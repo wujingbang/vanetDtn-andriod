@@ -1442,6 +1442,10 @@ public abstract class Connection extends CLConnection {
 				recvbuf_.position(last_position - consumed_len);
 			} else {
 				// revert the data back in case we're unable to handle data
+				if(last_position <= 1)
+				{
+					System.out.println("sss");
+				}
 				recvbuf_.position(last_position);
 			}
 		}

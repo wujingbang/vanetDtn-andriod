@@ -371,7 +371,7 @@ public class DTNSend extends Activity  {
 		String dest_eid = DestEIDEditText.getText().toString();
 		
 		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
-		dtn_payload.set_file(new File("/sdcard/test_20M.wma"));
+		dtn_payload.set_file(new File("/sdcard/test_10M.wma"));
 		   
 		// Start the DTN Communication
 		DTNHandle dtn_handle = new DTNHandle();
