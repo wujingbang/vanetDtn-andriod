@@ -157,8 +157,8 @@ public class TCPConnection extends Connection {
 		// cache the remote addr and port in the fields in the socket
 		TCPLinkParams params = (TCPLinkParams) (params_);
 		assert (params != null);
-		Log.d(TAG, "connect: connecting to " + params.remote_addr_
-				+ params.remote_port_);
+		//log.d(TAG, "connect: connecting to " + params.remote_addr_
+		//		+ params.remote_port_);
 		InetSocketAddress remote = new InetSocketAddress(params.remote_addr_,
 				params.remote_port_);
 		try {
@@ -196,7 +196,7 @@ public class TCPConnection extends Connection {
 			socket_.close();
 			//stop();
 		} catch (IOException e) {
-			Log.d(TAG, "IOException in disconnect");
+			//log.d(TAG, "IOException in disconnect");
 		}
 	}
 
@@ -209,7 +209,7 @@ public class TCPConnection extends Connection {
 	void handle_poll_activity(int timeout) {
 
 		if (!socket_.isConnected()) {
-			Log.d(TAG, "Socket is not connected");
+			//log.d(TAG, "Socket is not connected");
 			break_contact(ContactEvent.reason_t.BROKEN);
 		}
 
@@ -227,7 +227,7 @@ public class TCPConnection extends Connection {
 			if (num_to_read_ > 0) {
 
 
-				Log.d(TAG, "before reading position is " + recvbuf_.position());
+				//log.d(TAG, "before reading position is " + recvbuf_.position());
 
 //				java.nio.ByteBuffer temp_java_nio_buf = java.nio.ByteBuffer
 //						.allocate(recvbuf_.remaining());
@@ -249,7 +249,7 @@ public class TCPConnection extends Connection {
 					);
 
 
-				Log.d(TAG, "buffer position now is " + recvbuf_.position());
+				//log.d(TAG, "buffer position now is " + recvbuf_.position());
 
 				process_data();
 
@@ -326,8 +326,8 @@ public class TCPConnection extends Connection {
 		try {
 
 		
-			Log.d(TAG, "Going to write " + last_position
-					+ " bytes to the stream");
+			//log.d(TAG, "Going to write " + last_position
+			//		+ " bytes to the stream");
 			java.nio.ByteBuffer temp = java.nio.ByteBuffer
 					.allocate(last_position);
 //			BufferHelper.copy_data(temp, 0, sendbuf_, 0, last_position);

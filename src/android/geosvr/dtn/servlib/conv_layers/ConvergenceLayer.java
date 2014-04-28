@@ -55,7 +55,7 @@ public abstract class ConvergenceLayer {
 	 */
 	public boolean set_cla_parameters(AttributeVector params) {
 
-		Log.d(TAG, "set cla parameters");
+		//log.d(TAG, "set cla parameters");
 		BundleDaemon Daemon = BundleDaemon.getInstance();
 		Daemon.post(new CLAParamsSetEvent(this, ""));
 		return true;

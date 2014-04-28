@@ -95,7 +95,7 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 
 		String text = String.format("adding %s link %s", link.type_str(), link
 				.nexthop());
-		Log.d(TAG, text);
+		//log.d(TAG, text);
 
 		// "Create a new parameters structure, parse the options, and store
 		// them in the link's cl info slot" [DTN2].
@@ -124,13 +124,13 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 		assert (link != null) : "ConnectionConvergenceLayer : delete_link, link is null";
 		assert (!link.isdeleted());
 
-		Log.d(TAG, "deleting link " + link.name());
+		//log.d(TAG, "deleting link " + link.name());
 
 		if (link.isopen() || link.isopening()) {
 			String text = String.format(
 					"link %s open, deleting link state when contact closed",
 					link.name());
-			Log.d(TAG, text);
+			//log.d(TAG, text);
 			return;
 		}
 
@@ -215,7 +215,7 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 		assert (!link.isdeleted()) : "ConnectionConvergenceLayer: open_contact, link is deleted";
 		assert (link.cl_info() != null) : "ConnectionConvergenceLayer: open_contact, cl_info is null";
 
-		Log.d(TAG, "opening contact on link " + link);
+		//log.d(TAG, "opening contact on link " + link);
 
 		LinkParams params = (LinkParams) link.cl_info();
 		assert (params != null);
@@ -227,7 +227,7 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 			boolean only_connect = true;
 			conn = new_connection(link, params, only_connect);
 		} catch (OutOfMemoryError e) {
-			Log.d(TAG, "Not Enough resources");
+			//log.d(TAG, "Not Enough resources");
 			return false;
 		}
 		conn.set_contact(contact);
@@ -261,11 +261,11 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 		}
 
 		while (conn.isAlive()) {
-			Log.d(TAG, "waiting for connection thread to stop...");
+			//log.d(TAG, "waiting for connection thread to stop...");
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				Log.d(TAG, "InterruptedException");
+				//log.d(TAG, "InterruptedException");
 			}
 
 		}
@@ -331,7 +331,7 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 									"partial arrival of bundle: got %d bytes [hdr %d payload %s]",
 									rcvd_len, header_block_length, incoming
 											.bundle().payload().length());
-					Log.d(TAG, text);
+					//log.d(TAG, text);
 
 					BundleDaemon Daemon = BundleDaemon.getInstance();
 					Daemon.post(new BundleReceivedEvent(incoming.bundle(),
@@ -363,7 +363,7 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 
 		String text = String.format("bundle_queued: queued %s on %s", bundle,
 				link);
-		Log.d(TAG, text);
+		//log.d(TAG, text);
 
 		if (!link.isopen()) {
 			return;
@@ -401,7 +401,7 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 			
 		}
 
-		Log.d(TAG, "cancel_bundle, bundle is " + bundle);
+		//log.d(TAG, "cancel_bundle, bundle is " + bundle);
 		
 		assert (!link.isdeleted()) : "ConnectionConvergenceLayer : cancel_bundle, link is deleted";
 
@@ -441,7 +441,7 @@ public abstract class ConnectionConvergenceLayer extends ConvergenceLayer {
 		assert (contact.link() == link);
 		String text = String.format("cancel_bundle: cancelling %s on %s",
 				bundle, link);
-		Log.d(TAG, text);
+		//log.d(TAG, text);
 
 		
 		try {

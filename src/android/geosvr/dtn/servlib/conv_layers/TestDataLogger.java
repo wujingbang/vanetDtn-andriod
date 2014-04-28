@@ -249,8 +249,7 @@ public class TestDataLogger {
 	 */
 	public void log_bundle_download_end(CLConnection con, IncomingBundle incoming)
 	{  
-		TestDataLog download_begin_dat = download_begin_log_maps_.get(con);
-		   
+		TestDataLog download_begin_dat = download_begin_log_maps_.get(con);   
 		compare_and_write_result(incoming.bundle(), incoming.total_length(), download_begin_dat, get_current_value(), test_data_type_t.DOWNLOAD);
 	}
 	

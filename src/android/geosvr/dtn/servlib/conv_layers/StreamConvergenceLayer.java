@@ -271,7 +271,7 @@ public abstract class StreamConvergenceLayer extends ConnectionConvergenceLayer 
 		case SHUTDOWN_BUSY:
 			return "node is busy";
 		}
-		Log.d(TAG, "Not Reached");
+		//log.d(TAG, "Not Reached");
 		return "NOTREACHED";
 	}
 

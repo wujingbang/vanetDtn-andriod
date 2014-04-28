@@ -90,7 +90,7 @@ public class TCPConvergenceLayer extends StreamConvergenceLayer implements Seria
 //		InetAddress local_addr_ = null;
 //		DhcpInfo dhcp = mWifi.getDhcpInfo();
 //		if (dhcp == null) {
-//			Log.d(TAG, "Could not get dhcp info");
+//			//log.d(TAG, "Could not get dhcp info");
 //			return null;
 //		}
 //
@@ -105,7 +105,7 @@ public class TCPConvergenceLayer extends StreamConvergenceLayer implements Seria
 //
 //		} catch (UnknownHostException e) {
 //
-//			Log.d(TAG, "error getting_my_ip");
+//			//log.d(TAG, "error getting_my_ip");
 //		}
 //
 //		return local_addr_;
@@ -118,7 +118,7 @@ public class TCPConvergenceLayer extends StreamConvergenceLayer implements Seria
 	@Override
 	public boolean interface_up(Interface iface) {
 
-		Log.d(TAG, "adding interface " + iface.name());
+		//log.d(TAG, "adding interface " + iface.name());
 		InetAddress local_addr_ = getting_my_ip();
 			
 		// check that the local interface / port are valid

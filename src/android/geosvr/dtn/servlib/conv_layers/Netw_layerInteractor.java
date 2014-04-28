@@ -260,7 +260,7 @@ public class Netw_layerInteractor implements Runnable {
 							ipcombostr, lastEndid);
 			
 			if (link == null) {
-				Log.d(TAG, "failed to create opportunistic link");
+				//log.d(TAG, "failed to create opportunistic link");
 				return;
 			}
 			link.lock().lock();

@@ -169,7 +169,7 @@ public class BundleProtocol {
 	        
 	    }
 	    else {
-	        Log.d(TAG, "adding primary and payload block");
+	        //Log.d(TAG, "adding primary and payload block");
 	        BlockProcessor bp = find_processor(BundleProtocol.bundle_block_type_t.PRIMARY_BLOCK);
 	        bp.prepare(bundle, xmit_blocks, null, link, BlockInfo.list_owner_t.LIST_NONE);
 	        bp = find_processor(bundle_block_type_t.PAYLOAD_BLOCK);
@@ -218,13 +218,13 @@ public class BundleProtocol {
 	    	
 	        iter.owner().generate(bundle, blocks, iter, link, last);
 
-	        Log.d(TAG, String.format("generated block (owner %s type %s) "+
-	                    "data_offset %d data_length %d , contents_length %d",
-	                    iter.owner().block_type(), 
-	                    iter.type(),
-	                    iter.data_offset(), 
-	                    iter.data_length(),
-	                    iter.contents().position()));
+	        //Log.d(TAG, String.format("generated block (owner %s type %s) "+
+	        //            "data_offset %d data_length %d , contents_length %d",
+	        //            iter.owner().block_type(), 
+	         //           iter.type(),
+	        //            iter.data_offset(), 
+	       //             iter.data_length(),
+	        //            iter.contents().position()));
 	        
 	        if (last) {
 	            assert((iter.flags() & BundleProtocol.block_flag_t.BLOCK_FLAG_LAST_BLOCK.getCode()) != 0);
@@ -335,11 +335,11 @@ public class BundleProtocol {
 		    	
 		    	
 		    	
-		        Log.d(TAG, String.format("BundleProtocol::produce skipping block type %s " +
-		                    "since offset %d >= block length %d",
-		                    current_block.type().toString(),
-		                    offset,
-		                    current_block.full_length()));
+//		        Log.d(TAG, String.format("BundleProtocol::produce skipping block type %s " +
+//		                    "since offset %d >= block length %d",
+//		                    current_block.type().toString(),
+//		                    offset,
+//		                    current_block.full_length()));
 		        
 		        offset -= current_block.full_length();
 		        current_block = iter.next();
@@ -352,15 +352,15 @@ public class BundleProtocol {
 		    	// but later on it will be the full content of the block
 		        int remainder = current_block.full_length() - offset;
 		        int tocopy    = Math.min(len, remainder);
-		        Log.d(TAG, String.format("BundleProtocol::produce copying %d/%d bytes from " +
-		                    "block type %s at offset %d",
-		                    tocopy, 
-		                    remainder, 
-		                    current_block.type().toString(), 
-		                    offset
-		                    
-		        
-		        		));
+//		        Log.d(TAG, String.format("BundleProtocol::produce copying %d/%d bytes from " +
+//		                    "block type %s at offset %d",
+//		                    tocopy, 
+//		                    remainder, 
+//		                    current_block.type().toString(), 
+//		                    offset
+//		                    
+//		        
+//		        		));
 		        current_block.owner().produce(bundle, current_block, data, offset, tocopy);
 		        
 		        len    -= tocopy;
@@ -398,11 +398,11 @@ public class BundleProtocol {
 
 		    }
 		    
-		    Log.d(TAG, String.format("BundleProtocol::produce complete: " +
-		                "produced %d bytes, bundle id %d, status is  %s",
-		                origlen - len,
-		                bundle.bundleid(), 
-		                last[0] ? "complete" : "not complete"));
+//		    Log.d(TAG, String.format("BundleProtocol::produce complete: " +
+//		                "produced %d bytes, bundle id %d, status is  %s",
+//		                origlen - len,
+//		                bundle.bundleid(), 
+//		                last[0] ? "complete" : "not complete"));
 		    
 		    
 		    data.position(old_position);
@@ -434,14 +434,14 @@ public class BundleProtocol {
 		    // create a BlockInfo struct for the primary block without knowing
 		    // the typecode or the length" [DTN2]
 		    if (recv_blocks.isEmpty()) {
-		        Log.d(TAG,  "consume: got first block... " +
-		                    "creating primary block info");
+//		        Log.d(TAG,  "consume: got first block... " +
+//		                    "creating primary block info");
 		        recv_blocks.append_block(find_processor(bundle_block_type_t.PRIMARY_BLOCK), null);
 		    }
 
 		    // "loop as long as there is data left to process" [DTN2]
 		    while (len != 0) {
-		        Log.d(TAG, String.format("consume: %d bytes left to process", len));
+//		        Log.d(TAG, String.format("consume: %d bytes left to process", len));
 		        BlockInfo info = recv_blocks.back();
 		        
 		        // "if the last received block is complete, create a new one
@@ -454,18 +454,18 @@ public class BundleProtocol {
 		        	bundle_block_type_t type = bundle_block_type_t.get(bundle_block_type_byte);
 		        	data.reset();
 		            info = recv_blocks.append_block(find_processor( type) , null);
-		            Log.d(TAG, String.format("consume: previous block complete, " +
-		                        "created new BlockInfo type %s",
-		                        info.owner().block_type()));
+//		            Log.d(TAG, String.format("consume: previous block complete, " +
+//		                        "created new BlockInfo type %s",
+//		                        info.owner().block_type()));
 		        }
 		        
 		        // "now we know that the block isn't complete, so we tell it to
 		        // consume a chunk of data" [DTN2]
-		        Log.d(TAG, String.format("consume: block processor %s type %s incomplete, " +
-		                    "calling consume (%d bytes already buffered)",
-		                    info.owner().block_type(),
-		                    info.type(),
-		                    info.contents().position()));
+//		        Log.d(TAG, String.format("consume: block processor %s type %s incomplete, " +
+//		                    "calling consume (%d bytes already buffered)",
+//		                    info.owner().block_type(),
+//		                    info.type(),
+//		                    info.contents().position()));
 		        
 		        int cc = info.owner().consume(bundle, info, data, len);
 		        if (cc < 0) {
@@ -480,9 +480,9 @@ public class BundleProtocol {
 		        len  -= cc;
 		        data.position(data.position() + cc);
 
-		        Log.d(TAG, String.format("consume: consumed %d bytes of block type %s (%s)",
-		                    cc, info.type(),
-		                    info.complete() ? "complete" : "not complete"));
+//		        Log.d(TAG, String.format("consume: consumed %d bytes of block type %s (%s)",
+//		                    cc, info.type(),
+//		                    info.complete() ? "complete" : "not complete"));
 
 		        if (info.complete()) {
 		            // check if we're done with the bundle
@@ -496,12 +496,12 @@ public class BundleProtocol {
 		        }
 		    }
 		    
-		    Log.d(TAG, String.format("bundle id %d consume completed, %d/%d bytes consumed %s",
-		                bundle.bundleid(),
-		    		    origlen - len, 
-		                origlen, 
-		                last[0] ? "(completed bundle)" : ""
-		                	));
+//		    Log.d(TAG, String.format("bundle id %d consume completed, %d/%d bytes consumed %s",
+//		                bundle.bundleid(),
+//		    		    origlen - len, 
+//		                origlen, 
+//		                last[0] ? "(completed bundle)" : ""
+//		                	));
 		    
 		    data.position( old_position);
 		    return origlen - len;
@@ -598,7 +598,7 @@ public class BundleProtocol {
 	                return false;
 	            }
 	            // "this is the last block, so drop it" [DTN2]
-	            Log.d(TAG, "forgetting preamble-starved last block");
+//	            Log.d(TAG, "forgetting preamble-starved last block");
 	            recv_blocks.remove(current_block);
 	            if (recv_blocks.size() < 2) {
 	                Log.e(TAG, "bundle fails to contain at least two blocks");
@@ -634,8 +634,8 @@ public class BundleProtocol {
 	                    return false;
 	                }
 	                else {
-	                    Log.d(TAG, "bundle's last block not flagged, but " +
-	                                     "it is a reactive fragment");
+//	                    Log.d(TAG, "bundle's last block not flagged, but " +
+//	                                     "it is a reactive fragment");
 	                }
 	            }
 	        } else {

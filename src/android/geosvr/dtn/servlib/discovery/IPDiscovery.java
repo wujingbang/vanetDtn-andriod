@@ -263,7 +263,7 @@ public class IPDiscovery extends Discovery implements Runnable {
 		IByteBuffer buf = new SerializableByteBuffer(1024);
 
 		int iii = 10;
-		while (iii--!=0) {
+		while (true) {
 			if (shutdown_)
 				break;
 

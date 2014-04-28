@@ -75,7 +75,7 @@ public class TCPListener extends CLInfo implements Runnable {
 //			System.out.println("sss");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			Log.d(TAG, "IOException " + e.getMessage());
+			//log.d(TAG, "IOException " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -106,7 +106,7 @@ public class TCPListener extends CLInfo implements Runnable {
 		try {
 			server_socket_.close();
 		} catch (IOException e) {
-			Log.d(TAG, "IOException stopping server_socket: " + e.getMessage());
+			//log.d(TAG, "IOException stopping server_socket: " + e.getMessage());
 		}
 		server_socket_ = null;
 	}
@@ -124,16 +124,16 @@ public class TCPListener extends CLInfo implements Runnable {
 
 		while (listening_) {
 			try {
-				Log.d(TAG, "start accepting connection");
+				//log.d(TAG, "start accepting connection");
 				socket = server_socket_.accept();
 				int sizeee = socket.getSendBufferSize();
 				socket.setSendBufferSize(131072);
 //				System.out.println("sss");
 			} catch (IOException e) {
-				Log.d(TAG, "IOException in accept");
+				//log.d(TAG, "IOException in accept");
 				continue;
 			}
-			Log.d(TAG, "Connection Accepted");
+			//log.d(TAG, "Connection Accepted");
 
 			TCPConnection tcpconnection;
 
@@ -145,7 +145,7 @@ public class TCPListener extends CLInfo implements Runnable {
 				tcpconnection.start();
 
 			} catch (OutOfMemoryError e) {
-				Log.d(TAG, "Not enough resources");
+				//log.d(TAG, "Not enough resources");
 			}
 
 		}

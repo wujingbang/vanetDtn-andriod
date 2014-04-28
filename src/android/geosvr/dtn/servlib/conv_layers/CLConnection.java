@@ -156,12 +156,12 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 			poll_timeout_ = 2 * params.keepalive_interval() * 1000;
 		}
 		if (contact_broken_) {
-			Log.d(TAG, "contact_broken set during initialization");
+			//log.d(TAG, "contact_broken set during initialization");
 			return;
 		}
 
 		if (active_connector_) {
-			Log.d(TAG, "trying to connect");
+			//log.d(TAG, "trying to connect");
 			try {
 				connect();
 //				if (only_connect_) {
@@ -183,11 +183,11 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 
 		while (true) {
 			if (contact_broken_) {
-				Log.d(TAG, "contact_broken set, exiting main loop");
+				//log.d(TAG, "contact_broken set, exiting main loop");
 				return;
 			}
 
-//			Log.d(TAG, "CLConnection is still running in the main loop, cmdqueue_ size is " + cmdqueue_.size());
+//			//log.d(TAG, "CLConnection is still running in the main loop, cmdqueue_ size is " + cmdqueue_.size());
 			// "check the command queue coming in from the bundle daemon
 			// if any arrive, we continue to the top of the loop to check
 			// contact_broken and then process any other commands before
@@ -211,7 +211,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 			// "check again here for contact broken since we don't want to
 			// poll if the socket's been closed" [DTN2]
 			if (contact_broken_) {
-				Log.d(TAG, "contact_broken set, exiting main loop");
+				//log.d(TAG, "contact_broken set, exiting main loop");
 				return;
 			}
 
@@ -228,7 +228,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 	 */
 	public void contact_up() {
 
-		Log.d(TAG, "contact_up");
+		//log.d(TAG, "contact_up");
 		assert (contact_ != null) : "CLConnection : contact_up, contact_ is null";
 
 		assert (!contact_up_) : "CLConnection : contact_up, contact_up is already true";
@@ -246,7 +246,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 
 		contact_broken_ = true;
 
-		Log.d(TAG, "break_contact: " + reason.getCaption());
+		//log.d(TAG, "break_contact: " + reason.getCaption());
 
 		if (reason != ContactEvent.reason_t.BROKEN) {
 			disconnect();
@@ -280,21 +280,21 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 	
 		switch (msg.type_) {
 		case CLMSG_BUNDLES_QUEUED:
-			Log.d(TAG, "processing CLMSG_BUNDLES_QUEUED");
+			//log.d(TAG, "processing CLMSG_BUNDLES_QUEUED");
 			handle_bundles_queued();
 			break;
 
 		case CLMSG_CANCEL_BUNDLE:
-			Log.d(TAG, "processing CLMSG_CANCEL_BUNDLE");
+			//log.d(TAG, "processing CLMSG_CANCEL_BUNDLE");
 			handle_cancel_bundle(msg.bundle_);
 			break;
 
 		case CLMSG_BREAK_CONTACT:
-			Log.d(TAG, "processing CLMSG_BREAK_CONTACT");
+			//log.d(TAG, "processing CLMSG_BREAK_CONTACT");
 			break_contact(ContactEvent.reason_t.USER);
 			break;
 		default:
-			Log.d(TAG, "invalid CLMsg typecode " + msg.type_);
+			//log.d(TAG, "invalid CLMsg typecode " + msg.type_);
 		}
 
 		} catch (InterruptedException e) {
@@ -313,7 +313,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 	 * Stop the CLConnection Thread.
 	 */
 	public void stop() {
-		Log.d(TAG, "stopping thread in CLConnection");
+		//log.d(TAG, "stopping thread in CLConnection");
 		if (thread_ != null) {
 			Thread moribund = thread_;
 			thread_ = null;
@@ -339,7 +339,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 	boolean find_contact(EndpointID peer_eid) {
 
 		if (contact_ != null) {
-			Log.d(TAG, "CLConnection.find_contact: contact already exists");
+			//log.d(TAG, "CLConnection.find_contact: contact already exists");
 			return true;
 		}
 
@@ -380,12 +380,12 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 
 			link = cm.new_opportunistic_link(cl_, nexthop_, peer_eid);
 			if (link == null) {
-				Log.d(TAG, "failed to create opportunistic link");
+				//log.d(TAG, "failed to create opportunistic link");
 				return false;
 			}
 
 			new_link = true;
-			Log.d(TAG, "created new opportunistic link " + link);
+			//log.d(TAG, "created new opportunistic link " + link);
 		}
 		cm.get_lock().unlock();
 
@@ -396,7 +396,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 			if (!new_link) {
 				assert (link.contact() == null);
 				link.set_nexthop(nexthop_);
-				Log.d(TAG, "found idle opportunistic link " + link);
+				//log.d(TAG, "found idle opportunistic link " + link);
 			}
 
 			// The link should not be marked for deletion because the
