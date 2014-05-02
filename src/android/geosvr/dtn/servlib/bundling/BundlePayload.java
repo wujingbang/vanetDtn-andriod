@@ -37,6 +37,7 @@ import android.geosvr.dtn.DTNService;
 import android.geosvr.dtn.R;
 import android.geosvr.dtn.servlib.bundling.exception.BundleLockNotHeldByCurrentThread;
 import android.geosvr.dtn.servlib.bundling.exception.BundlePayloadWrongTypeException;
+import android.geosvr.dtn.servlib.conv_layers.Resource;
 import android.geosvr.dtn.servlib.storage.BundleStore;
 import android.geosvr.dtn.systemlib.thread.Lock;
 import android.geosvr.dtn.systemlib.util.IByteBuffer;
@@ -117,7 +118,7 @@ public class BundlePayload implements Serializable {
 			 data_ = new byte[DEFAULT_DATA_BUFFER_SIZE];
 		if (location_ == location_t.DISK)
 		// Only when the location is DISK
-		file_ = BundleStore.getInstance().get_payload_file(bundleid);
+			file_ = BundleStore.getInstance().get_payload_file(bundleid);
 
 	}
 
@@ -285,9 +286,44 @@ public class BundlePayload implements Serializable {
 		lock_.lock();
 		try {
 			assert length_ >= len + offset : "BundlePayload:write_data, lengh is less than len+offset";
+			//写文件
 			internal_write(bp, offset, len);
 		} finally {
 			lock_.unlock();
+		}
+	}
+	
+	public void writeDataByConsumer(IByteBuffer bp, int offset, int len) {
+		assert length_ >= len + offset : "BundlePayload:write_data, lengh is less than len+offset";
+		//写文件
+		switch (location_) {
+			case DISK:
+				// check if we need to seek
+				try {
+					Resource res = Resource.getInstance();
+					RandomAccessFile file_handle_ =  pin_file_handle();
+					res.set(bp, offset, len, file_handle_);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (BundlePayloadWrongTypeException e) {
+					e.printStackTrace();
+				}
+				break;
+			case MEMORY:
+				bp.mark();
+				try
+				{
+					for( int i = offset; i < offset + len; i++)
+					{
+						data_[i] = bp.get();
+					}
+				}
+				finally
+				{
+					bp.reset();
+				}
+				break;
+			case NODATA:
 		}
 	}
 	

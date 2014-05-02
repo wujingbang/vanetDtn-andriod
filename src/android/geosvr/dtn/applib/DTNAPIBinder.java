@@ -773,8 +773,8 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 		if (!is_handle_valid(handle))
 			return dtn_api_status_report_code.DTN_EHANDLE_INVALID;
 
-//		Bundle b = new Bundle(location_t.DISK);
-		Bundle b = new Bundle(location_t.MEMORY);
+		Bundle b = new Bundle(location_t.DISK);
+//		Bundle b = new Bundle(location_t.MEMORY);
 		return dtn_send_final(handle, spec, dtn_payload, dtn_bundle_id, b);
 	}
 	

@@ -215,6 +215,9 @@ public abstract class Connection extends CLConnection {
 		recv_segment_todo_ = 0;
 		breaking_contact_ = false;
 		contact_initiated_ = false;
+		
+		ConsumerFileWriter consumer = new ConsumerFileWriter();
+		consumer.start();
 
 	}
 	public Connection(StreamConvergenceLayer cl, StreamLinkParams params,
@@ -227,6 +230,9 @@ public abstract class Connection extends CLConnection {
 		recv_segment_todo_ = 0;
 		breaking_contact_ = false;
 		contact_initiated_ = false;
+		
+		ConsumerFileWriter consumer = new ConsumerFileWriter();
+		consumer.start();
 
 	}
 	@Override
@@ -1360,7 +1366,7 @@ public abstract class Connection extends CLConnection {
 							.d(TAG,
 									"got BUNDLE_START segment, creating new IncomingBundle");
 					IncomingBundle incoming2 = new IncomingBundle(new Bundle(
-							BundlePayload.location_t.MEMORY));
+							BundlePayload.location_t.DISK));
 					incoming_.add(incoming2);
 
 				}
@@ -1384,13 +1390,19 @@ public abstract class Connection extends CLConnection {
 			incoming = incoming_.back();
 
 			// move pass the CLMessage type and flag byte
+			//在函数开始的时候已经将recvbuf_的position使用rewind置位0
 			byte bp = recvbuf_.get();
 			// always increment the data consumed
 			consumed_len++;
 
 			// Decode the segment length and then call handle_data_todo
 			int[] segment_len = new int[1];
+			
+//			Log.d(TAG,"position before decode:"+recvbuf_.position());
+			//sdnv_len为3，decode之后recvbuf_.position增加3
 			int sdnv_len = SDNV.decode(recvbuf_, bp, segment_len);
+//			Log.d(TAG,"position after decode:"+recvbuf_.position());
+			
 			if (sdnv_len < 0) {
 				//log.d(TAG,
 				//		"handle_data_segment: too few bytes in buffer for sdnv "

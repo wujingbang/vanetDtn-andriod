@@ -439,11 +439,11 @@ public class ContactManager extends BundleEventHandler {
 			Iterator<Link> iter = links_.iterator();
 			Link element = null;//new Link();
 			boolean fuck = false;
-			String text = String
-			.format(
-					"find_link_to: remote_eid",	remote_eid);
-
-			Log.d(TAG, text);
+//			String text = String
+//			.format(
+//					"find_link_to: remote_eid",	remote_eid);
+//
+//			Log.d(TAG, text);
 
 			// make sure some sane criteria was specified
 			assert ((remote_eid != EndpointID.NULL_EID()));
@@ -452,7 +452,7 @@ public class ContactManager extends BundleEventHandler {
 				element = iter.next();
 				
 				if (remote_eid.equals(element.remote_eid())) {
-					Log.d(TAG, "find_link_to: matched link" + element);
+//					Log.d(TAG, "find_link_to: matched link" + element);
 //					assert (!(element.isdeleted())) : "ContactManager : find_link_to, link is deleted";
 					fuck = true;
 					break;
@@ -461,7 +461,7 @@ public class ContactManager extends BundleEventHandler {
 			}
 		if (!fuck)
 			element = null;
-		Log.d(TAG, "find_link_to, no match");
+//		Log.d(TAG, "find_link_to, no match");
 		return element;
 //		return null;
 	}

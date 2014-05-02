@@ -141,8 +141,8 @@ public class PayloadBlockProcessor extends BlockProcessor implements Serializabl
         }
 
         bundle.payload().set_length(rcvd + tocopy);
-        bundle.payload().write_data(buf, rcvd, tocopy);
-
+//        bundle.payload().write_data(buf, rcvd, tocopy);
+        bundle.payload().writeDataByConsumer(buf, rcvd, tocopy);
         consumed += tocopy;
 
         Log.d(TAG, String.format("consumed %s/%s (%s)",

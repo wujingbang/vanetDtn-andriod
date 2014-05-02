@@ -370,8 +370,8 @@ public class DTNSend extends Activity  {
 		
 		String dest_eid = DestEIDEditText.getText().toString();
 		
-//		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
-		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_MEM);
+		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
+//		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_MEM);
 		dtn_payload.set_file(new File("/sdcard/test_5M.wma"));
 		   
 		// Start the DTN Communication

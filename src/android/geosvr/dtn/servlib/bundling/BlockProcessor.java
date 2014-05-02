@@ -632,8 +632,8 @@ public class BlockProcessor implements Serializable {
 		    
 		    sdnv_len = BufferHelper.try_consume_SDNV(contents, buf_offset, flags);
 		    if (sdnv_len == -1) {
-		    assert(tocopy == len);
-		    return len;
+			    assert(tocopy == len);
+			    return len;
 		    }
 		    // from now on flags value should be ready
 		    processing_flags[0] = flags[0];
@@ -657,8 +657,8 @@ public class BlockProcessor implements Serializable {
 		    	sdnv_len = BufferHelper.try_consume_SDNV(contents, buf_offset, eid_ref_count);
 			    if (sdnv_len == -1) 
 			    {
-			    assert(tocopy == len);
-			    return len;
+				    assert(tocopy == len);
+				    return len;
 			    }
 			 // from now on eid_ref_count value should be ready
 		        
@@ -671,16 +671,16 @@ public class BlockProcessor implements Serializable {
 		            // Now we try decoding the sdnv pair with the offsets
 		        	sdnv_len = BufferHelper.try_consume_SDNV(contents, buf_offset, scheme_offset);
 				    if (sdnv_len == -1) {
-				    assert(tocopy == len);
-				    return len;
+					    assert(tocopy == len);
+					    return len;
 				    }
 				    
 		            buf_offset += sdnv_len;
 		                    
 		            sdnv_len = BufferHelper.try_consume_SDNV(contents, buf_offset, ssp_offset);
 				    if (sdnv_len == -1) {
-				    assert(tocopy == len);
-				    return len;
+					    assert(tocopy == len);
+					    return len;
 				    }
 		            buf_offset += sdnv_len;
 		                
