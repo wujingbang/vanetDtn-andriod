@@ -302,7 +302,7 @@ public class BundlePayload implements Serializable {
 				try {
 					Resource res = Resource.getInstance();
 					RandomAccessFile file_handle_ =  pin_file_handle();
-					res.set(bp, offset, len, file_handle_);
+					res.increase(bp, offset, len, file_handle_);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (BundlePayloadWrongTypeException e) {

@@ -35,7 +35,8 @@ public class ConsumerFileWriter implements Runnable {
 	public void run() {
 		Resource res = Resource.getInstance();
 		while(true)
-			res.writeToFile();
+			res.decreaseAndWriteFile();
+//			res.writeToFile();
 	}
 
 }
