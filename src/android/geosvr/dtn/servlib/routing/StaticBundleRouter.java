@@ -60,6 +60,9 @@ public class StaticBundleRouter extends TableBasedRouter implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		super.handle_event(event_);
+//		super.handle_event(event_);
+		RouteEventQueue eveQ = RouteEventQueue.getInstance();
+//		while(true)
+			
 	}
 }

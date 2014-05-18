@@ -467,6 +467,7 @@ public class BundleProtocol {
 //		                    info.type(),
 //		                    info.contents().position()));
 		        
+		        //PrimaryBlockProcessor返回的应该是首部的长度
 		        int cc = info.owner().consume(bundle, info, data, len);
 		        if (cc < 0) {
 		            Log.e(TAG, String.format("consume: protocol error handling block %s",
@@ -504,6 +505,7 @@ public class BundleProtocol {
 //		                	));
 		    
 		    data.position( old_position);
+		    
 		    return origlen - len;
 	}
 

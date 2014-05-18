@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.geosvr.dtn.servlib.bundling.BundlePayload;
 import android.geosvr.dtn.systemlib.util.BufferHelper;
 import android.geosvr.dtn.systemlib.util.IByteBuffer;
 import android.util.Log;
@@ -71,7 +72,8 @@ public class Resource {
     }   
 	
 	public void increase(IByteBuffer src, int offset, int len, 
-			RandomAccessFile file_handle) {
+//			RandomAccessFile file_handle) {
+			BundlePayload payload) {
 //		lock_.lock();
 		try {
 			while(queueFull()) {
@@ -79,7 +81,7 @@ public class Resource {
 //				condition_pro_.await();//队列满，等待消费者
 			}
 			DataSegment segment = new DataSegment();
-			segment.set(src, offset, len, file_handle);
+			segment.set(src, offset, len, payload);
 			enqueue(segment);//入队
 //			condition_con_.signal();
 		} catch (InterruptedException e) {
@@ -94,7 +96,7 @@ public class Resource {
     	try {
 			while(queueEmpty()) {
 //				condition_con_.await();//队列空，等待生产者
-				Thread.sleep(10000);
+				Thread.sleep(100);
 			}
 			DataSegment segment = dequeue();
 //			condition_pro_.signal();

@@ -301,13 +301,11 @@ public class BundlePayload implements Serializable {
 				// check if we need to seek
 				try {
 					Resource res = Resource.getInstance();
-					RandomAccessFile file_handle_ =  pin_file_handle();
-					res.increase(bp, offset, len, file_handle_);
-				} catch (FileNotFoundException e) {
+//					RandomAccessFile file_handle =  pin_file_handle();
+					res.increase(bp, offset, len, this);
+				} catch (Exception e) {
 					e.printStackTrace();
-				} catch (BundlePayloadWrongTypeException e) {
-					e.printStackTrace();
-				}
+				} 
 				break;
 			case MEMORY:
 				bp.mark();

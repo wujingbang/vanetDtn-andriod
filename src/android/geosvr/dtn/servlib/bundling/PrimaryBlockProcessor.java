@@ -102,6 +102,7 @@ public class PrimaryBlockProcessor extends BlockProcessor implements Serializabl
         
         IByteBuffer buf_block_content = block.contents();
         
+        //此处capacity=len，而remaining应该为（capacity-position）=0
         int primary_len = len = buf_block_content.capacity()-buf_block_content.remaining();
         buf_block_content.position(0);
 

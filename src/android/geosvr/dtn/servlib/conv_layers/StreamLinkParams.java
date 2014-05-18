@@ -72,7 +72,8 @@ public class StreamLinkParams extends LinkParams {
 		// negative_ack_enabled_ = false;
 		// segment_ack_enabled_ = true;
 		// negative_ack_enabled_ = true;
-		keepalive_interval_ = 10;
+//		keepalive_interval_ = 10;
+		keepalive_interval_ = 0;
 		// keepalive_interval_ = 10000;
 
 		segment_length_ = CLConnection.DEFAULT_BLOCK_BUFFER_SIZE;

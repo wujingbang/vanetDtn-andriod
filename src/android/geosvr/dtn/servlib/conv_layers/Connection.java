@@ -608,7 +608,7 @@ public abstract class Connection extends CLConnection {
 		while (recvbuf_.position() != 0) {
 
 			// remember the position before drain
-
+			
 			if (contact_broken())
 				return;
 
@@ -623,7 +623,7 @@ public abstract class Connection extends CLConnection {
 			boolean ok = false;
 
 			msg_type_t msg_type = msg_type_t.get(type);
-
+			//缓冲区后有大量数据为0，会不会产生很多null type？
 			if (msg_type != null) {
 				switch (msg_type) {
 				case DATA_SEGMENT:
@@ -1493,7 +1493,7 @@ public abstract class Connection extends CLConnection {
 			//log.d(TAG, text);
 
 			boolean[] last = new boolean[1];
-
+			//如果是首部块则返回的是首部长度
 			int cc = BundleProtocol.consume(incoming.bundle(), recvbuf_,
 					chunk_len, last);
 			if (cc < 0 || cc != chunk_len) {
