@@ -188,8 +188,8 @@ public class PrimaryBlockProcessor extends BlockProcessor implements Serializabl
          */
         if (len < primary.dictionary_length_value()) {
 
-        	Log.e(TAG, String.format("primary block advertised incorrect length %s",
-                      block.data_length()));
+        	Log.e(TAG, String.format("primary block advertised incorrect length %s, primary.dictionary_length_value : %d",
+                      block.data_length(), primary.dictionary_length_value()));
         	
         	return -1;
         }

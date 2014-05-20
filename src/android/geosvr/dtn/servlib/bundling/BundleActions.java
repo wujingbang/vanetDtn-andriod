@@ -435,12 +435,12 @@ public class BundleActions {
 	protected void store_update(Bundle bundle) {
 		Log.d(TAG, String.format("updating bundle %d in data store", bundle
 				.bundleid()));
-		boolean updated = BundleStore.getInstance().update(bundle);
-		if (!updated) {
-			Log.e(TAG, String.format(
-					"error updating bundle %d in data store!!", bundle
-							.bundleid()));
-		}
+//		boolean updated = BundleStore.getInstance().update(bundle);
+//		if (!updated) {
+//			Log.e(TAG, String.format(
+//					"error updating bundle %d in data store!!", bundle
+//							.bundleid()));
+//		}
 	}
 
 	/**

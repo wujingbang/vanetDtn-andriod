@@ -546,8 +546,9 @@ public abstract class Connection extends CLConnection {
 		}
 
 		String text = String.format(
-				"processing up to %s bytes from receive buffer", recvbuf_
+				"processing up to %d bytes from receive buffer", recvbuf_
 						.position());
+		int debug_position = recvbuf_.position();
 		//log.d(TAG, text);
 		//log.d("B4", "received bytes in buffer..");
 
@@ -570,13 +571,20 @@ public abstract class Connection extends CLConnection {
 		// recv_segment_todo__ field,
 		// so if that's not zero, we need to drain it
 		// then fall through to handle the rest of the buffer"[DTN2].
+		String text0 = "new";
 		if (recv_segment_todo_ != 0) {
-
-			//log.d(TAG, "there is some leftover segment to do with length "
-			//		+ recv_segment_todo_);
+			
+//			if (recvbuf_.position() < 100) {
+//				Log.e(TAG, "buffer position < 100 In recv_segment_todo_!");
+//				return;
+//			}
+			text0 = String.format("there is some leftover segment to do with length %d"
+					,recv_segment_todo_);
 			int last_position = recvbuf_.position();
 			int[] handled_bytes = new int[1];
 			recvbuf_.rewind();
+			Log.d(TAG, String.format("In the recv_segment_todo_ != 0: last_position=%d", 
+					last_position));
 			boolean ok = handle_data_todo(last_position, handled_bytes);
 
 			if (!ok) {
@@ -586,12 +594,14 @@ public abstract class Connection extends CLConnection {
 			} else {
 				BufferHelper.move_data_back_to_beginning(recvbuf_,
 						handled_bytes[0]);
+				Log.d(TAG, String.format("In the recv_segment_todo_ != 0: last_position=%d, handled_bytes=%d", 
+						last_position,handled_bytes[0]));
 				recvbuf_.position(last_position - handled_bytes[0]);
 				
 				// if there's still something left to process bail out to come
 				// and process again
-				if (recv_segment_todo_ != 0)
-					return;
+//				if (recv_segment_todo_ != 0)
+				return;
 
 			}
 
@@ -605,7 +615,8 @@ public abstract class Connection extends CLConnection {
 
 		//log.d(TAG, "falling down to recvbuf_ processing with position "
 		//		+ recvbuf_.position());
-		while (recvbuf_.position() != 0) {
+		//注意此处是while循环
+		while (recvbuf_.position() != 0 ) {
 
 			// remember the position before drain
 			
@@ -617,17 +628,17 @@ public abstract class Connection extends CLConnection {
 
 			String text1 = String
 					.format(
-							"recvbuf has %s full bytes, dispatching to handler routine",
+							"recvbuf has %d full bytes, dispatching to handler routine",
 							recvbuf_.position());
 			//log.d(TAG, text1);
 			boolean ok = false;
 
 			msg_type_t msg_type = msg_type_t.get(type);
-			//缓冲区后有大量数据为0，会不会产生很多null type？
 			if (msg_type != null) {
 				switch (msg_type) {
 				case DATA_SEGMENT:
-					ok = handle_data_segment(flags);
+					if (recvbuf_.position() > 100)
+						ok = handle_data_segment(flags);
 					break;
 				case ACK_SEGMENT:
 					ok = handle_ack_segment(flags);
@@ -658,7 +669,7 @@ public abstract class Connection extends CLConnection {
 				Log
 						.d(TAG,
 								"try to process but the data is not enough or not possible to process");
-				break_contact(reason_t.BROKEN);
+//				break_contact(reason_t.BROKEN);
 				return;
 			}
 
@@ -1440,6 +1451,8 @@ public abstract class Connection extends CLConnection {
 			recv_segment_todo_ = segment_len[0];
 
 			int[] todo_handled_bytes = new int[1];
+			
+			Log.d(TAG, String.format("last_position:%d, consumed_len:%d", last_position,consumed_len));
 			handle_todo_result = handle_data_todo(last_position - consumed_len,
 					todo_handled_bytes);
 
@@ -1454,10 +1467,6 @@ public abstract class Connection extends CLConnection {
 				recvbuf_.position(last_position - consumed_len);
 			} else {
 				// revert the data back in case we're unable to handle data
-				if(last_position <= 1)
-				{
-					System.out.println("sss");
-				}
 				recvbuf_.position(last_position);
 			}
 		}
@@ -1482,6 +1491,7 @@ public abstract class Connection extends CLConnection {
 			int chunk_len = Math.min(recv_len, recv_segment_todo_);
 
 			if (recv_len == 0) {
+				Log.e(TAG, "recv_len == 0, return false!");
 				return false; // nothing to do
 			}
 
@@ -1490,14 +1500,14 @@ public abstract class Connection extends CLConnection {
 					.format(
 							"handle_data_todo: reading todo segment %s/%s at offset %s",
 							chunk_len, recv_segment_todo_, rcvd_offset);
-			//log.d(TAG, text);
+			Log.d(TAG, text);
 
 			boolean[] last = new boolean[1];
 			//如果是首部块则返回的是首部长度
 			int cc = BundleProtocol.consume(incoming.bundle(), recvbuf_,
 					chunk_len, last);
 			if (cc < 0 || cc != chunk_len) {
-				Log.e(TAG, "protocol error parsing bundle data segment");
+				Log.e(TAG, "protocol error parsing bundle data segment: cc < 0!");
 				break_contact(ContactEvent.reason_t.CL_ERROR);
 				return false;
 			}
@@ -1508,6 +1518,7 @@ public abstract class Connection extends CLConnection {
 			int old_recv_size = incoming.rcvd_data().size();
 			incoming.rcvd_data().set(old_recv_size + chunk_len - 1);
 
+			//监测到Bundle_END标识只是说收到了最后一块的开始部分（不一定全都接受完了）
 			if (recv_segment_todo_ == 0) {
 				check_completed(incoming);
 
@@ -1740,14 +1751,14 @@ public abstract class Connection extends CLConnection {
 
 	}
 
-	private void check_completed(IncomingBundle incoming) {
+	public boolean check_completed(IncomingBundle incoming) {
 
 		int rcvd_len = incoming.rcvd_data().size();
 
 		// "if we don't know the total length yet, we haven't seen the
 		// BUNDLE_END message"[DTN2]
 		if (incoming.total_length() == 0) {
-			return;
+			return false;
 		}
 
 		int formatted_len = BundleProtocol.total_length(incoming.bundle()
@@ -1759,8 +1770,8 @@ public abstract class Connection extends CLConnection {
 		//log.d(TAG, text);
 
 		if (rcvd_len < incoming.total_length()) {
-			return;
-		}
+			return false;
+		} 
 
 		if (rcvd_len > incoming.total_length()) {
 
@@ -1775,7 +1786,7 @@ public abstract class Connection extends CLConnection {
 			// event for the bundle"[DTN2]
 			incoming.rcvd_data().clear();
 			break_contact(ContactEvent.reason_t.CL_ERROR);
-			return;
+			return false;
 		}
 
 		// "validate that the total length as conveyed by the convergence
@@ -1798,13 +1809,24 @@ public abstract class Connection extends CLConnection {
 		// if the acknowledgement is not enable, sent the Bundle to the Daemon here, otherwise, send it after the acknowledgement have been sent
 		if (!params_.segment_ack_enabled())
 		{
+//		BundleDaemon Daemon = BundleDaemon.getInstance();
+//		
+//		Daemon.post(new BundleReceivedEvent(incoming.bundle(),
+//				event_source_t.EVENTSRC_PEER, incoming.total_length(), contact_
+//						.link().remote_eid(), contact_.link()));
+			//向仓库中插入此bundle完成标识
+			Resource.getInstance().increase(incoming, this);
+		}
+		return true;
+	}
+	
+	//在仓库类中调用
+	public void postCompeteBundle(IncomingBundle incoming){
 		BundleDaemon Daemon = BundleDaemon.getInstance();
 		
 		Daemon.post(new BundleReceivedEvent(incoming.bundle(),
 				event_source_t.EVENTSRC_PEER, incoming.total_length(), contact_
 						.link().remote_eid(), contact_.link()));
-		}
-
 	}
 
 	/**

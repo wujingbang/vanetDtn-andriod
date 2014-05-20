@@ -35,6 +35,7 @@ import java.util.Date;
 import android.geosvr.dtn.DTNService;
 import android.geosvr.dtn.servlib.bundling.event.ContactEvent;
 import android.geosvr.dtn.servlib.bundling.event.ContactEvent.reason_t;
+import android.geosvr.dtn.servlib.conv_layers.StreamConvergenceLayer.msg_type_t;
 import android.geosvr.dtn.servlib.conv_layers.TCPConvergenceLayer.TCPLinkParams;
 import android.geosvr.dtn.systemlib.thread.VirtualTimerTask;
 import android.geosvr.dtn.systemlib.util.BufferHelper;
@@ -219,9 +220,9 @@ public class TCPConnection extends Connection {
 
 		// poll to receive and process data
 		try {
-			
-			num_to_read_ = read_stream_.available();
-			
+			num_to_read_ = 0;
+			num_to_read_ += read_stream_.available();
+			num_to_read_ += recvbuf_.position();
 			
 			// check that there's something to read
 			if (num_to_read_ > 0) {
@@ -236,9 +237,11 @@ public class TCPConnection extends Connection {
 //						temp_java_nio_buf, 0, temp_java_nio_buf.position());
 //				recvbuf_.position(recvbuf_.position()
 //						+ temp_java_nio_buf.position());
-				
-				recvbuf_.readFromStream(read_stream_);
-				
+				int tempCount = 2;
+				for (; tempCount>0 && recvbuf_.position() < 10; tempCount--){
+					//如果没有结束标识，则缓冲区没读满就会阻塞
+					recvbuf_.readFromStream(read_stream_);
+				}
 
 				if (DTNService.is_test_data_logging())
 					TestDataLogger.getInstance().set_downloaded_size(
@@ -251,13 +254,20 @@ public class TCPConnection extends Connection {
 
 				//log.d(TAG, "buffer position now is " + recvbuf_.position());
 
+				byte type = (byte) (recvbuf_.get(0) & 0xf0);
+				msg_type_t msg_type = msg_type_t.get(type);
+				if (msg_type == msg_type_t.DATA_SEGMENT) {
+					while (recvbuf_.position() < 100) {
+						recvbuf_.readFromStream(read_stream_);
+					}
+				}	
+				Log.d(TAG, "Before process_data(), recv:"+recvbuf_.position());
 				process_data();
-
+	
 				if (recvbuf_.remaining() == 0) {
 					Log.e(TAG, "after process_data left no space in recvbuf!!");
-
+	
 				}
-
 			}
 
 		} catch (IOException e) {

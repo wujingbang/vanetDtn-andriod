@@ -221,8 +221,8 @@ public class LinkParams extends CLInfo {
 
 		sendbuf_len_ = CLConnection.DEFAULT_SEND_RECEIVE_BUFFER_SIZE;
 		recvbuf_len_ = CLConnection.DEFAULT_SEND_RECEIVE_BUFFER_SIZE;
-		// data_timeout_ = 30000; // msec
-		data_timeout_ = 0; // msec
+		 data_timeout_ = 30000; // msec
+//		data_timeout_ = 0; // msec
 
 		// XXX/KLA: actually all of this test parameters are optional you could
 		// leave them and not doing anything in here and the

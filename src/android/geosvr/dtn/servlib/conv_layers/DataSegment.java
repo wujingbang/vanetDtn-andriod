@@ -13,9 +13,25 @@ public class DataSegment {
 	private int offset_;
 	private int len_;
 	private boolean flag_ = false;
+	
+	//检查所用
+	private boolean bundle_complete_flag_ = false;
+	public IncomingBundle incoming_;
+    //用于检查Bundle是否接收完成
+    public Connection connection_;
+    
 //	private RandomAccessFile file_handle_;
 	private BundlePayload payload_;
 	private Lock lock_ = new ReentrantLock();
+	
+	public void setBundleCompleteFlag(boolean isCompete, IncomingBundle incoming, Connection connection){
+		bundle_complete_flag_ = isCompete;
+		incoming_ = incoming;
+		connection_ = connection;
+	}
+	public boolean getBundleCompleteFlag(){
+		return bundle_complete_flag_;
+	}
 	
 	public void set(IByteBuffer src, int offset, int len, 
 //			RandomAccessFile file_handle){
@@ -37,6 +53,9 @@ public class DataSegment {
 //			lock_.unlock();
 		}
 	}
+	
+
+	
 	public void writeToFile(){
 		try {
 //			while(!flag_)

@@ -503,6 +503,7 @@ public class BundleProtocol {
 //		                origlen, 
 //		                last[0] ? "(completed bundle)" : ""
 //		                	));
+		    Log.d(TAG, String.format("consume: old_position= %d", old_position));
 		    
 		    data.position( old_position);
 		    
