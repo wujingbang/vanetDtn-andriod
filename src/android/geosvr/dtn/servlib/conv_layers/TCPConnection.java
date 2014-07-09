@@ -195,6 +195,7 @@ public class TCPConnection extends Connection {
 	void disconnect() {
 		try {
 			socket_.close();
+			Log.e(TAG, "socket disconnection!");
 			//stop();
 		} catch (IOException e) {
 			//log.d(TAG, "IOException in disconnect");
@@ -257,7 +258,7 @@ public class TCPConnection extends Connection {
 				byte type = (byte) (recvbuf_.get(0) & 0xf0);
 				msg_type_t msg_type = msg_type_t.get(type);
 				if (msg_type == msg_type_t.DATA_SEGMENT) {
-					while (recvbuf_.position() < 100) {
+					while (recvbuf_.position() <= 100) {
 						recvbuf_.readFromStream(read_stream_);
 					}
 				}	

@@ -660,21 +660,23 @@ public class BundlePayload implements Serializable {
 			bp.mark();
 			try {
 				
-				RandomAccessFile file_handle_ =  pin_file_handle();
+				FileOutputStream fos = new FileOutputStream(file_, true);
 				bp.get(temp);
-				file_handle_.seek(offset);
-
-				file_handle_.write(temp);
-
-				
-				
-				unpin_file_handle(file_handle_);
-			} catch (BundlePayloadWrongTypeException e) {
-
-				Log.e(TAG, e.getMessage());
-			} catch (IOException e) {
+				fos.write(temp);
+				fos.close();
+//				RandomAccessFile file_handle_ =  pin_file_handle();
+//				bp.get(temp);
+//				file_handle_.seek(offset);
+//
+//				file_handle_.write(temp);
+//				unpin_file_handle(file_handle_);
+//			} catch (BundlePayloadWrongTypeException e) {
+			} catch (Exception e) {
 				Log.e(TAG, e.getMessage());
 			}
+//			} catch (IOException e) {
+//				Log.e(TAG, e.getMessage());
+//			}
 			finally
 			{
 				bp.reset();

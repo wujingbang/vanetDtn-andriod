@@ -86,6 +86,12 @@ public class DTNSend extends Activity  {
 	private TextView MessageTextView;
 	
 	/**
+	 * longitude and latitude
+	 */
+	private EditText DestLongitude;
+	private EditText DestLatitude;
+	
+	/**
 	 * DTNAPIBinder object
 	 */
 	private DTNAPIBinder dtn_api_binder_;
@@ -175,6 +181,8 @@ public class DTNSend extends Activity  {
 	{
 		    DestEIDEditText = (EditText) this.findViewById(R.id.DTNApps_DTNSend_DestEIDEditText);
 			MessageTextView = (TextView) this.findViewById(R.id.DTNApps_DTNSend_MessageTextView);
+			DestLongitude	= (EditText) this.findViewById(R.id.Dest_Longitude);
+			DestLatitude	= (EditText) this.findViewById(R.id.Dest_Latitude);
 			SendButton = (Button)this.findViewById(R.id.DTNApps_DTNSend_SendButton);
 			SendBigButton = (Button)this.findViewById(R.id.DTNApps_DTNSend_BigFileButton);
 			
@@ -306,6 +314,14 @@ public class DTNSend extends Activity  {
 		byte[] message_byte_array = message.getBytes("US-ASCII");
 		
 		String dest_eid = DestEIDEditText.getText().toString();
+		String dest_longitudeStr = DestLongitude.getText().toString();
+		double dest_longitude = -1.0;
+		if (dest_longitudeStr.length() > 0)
+			dest_longitude = Double.valueOf(dest_longitudeStr);
+		String dest_latitudeStr = DestLatitude.getText().toString();
+		double dest_latitude = -1.0;
+		if (dest_latitudeStr.length() > 0)
+			dest_latitude = Double.valueOf(dest_latitudeStr);
 		
 		// Setting DTNBundle Payload according to the values
 //		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_MEM);
@@ -326,7 +342,8 @@ public class DTNSend extends Activity  {
 			
 			// set destination from the user input
 			spec.set_dest(new DTNEndpointID(dest_eid));
-			
+			spec.setDestLongitude(dest_longitude);
+			spec.setDestLatitude(dest_latitude);
 			// set the source EID from the bundle Daemon
 			spec.set_source(new DTNEndpointID(BundleDaemon.getInstance().local_eid().toString()));
 				
@@ -370,6 +387,15 @@ public class DTNSend extends Activity  {
 		
 		String dest_eid = DestEIDEditText.getText().toString();
 		
+		String dest_longitudeStr = DestLongitude.getText().toString();
+		double dest_longitude = -1.0;
+		if (dest_longitudeStr.length() > 0)
+			dest_longitude = Double.valueOf(dest_longitudeStr);
+		String dest_latitudeStr = DestLatitude.getText().toString();
+		double dest_latitude = -1.0;
+		if (dest_latitudeStr.length() > 0)
+			dest_latitude = Double.valueOf(dest_latitudeStr);
+		
 		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_FILE);
 //		DTNBundlePayload dtn_payload = new DTNBundlePayload(dtn_bundle_payload_location_t.DTN_PAYLOAD_MEM);
 		dtn_payload.set_file(new File("/sdcard/test_20M.wma"));
@@ -394,6 +420,9 @@ public class DTNSend extends Activity  {
 			spec.set_dopts(DELIVERY_OPTIONS);
 			// Set prority
 			spec.set_priority(PRIORITY);
+			
+			spec.setDestLongitude(dest_longitude);
+			spec.setDestLatitude(dest_latitude);
 			
 			dtn_api_status_report_code api_send_result ;
 	//		for (int i = 0; i < 10; i++) {

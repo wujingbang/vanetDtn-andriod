@@ -41,19 +41,52 @@ android:layout_marginLeft="10dp"
   
 </LinearLayout>
 
- <TextView android:layout_column="1" 
-	android:id="@+id/DTNApps_DTNSend_MessageCaptionTextView"
-	android:layout_width="wrap_content" android:textSize="15sp" 
-	android:layout_height="wrap_content"
-	android:layout_marginTop="8dp"
-	android:text="Message:"></TextView>
-  <EditText 
-    android:layout_column="2"  android:lines="6"  
-   android:text="" android:id="@+id/DTNApps_DTNSend_MessageTextView" 
-   android:layout_width="fill_parent" android:layout_height="fill_parent"></EditText>
-	
-	
+<TextView
+    android:id="@+id/Dest_LongitudeCaption"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:text="Dest Longitude:"
+    android:textSize="15sp" />
 
-  
+<EditText
+    android:id="@+id/Dest_Longitude"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10"
+    android:inputType="numberDecimal" />
+
+<TextView
+    android:id="@+id/Dest_LatitudeCaption"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:text="Dest Latitude:"
+    android:textSize="15sp" />
+
+<EditText
+    android:id="@+id/Dest_Latitude"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ems="10"
+    android:inputType="numberDecimal" />
+
+  <TextView
+      android:id="@+id/DTNApps_DTNSend_MessageCaptionTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:text="Message:"
+      android:textSize="15sp" />
+
+  <EditText
+      android:id="@+id/DTNApps_DTNSend_MessageTextView"
+      android:layout_width="fill_parent"
+      android:layout_height="84dp"
+      android:ems="10"
+      android:lines="6" >
+
+      <requestFocus />
+  </EditText>
 		
 </LinearLayout>

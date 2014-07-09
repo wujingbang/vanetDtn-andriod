@@ -1543,7 +1543,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 		Bundle bundle = event.bundle();
 		
 		
-		Log.d(TAG, " handle bundle received from " + event.source() + ", id = " + bundle.bundleid());
+		Log.w(TAG, " handle bundle received from " + event.source() + ", id = " + bundle.bundleid());
 		// "update statistics and store an appropriate event descriptor" [DTN2]
 		String source_str = "";
 		switch (event.source()) {

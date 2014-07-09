@@ -47,7 +47,9 @@ public class TimeHelper {
 	 */
 	public static long current_seconds_from_ref()
 	{
-		return (Calendar.getInstance().getTimeInMillis()/1000) - DTNTime.TIMEVAL_CONVERSION;
+		long t1 = Calendar.getInstance().getTimeInMillis()/1000;
+		long t2 = DTNTime.TIMEVAL_CONVERSION;
+		return t1 - t2;
 	}
 	/**
 	 * Get seconds from the reference time in DTN( Jan , 2000 ) from the time specified

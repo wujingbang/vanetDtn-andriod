@@ -98,6 +98,8 @@ public class Bundle implements Serializable {
 		new_bundle.app_acked_rcpt_ = app_acked_rcpt_;
 		new_bundle.creation_ts_ = creation_ts_;
 		new_bundle.expiration_ = expiration_;
+		new_bundle.setDestLongitude(destLongitude_);
+		new_bundle.setDestLatitude(destLatitude_);
 	}
 
 	/**
@@ -902,6 +904,25 @@ public class Bundle implements Serializable {
 		expiration_timer_ = e;
 	}
 
+	public double getDestLongitude() {
+		return destLongitude_;
+	}
+
+
+	public void setDestLongitude(double destLongitude) {
+		this.destLongitude_ = destLongitude;
+	}
+
+
+	public double getDestLatitude() {
+		return destLatitude_;
+	}
+
+
+	public void setDestLatitude(double destLatitude) {
+		this.destLatitude_ = destLatitude_;
+	}
+
 	/**
 	 * Source EndpointID
 	 */
@@ -1076,6 +1097,11 @@ public class Bundle implements Serializable {
 	 */
 	private boolean complete_;
 
+	/**
+	 * 目的节点的经度和纬度
+	 */
+	private double destLongitude_;
+	private double destLatitude_;
 
 	/**
 	 * Initialization helper function.
@@ -1117,6 +1143,8 @@ public class Bundle implements Serializable {
 		source_ = new EndpointID();
 		xmit_link_block_set_ = new LinkBlockSet(lock_);
 
+		destLongitude_ = -1.0;
+		destLatitude_ = -1.0;
 		Log.d(TAG, String.format("Bundle::init bundle id %d", id));
 	}
 

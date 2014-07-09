@@ -26,6 +26,9 @@
    <!-- Flag whether to enable test data logging. SDCard is required for this feature -->
    <string name="DTNTestDataLogging_ONSDCard">true</string>
    
+   <string name="SetLocationManually">true</string>
+   <string name="LocationFilePath">location.txt</string>
+   
    <!-- The folder name for the test data logging. The test data folder will be in the root folder of SDCard -->
    <string name="DTNTestDataPrefix">dtn_test_data</string>
    <string name="Title_Routing_Type">Routing Type</string>
@@ -40,5 +43,9 @@
        <item >FIFO</item>
        <item >MOFO</item>
    </string-array>
+   
+   
+   <string name="ReRouteTimeSec">20</string>
+	
 
 </resources>

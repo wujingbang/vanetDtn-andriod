@@ -43,6 +43,7 @@ import android.geosvr.dtn.servlib.conv_layers.ConvergenceLayer;
 import android.geosvr.dtn.servlib.conv_layers.Netw_layerInteractor;
 import android.geosvr.dtn.servlib.conv_layers.TestDataLogger;
 import android.geosvr.dtn.servlib.discovery.DiscoveryTable;
+import android.geosvr.dtn.servlib.discovery.Location;
 import android.geosvr.dtn.servlib.reg.RegistrationTable;
 import android.geosvr.dtn.servlib.routing.BundleRouter;
 import android.geosvr.dtn.servlib.routing.epidemic.queuing.EpidemicQueuing;
@@ -216,7 +217,7 @@ public class DTNService extends android.app.Service {
         	init_datastore(config_);
         	
         	Netw_layerInteractor.getInstace().init();
-        	
+        	Location.getInstance().init();
     	}
     	catch(Exception e){
     		e.printStackTrace();

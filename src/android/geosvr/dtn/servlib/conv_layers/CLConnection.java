@@ -246,7 +246,7 @@ public abstract class CLConnection extends CLInfo implements Runnable {
 
 		contact_broken_ = true;
 
-		//log.d(TAG, "break_contact: " + reason.getCaption());
+		Log.e(TAG, "break_contact: " + reason.getCaption());
 
 		if (reason != ContactEvent.reason_t.BROKEN) {
 			disconnect();

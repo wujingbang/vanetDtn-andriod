@@ -74,6 +74,11 @@ public class DTNBundleSpec{
 	 */
 	private boolean is_admin_;
 	
+	/**
+	 * 目的节点的经度和纬度
+	 */
+	private double destLongitude_;
+	private double destLatitude_;
 	
 	/**
 	 * The constructor of DTNBundleSpec	
@@ -222,7 +227,25 @@ public class DTNBundleSpec{
 		is_admin_ = is_admin;
 	}
 	
-	
+	public double getDestLongitude() {
+		return destLongitude_;
+	}
+
+
+	public void setDestLongitude(double destLongitude) {
+		this.destLongitude_ = destLongitude;
+	}
+
+
+	public double getDestLatitude() {
+		return destLatitude_;
+	}
+
+
+	public void setDestLatitude(double destLatitude) {
+		this.destLatitude_ = destLatitude_;
+	}
+
 
 	
 }

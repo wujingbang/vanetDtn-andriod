@@ -827,7 +827,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 		// source and destination are always specified
 		b.source().assign(spec.source().toString());
 		b.dest().assign(spec.dest().toString());
-
+		
+		b.setDestLongitude(spec.getDestLongitude());
+		b.setDestLatitude(spec.getDestLatitude());
+		
 		// replyto defaults to null
 		if (spec.replyto() == null) {
 			b.replyto().assign(EndpointID.NULL_EID());
@@ -1131,7 +1134,10 @@ public class DTNAPIBinder extends Binder implements DTNAPI {
 		// source and destination are always specified
 		b.source().assign(spec.source().toString());
 		b.dest().assign(spec.dest().toString());
-
+		
+		b.setDestLongitude(spec.getDestLongitude());
+		b.setDestLatitude(spec.getDestLatitude());
+		
 		// replyto defaults to null
 		if (spec.replyto() == null) {
 			b.replyto().assign(EndpointID.NULL_EID());

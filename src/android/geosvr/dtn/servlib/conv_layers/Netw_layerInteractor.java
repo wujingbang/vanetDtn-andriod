@@ -35,10 +35,35 @@ import android.util.Log;
 
 
 public class Netw_layerInteractor implements Runnable {
-
 	
-	private final int DTNREGISTERPORT=9999;
-	private final int DTNPORT=10000;
+	public static final int DTNREGISTERPORT=9999;
+	public static final int DTNPORT=10000;
+	public static final int DTN_FIND_NEIGHBOUR_PORT = 10001;
+	public static final int DTN_RECV_NEIGHBOUR_PORT = 10002;
+	public static final int DTN_LOCATION_PORT = 10003;
+	public static final int AODV_LOCATION_PORT = 10004;
+	
+	//RERR =126;RCVP = 122;
+	public static enum infotype_from_lowlayer {
+		RCVP            (122),
+		RRER         	(126);
+		
+		private int type_;
+		private infotype_from_lowlayer(int type){
+			type_ = type;
+		};
+		
+	    public static infotype_from_lowlayer valueOf(int value) {
+	        switch (value) {
+	        case 122:
+	            return RCVP;
+	        case 126:
+	            return RRER;
+	        default:
+	            return null;
+	        }
+	    }
+	}
 	
 	private DatagramSocket sock_interact_;
 	
@@ -99,42 +124,120 @@ public class Netw_layerInteractor implements Runnable {
 
 	}
 	
-
+	private boolean check_dup(byte[] b1, byte[] b2){
+		for(int i = 0; i < b1.length; i++) {
+			if (b1[i] == b2[i]) continue;
+			else return false;
+		}
+		return true;//duplication
+	}
+	
 	@Override
 	public void run() {
 		register2netw_layer();//注册
+		byte[] check_b = new byte[16];
+		byte[] recvBuf = new byte[16];
+		byte[] srcip = new byte[5];
+		byte[] dstip = new byte[5];
+		byte[] avail = new byte[5];
 		while (true) {
 			try {
-				byte[] recvBuf = new byte[30];
 				DatagramPacket recvPacket = new DatagramPacket(recvBuf,
 						recvBuf.length);
 				sock_interact_.receive(recvPacket);
+				//此处要加入防止重复信息的机制
+				if (check_dup(recvBuf, check_b))
+					continue;
 
-				byte[] dstip = new byte[5];
-				byte[] avail = new byte[5];
 				for (int k = 0; k < 4; k++) {
-					dstip[k] = recvBuf[k];
-					avail[k] = recvBuf[k + 4];
+					srcip[k] = recvBuf[k];
+					dstip[k] = recvBuf[k + 4];
+					avail[k] = recvBuf[k + 8];
 				}
-
+				byte type_b = recvBuf[12];
+				infotype_from_lowlayer type = infotype_from_lowlayer.valueOf(type_b);
+				
+				String srcipStr = IpHelper.ipbyte2ipstr(srcip);
 				String dstipStr = IpHelper.ipbyte2ipstr(dstip);
 				String lastAvailStr = IpHelper.ipbyte2ipstr(avail);
+				String srcId = IpHelper.ipstr2Idstr(srcipStr);
 				String dstId = IpHelper.ipstr2Idstr(dstipStr);
 				String lastAvailId = IpHelper.ipstr2Idstr(lastAvailStr);
 				
-				//关闭dstID对应的直接连接。
-				shutdownDirectLink(dstId);
+				Log.e(TAG, "************RECV BREAK DATA**************");
+				//获得本地ip
+				InetAddress local_addr = IpHelper.getLocalIpAddress();
+				String localIp = local_addr.toString().substring(1);
 				
-//				flash_pendingBundleState(dstId);
-				
-				add_link(lastAvailStr, lastAvailId);
-				try {
-					Thread.sleep(1000);
-				} catch (Exception e) {
-					// TODO: handle exception
+				//菜：Debug info
+//				System.out.println("-------------------------------");
+//				System.out.println("-------------------------------");
+//				System.out.println("local:"+localIp);
+//				System.out.println("dst:"+dstId+", lastAvail:"+lastAvailId+", src:"+srcId);
+//				System.out.println("type:"+type);
+//				
+				//RERR =126;RCVP = 122;
+				switch(type){
+				case RRER:
+					//判断本节点是否是离断开链路最近的DTN节点以及是否是此段链路的第一个DTN节点
+					if(localIp.equals(lastAvailStr))//第一个DTN节点
+					{
+						//关闭dstID对应的直接连接，无需其他操作
+						shutdownDirectLink(dstId);
+						System.out.println("This is the first DTN node:"+localIp+"shutdown link");
+					}
+					else if(localIp.equals(srcipStr))
+					{
+						System.out.println("This is the SRC DTN node:"+localIp+"shutdown link");
+						//关闭dstID对应的直接连接。
+						shutdownDirectLink(dstId);
+						
+//						flash_pendingBundleState(dstId);
+						
+						add_link(lastAvailStr, lastAvailId);
+						try {
+							Thread.sleep(1000);
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+						add_routeEntry(dstId, lastAvailId);//必须放最后！我把add_route对外开放了，实际上可以作为事件！
+					}
+					//若均不是，不必进行操作，直接丢弃
+					break;
+				case RCVP:
+					//留出遍历发送队列，并根据bundle包的目的地址发起连接的接口，实验中首先按照接收到rcvp包恢复通路
+					//判断本节点是否是离断开链路最近的DTN节点以及是否是此段链路的第一个DTN节点
+					if(localIp.equals(lastAvailStr))//第一个DTN节点
+					{
+						//开启dstID对应的直接连接，无需其他操作
+						add_link(dstipStr,dstId);
+						System.out.println("This is the first DTN node:"+localIp+" add link");
+					}
+					else if(localIp.equals(srcipStr))
+					{
+						System.out.println("This is the SRC DTN node:"+localIp+" add link");
+						//关闭dstID对应的直接连接。
+						
+						
+						
+						shutdownDirectLink(lastAvailId);
+//						flash_pendingBundleState(dstId);
+						add_link(dstipStr,dstId);
+						
+						
+						try {
+							Thread.sleep(1000);
+						} catch (Exception e) {
+							
+						}
+						//add_routeEntry(dstId, lastAvailId);//必须放最后！我把add_route对外开放了，实际上可以作为事件！
+					}
+					//若均不是，不必进行操作，直接丢弃
+					break;
+					default:
+						Log.e(TAG,"Invalid Message from AODV,discarded!");
+						break;
 				}
-				add_routeEntry(dstId, lastAvailId);//必须放最后！我把add_route对外开放了，实际上可以作为事件！
-
 				
 			} catch (SocketException e) {
 				// TODO Auto-generated catch block
@@ -299,7 +402,8 @@ public class Netw_layerInteractor implements Runnable {
 			}
 		}
 		cm.get_lock().unlock();
-
 	}
+	
+//	public 
 
 }
