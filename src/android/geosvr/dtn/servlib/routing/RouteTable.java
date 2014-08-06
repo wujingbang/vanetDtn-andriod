@@ -405,6 +405,7 @@ public class RouteTable{
 	    				// "Adding entry only when we can know the link" [DTN2]
 	    				if(!entry_vec.contains(entry) && 
 	    						(entry.link().state() == state_t.OPEN || 
+	    						entry.link().state() == state_t.OPENING ||
 	    						entry.link().state() == state_t.AVAILABLE ))
 	    				{
 	    					Log.d(TAG,String.format("match entry %s", entry.toString() ));

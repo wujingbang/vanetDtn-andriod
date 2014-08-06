@@ -70,36 +70,36 @@ public class Location extends TimerTask{
 		timeCounter_ += delay_sec_;
 		BufferedReader reader = null;
 		
-        try {
-            System.out.println("以行为单位读取文件内容，一次读一整行：");
-            reader = new BufferedReader(new FileReader(locationFile_));
-            String readStr = null;
-            String tempStr[] = null;
-            
-            //每行格式:时间（sec） 经度  纬度
-            // 读到对应的一行写入
-            while ((readStr = reader.readLine()) != null) {
-            	tempStr = readStr.split(" ");
-            	if (Integer.parseInt(tempStr[0]) >= timeCounter_) {
-            		longitude_ = Integer.parseInt(tempStr[1]);
-            		latitude_ = Integer.parseInt(tempStr[2]);
-            		break;
-            	}
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e1) {
-                }
-            }
-        }
+//        try {
+//            System.out.println("以行为单位读取文件内容，一次读一整行：");
+//            reader = new BufferedReader(new FileReader(locationFile_));
+//            String readStr = null;
+//            String tempStr[] = null;
+//            
+//            //每行格式:时间（sec） 经度  纬度
+//            // 读到对应的一行写入
+//            while ((readStr = reader.readLine()) != null) {
+//            	tempStr = readStr.split(" ");
+//            	if (Integer.parseInt(tempStr[0]) >= timeCounter_) {
+//            		longitude_ = Integer.parseInt(tempStr[1]);
+//            		latitude_ = Integer.parseInt(tempStr[2]);
+//            		break;
+//            	}
+//            }
+//            reader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (reader != null) {
+//                try {
+//                    reader.close();
+//                } catch (IOException e1) {
+//                }
+//            }
+//        }
         
-//		longitude_ = 100.112233;
-//		latitude_ = 200.556677;
+		longitude_ = 100.112233;
+		latitude_ = 200.556677;
 	}
 	
 

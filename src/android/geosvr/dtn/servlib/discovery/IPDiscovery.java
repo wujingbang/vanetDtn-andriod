@@ -262,8 +262,13 @@ public class IPDiscovery extends Discovery implements Runnable {
 		Log.d(TAG, "discovery thread running");
 		IByteBuffer buf = new SerializableByteBuffer(1024);
 
-		int iii = 10;
+		int iii = 0;
 		while(iii-- > 0){
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			HashMap<String, PASVExtraInfo> tttt = PASVDiscovery.getInstance().getPASVDiscoveriesList();
 			System.out.println("ssss");
 		}

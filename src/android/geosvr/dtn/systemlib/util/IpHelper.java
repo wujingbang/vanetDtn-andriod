@@ -39,7 +39,15 @@ public class IpHelper {
              for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
                  NetworkInterface intf = en.nextElement();
                  for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-                         enumIpAddr.nextElement();
+                	     InetAddress tmp = enumIpAddr.nextElement();
+                         if (intf.getName().equals("wlan0"))
+                         {
+                                 //取第二个值
+                                 InetAddress inetAddress = tmp;
+                                 if (!inetAddress.isLoopbackAddress()) {
+                                 return inetAddress;
+                             }
+                         } 
                          if (intf.getName().equals("adhoc0"))
                          {
                                  //取第二个值
@@ -53,6 +61,7 @@ public class IpHelper {
          } catch (SocketException ex) {
              Log.e("testAndroid1", ex.toString());
          }
+         Log.e("IpHelper", "getLocalIpAddress return NULL!!");
          return null;
     } 
     

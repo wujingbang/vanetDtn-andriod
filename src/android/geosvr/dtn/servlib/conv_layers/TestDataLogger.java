@@ -22,6 +22,7 @@ package android.geosvr.dtn.servlib.conv_layers;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -309,21 +310,31 @@ public class TestDataLogger {
 		Date start_date   = new Date(begin.time_milliseconds);
 		Date end_date     = new Date(end.time_milliseconds);
 		// write result
-		  
+
+		SimpleDateFormat df=new SimpleDateFormat("hh:mm:ss.SSS");
+		
+//		String record_data =String.format(
+//				// Time written, bundle id , size ( bytes ), time start( readable ), time end ( readable ),  time used ( millisecond ), battery begin , battery end, battery consume
+//			      "%s,%d,%d,%s,%s,%d,%d,%d,%d",
+//			      current_date.toString(),
+//			      bundle.bundleid(),
+//			      total_length,
+//			      start_date.toString(),
+//			      end_date.toString(),
+//			      time_used,
+//			      begin.battery_value,
+//			      end.battery_value,
+//			      battery_consume
+//		);
 		String record_data =String.format(
 				// Time written, bundle id , size ( bytes ), time start( readable ), time end ( readable ),  time used ( millisecond ), battery begin , battery end, battery consume
-			      "%s,%d,%d,%s,%s,%d,%d,%d,%d",
-			      current_date.toString(),
+			      "%s,%d,%d,%s,%s,%d",
+			      df.format(current_date),
 			      bundle.bundleid(),
 			      total_length,
-			      start_date.toString(),
-			      end_date.toString(),
-			      time_used,
-			      begin.battery_value,
-			      end.battery_value,
-			      battery_consume
-		
-		
+			      df.format(start_date),
+			      df.format(end_date),
+			      time_used
 		);
 		try {
 			

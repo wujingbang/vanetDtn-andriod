@@ -4,6 +4,7 @@ package android.geosvr.dtn.servlib.discovery;
  * 1. 路由获取邻居列表（邻居列表10s内有效）
  * 2. 根据邻居列表选出最优下一跳并插入路由表项
  */
+import java.io.FileWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -24,7 +25,7 @@ import android.geosvr.dtn.systemlib.util.TimeHelper;
 public class PASVDiscovery {
 	
 	private static final String TAG = "PASVDiscovery";
-	public static final int reply_wait_time_sec = 3;//s
+	public static final int reply_wait_time_sec = 8;//s
 	public static final int list_live_time_sec = 10;//s
 	
 	//eid, PASVExtraInfo(ip,..)
@@ -52,8 +53,8 @@ public class PASVDiscovery {
 	}
 	
 	public HashMap<String, PASVExtraInfo> getPASVDiscoveriesList(){
-		if (TimeHelper.current_seconds_from_ref() - last_set_time_ < list_live_time_sec)
-			return this.PASVDiscoveries_;
+//		if (TimeHelper.current_seconds_from_ref() - last_set_time_ < list_live_time_sec)
+//			return this.PASVDiscoveries_;
 		
 		//清空邻居表
 		PASVDiscoveries_.clear();
@@ -67,9 +68,15 @@ public class PASVDiscovery {
 		for (int z = 0; z < packet_len; z++) {
 			data[z] = buf.get(z);
 		}
-		
+		isTimeout = false;
 		DatagramSocket sock_find_neigh = null;
 		DatagramSocket sock_recv_neigh = null;
+		
+		
+		long start_time = TimeHelper.getNanoTime();
+		long current_time;
+		    
+		
 		try {
 			sock_find_neigh = new DatagramSocket(findport);
 			sock_recv_neigh = new DatagramSocket(recvport);
@@ -78,6 +85,11 @@ public class PASVDiscovery {
 					InetAddress.getByName(host),findport);
 			sock_find_neigh.send(packet);
 			
+			FileWriter fw = new FileWriter("/sdcard/dtn_test_data/neighbourtest.txt",true);
+			String tmp = "start: "+Long.toString(start_time)+ '\n';
+			fw.write(tmp,0,tmp.length());    
+	        fw.flush();
+	        
 			Timer timer = new Timer(); 
 		    timer.schedule(new Task(), reply_wait_time_sec * 1000);
 			while (!isTimeout) {
@@ -86,9 +98,29 @@ public class PASVDiscovery {
 				DatagramPacket recvPacket = new DatagramPacket(recvBuf,
 						recvBuf.length);
 				sock_recv_neigh.receive(recvPacket);
+				
+				
+				/*********************test neighbour finding speed***********************/
+				
+				byte[] neighborip = new byte[5];
+				byte[] xb = new byte[5];
+				byte[] yb = new byte[5];
+				for (int k = 0; k < 4; k++) {
+					neighborip[k] = recvBuf[k];
+					xb[k] = recvBuf[k + 4];
+					yb[k] = recvBuf[k + 8];
+				}
+				current_time = TimeHelper.getNanoTime();
+				String neighboripstr = IpHelper.ipbyte2ipstr(neighborip);
+				String increment_time = Long.toString(current_time - start_time);
+				String s = neighboripstr +' '+ increment_time + '\n';
+		        fw.write(s,0,s.length());    
+		        fw.flush(); 
+		        /********************************************************/
 				insertListFromBuf(recvBuf);
 //				System.out.println("22");
 			}
+			fw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

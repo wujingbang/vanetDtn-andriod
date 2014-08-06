@@ -70,4 +70,8 @@ public class TimeHelper {
 	
 		return (time_calendar.getTimeInMillis()/1000) - DTNTime.TIMEVAL_CONVERSION;
 	}
+	
+	public static long getNanoTime() {
+		return System.nanoTime();
+	}
 }

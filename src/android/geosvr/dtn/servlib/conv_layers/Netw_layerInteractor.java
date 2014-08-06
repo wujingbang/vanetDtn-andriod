@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.concurrent.PriorityBlockingQueue;
 
 
 import android.geosvr.dtn.DTNManager;
@@ -18,6 +19,7 @@ import android.geosvr.dtn.servlib.bundling.ForwardingInfo;
 import android.geosvr.dtn.servlib.bundling.event.BundleEvent;
 import android.geosvr.dtn.servlib.bundling.event.ContactEvent;
 import android.geosvr.dtn.servlib.bundling.event.LinkStateChangeRequest;
+import android.geosvr.dtn.servlib.bundling.event.event_type_t;
 import android.geosvr.dtn.servlib.bundling.exception.BundleListLockNotHoldByCurrentThread;
 import android.geosvr.dtn.servlib.contacts.ContactManager;
 import android.geosvr.dtn.servlib.contacts.Link;
@@ -164,7 +166,7 @@ public class Netw_layerInteractor implements Runnable {
 				String dstId = IpHelper.ipstr2Idstr(dstipStr);
 				String lastAvailId = IpHelper.ipstr2Idstr(lastAvailStr);
 				
-				Log.e(TAG, "************RECV BREAK DATA**************");
+				
 				//获得本地ip
 				InetAddress local_addr = IpHelper.getLocalIpAddress();
 				String localIp = local_addr.toString().substring(1);
@@ -177,20 +179,26 @@ public class Netw_layerInteractor implements Runnable {
 //				System.out.println("type:"+type);
 //				
 				//RERR =126;RCVP = 122;
+				if(type == null) {
+					Log.e(TAG, "unknow type!!");
+					continue;
+				}
 				switch(type){
 				case RRER:
+					Log.e(TAG, "************RECV RRER**************");
 					//判断本节点是否是离断开链路最近的DTN节点以及是否是此段链路的第一个DTN节点
 					if(localIp.equals(lastAvailStr))//第一个DTN节点
 					{
+						
 						//关闭dstID对应的直接连接，无需其他操作
-						shutdownDirectLink(dstId);
+						shutdownDirectLink(dstId, type);
 						System.out.println("This is the first DTN node:"+localIp+"shutdown link");
 					}
 					else if(localIp.equals(srcipStr))
 					{
 						System.out.println("This is the SRC DTN node:"+localIp+"shutdown link");
 						//关闭dstID对应的直接连接。
-						shutdownDirectLink(dstId);
+						shutdownDirectLink(dstId, type);
 						
 //						flash_pendingBundleState(dstId);
 						
@@ -205,6 +213,7 @@ public class Netw_layerInteractor implements Runnable {
 					//若均不是，不必进行操作，直接丢弃
 					break;
 				case RCVP:
+					Log.e(TAG, "************RECV RCVP**************");
 					//留出遍历发送队列，并根据bundle包的目的地址发起连接的接口，实验中首先按照接收到rcvp包恢复通路
 					//判断本节点是否是离断开链路最近的DTN节点以及是否是此段链路的第一个DTN节点
 					if(localIp.equals(lastAvailStr))//第一个DTN节点
@@ -220,7 +229,7 @@ public class Netw_layerInteractor implements Runnable {
 						
 						
 						
-						shutdownDirectLink(lastAvailId);
+						shutdownDirectLink(lastAvailId, type);
 //						flash_pendingBundleState(dstId);
 						add_link(dstipStr,dstId);
 						
@@ -266,8 +275,23 @@ public class Netw_layerInteractor implements Runnable {
 	/**
 	 * 收到断路信息，关闭对应直接链接
 	 */
-	private void shutdownDirectLink(String dstId) {
+	private void shutdownDirectLink(String dstId, infotype_from_lowlayer type) {
 		BundleDaemon Daemon = BundleDaemon.getInstance();
+		
+/*		PriorityBlockingQueue<BundleEvent> eventq = Daemon.test_get_eventq();
+		Iterator<BundleEvent> iter = eventq.iterator();
+		while (iter.hasNext()) {
+			if (iter.next().type() == event_type_t.BUNDLE_TRANSMITTED) {
+				try {
+					Thread.sleep(200);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				iter = eventq.iterator();
+			}
+		}
+*/		
+		
 		RouteEntryVec matches = new RouteEntryVec();
 		dstId += "/*";
 		Link null_link = null;
@@ -280,18 +304,57 @@ public class Netw_layerInteractor implements Runnable {
 			if (route.IsDirectLink()){
 				route.link().get_lock().lock();
 				//清空link队列
-				flash_queueBundleState(route.link().queue());
-				route.link().queue().clear();
-				flash_queueBundleState(route.link().inflight());
-				route.link().inflight().clear();
+//				route.link().inflight().contains()
+//				if (type == infotype_from_lowlayer.RRER) {
+					flash_queueBundleState(route.link().queue());
+					route.link().queue().clear();
+					flash_queueBundleState(route.link().inflight());
+					route.link().inflight().clear();
+//				} else if (type == infotype_from_lowlayer.RCVP) {
+//					flash_queueWithoutInflight(route.link().queue(), route.link().inflight());
+//				}
 				
 				route.link().set_state(state_t.UNAVAILABLE);//这里还可以用link().close()，可以试一试
-//				route.link().close();
+//				route.link().close();//close没有对于CLMSG_BREAK_CONTACT的处理,导致断不了。
 				route.link().get_lock().unlock();
 			}
 		}
 	}
 	
+	/**
+	 * 在通路包的处理中，需要中断发送的link中已经有包被成功传送并且产生了transmit事件
+	 * 接着在之前的处理中直接把这些包一并删除
+	 * 导致BundleDeamon中对于transmit事件的处理出现空指针错误。
+	 * @param bundleList
+	 * @param inflightList
+	 */
+	private void flash_queueWithoutInflight(BundleList bundleList, BundleList inflightList) {
+		bundleList.get_lock().lock();
+		try {
+			ListIterator<Bundle> iter = bundleList.begin();
+			while (iter.hasNext()) {
+				Bundle bundle = iter.next();
+				if (inflightList.contains(bundle))
+					continue;
+				else {
+					int count = bundle.fwdlog().get_count(
+							ForwardingInfo.state_t.QUEUED.getCode(),
+							1);
+					if (count > 0) {
+						bundle.fwdlog().clear();
+					}
+				
+					//在list中删除单个bundle
+					bundleList.erase(bundle, false);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			bundleList.get_lock().unlock();
+		}
+	}
 	/**
 	 * 清空bundleList中断路对应link队列的queue状态
 	 */
@@ -356,12 +419,15 @@ public class Netw_layerInteractor implements Runnable {
 		cm.get_lock().lock();
 		Link link = cm.find_link_to(lastEndid);
 		
-		if (link == null) {
+		/**************此处导致了死线程。需要以后处理！**********************/
+		if (link == null || link.state() == state_t.UNAVAILABLE) {
 			//在这里post了link_created事件，此处写死了tcp
-			link = cm.new_opportunistic_link(
-					(link==null) ? ConvergenceLayer.find_clayer("tcp") : link.clayer(), 
-							ipcombostr, lastEndid);
-			
+			link = null;
+			link = cm.new_opportunistic_link(ConvergenceLayer.find_clayer("tcp"), ipcombostr, lastEndid);
+//			link = cm.new_opportunistic_link(
+//					(link==null) ? ConvergenceLayer.find_clayer("tcp") : link.clayer(), 
+//							ipcombostr, lastEndid);
+		/**************此处导致了死线程。需要以后处理！**********************/	
 			if (link == null) {
 				//log.d(TAG, "failed to create opportunistic link");
 				return;

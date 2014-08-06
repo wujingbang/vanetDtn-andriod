@@ -304,7 +304,7 @@ public class BundleStore  {
 				
 	    		String filename = bundleFileName+bundleid;
 	    		String filename_payload = payloadFileName+bundleid;
-	    		Log.d(TAG, "Going to Del bundle on disk:"+bundleid);
+	    		Log.e(TAG, "Going to Del bundle on disk:"+bundleid);
 	    		bundle_count_ -= 1;
 	    		impt_storage_.delete_file(filename);
 	    		impt_storage_.delete_file(filename_payload);

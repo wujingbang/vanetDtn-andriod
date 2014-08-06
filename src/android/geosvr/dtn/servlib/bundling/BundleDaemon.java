@@ -687,6 +687,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 			Log.d(TAG, "BundleDaemon: at the end of run() of Daemon");
 		} catch (Exception e1) {
 			Log.e(TAG, "BundleDeamon:run(), UnknownRouterType ");
+			e1.printStackTrace();
 		}
 	}
 
@@ -738,7 +739,7 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 	public PriorityBlockingQueue<BundleEvent> test_get_eventq() {
 		return eventq_;
 	}
-
+	
 	/**
 	 * "Take custody for the given bundle, sending the appropriate signal to the
 	 * current custodian." [DTN2]
@@ -1965,9 +1966,10 @@ public class BundleDaemon extends BundleEventHandler implements Runnable {
 		boolean[] found = new boolean[1];
 		ForwardingInfo fwdinfo = bundle.fwdlog().get_latest_entry(link, found);
 		if (!found[0]) {
-			StringBuffer buf = new StringBuffer();
-			bundle.fwdlog().dump(buf);
-			Log.d(TAG, buf.toString());
+			return;
+//			StringBuffer buf = new StringBuffer();
+//			bundle.fwdlog().dump(buf);
+//			Log.d(TAG, buf.toString());
 		}
 		if (fwdinfo.state() != ForwardingInfo.state_t.QUEUED) {
 			Log.e(TAG, String.format(
