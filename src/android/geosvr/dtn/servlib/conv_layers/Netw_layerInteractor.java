@@ -420,53 +420,33 @@ public class Netw_layerInteractor implements Runnable {
 		Link link = cm.find_link_to(lastEndid);
 		
 		/**************此处导致了死线程。需要以后处理！**********************/
-		if (link == null || link.state() == state_t.UNAVAILABLE) {
+///		if (link == null || link.state() == state_t.UNAVAILABLE) {
 			//在这里post了link_created事件，此处写死了tcp
 			link = null;
 			link = cm.new_opportunistic_link(ConvergenceLayer.find_clayer("tcp"), ipcombostr, lastEndid);
-//			link = cm.new_opportunistic_link(
-//					(link==null) ? ConvergenceLayer.find_clayer("tcp") : link.clayer(), 
-//							ipcombostr, lastEndid);
+
 		/**************此处导致了死线程。需要以后处理！**********************/	
-			if (link == null) {
+///			if (link == null) {
 				//log.d(TAG, "failed to create opportunistic link");
-				return;
-			}
+///				return;
+///			}
 			link.lock().lock();
 			
 			link.set_state(Link.state_t.AVAILABLE);
 			link.open();
 			link.lock().unlock();
-			// request to set link available
-			//(event, notifier, timeout, at_back)
-//			BundleEvent event = new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-//					ContactEvent.reason_t.USER);
-//			Daemon.post_and_wait(event,//event.processed_notifier(),
-//					new MsgBlockingQueue<Integer>(5),
-//					-1/*5s*/, false);
-//			Daemon.post_at_head(event);
-//			Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-//					ContactEvent.reason_t.USER));
-		}
-		else {
-			assert (link != null);
-			if (!link.isNotUnavailable()) {
-				link.lock().lock();
-				link.set_nexthop(ipcombostr);
+///		}
+///		else {
+///			assert (link != null);
+///			if (!link.isNotUnavailable()) {
+///				link.lock().lock();
+///				link.set_nexthop(ipcombostr);
 //				link.set_state(Link.state_t.AVAILABLE);
-				link.lock().unlock();
-
-				// request to set link available
-//				Daemon.post(new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-//						ContactEvent.reason_t.USER));
-/*				BundleEvent event = new LinkStateChangeRequest(link, Link.state_t.AVAILABLE,
-						ContactEvent.reason_t.USER);
-//				Daemon.post_and_wait(event,//event.processed_notifier(),
-//						new MsgBlockingQueue<Integer>(5),
-//						-15s, false);
-				Daemon.post_at_head(event);*/
-			}
-		}
+///				link.lock().unlock();
+///			
+///			}
+			
+///		}
 		cm.get_lock().unlock();
 	}
 	

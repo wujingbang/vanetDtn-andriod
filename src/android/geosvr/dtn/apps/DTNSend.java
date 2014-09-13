@@ -366,7 +366,7 @@ public class DTNSend extends Activity  {
 	//			}
 	//		}
 			api_send_result = dtn_api_binder_
-						.dtn_multiple_send(dtn_handle, spec, dtn_payload, 60);
+						.dtn_multiple_send(dtn_handle, spec, dtn_payload, 42);
 			// If the API fail to execute throw the exception so user interface can catch and notify users
 			if (api_send_result != dtn_api_status_report_code.DTN_SUCCESS) {
 				throw new DTNAPIFailException();

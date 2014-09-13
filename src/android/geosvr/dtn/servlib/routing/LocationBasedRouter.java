@@ -116,7 +116,7 @@ public class LocationBasedRouter extends BundleRouter {
 	/**
 	 * TAG name for logging in Android Logging system
 	 */
-	private final static String TAG = "TableBasedRouter";
+	private final static String TAG = "LocationBasedRouter";
 
 	/**
 	 * Constructor 
